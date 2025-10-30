@@ -36,8 +36,8 @@ El núcleo funcional del sistema será su motor de facturación, el cual permiti
 ## Requisitos
 
 Los requisitos del sistema enumerados en historias de usuario son los siguientes:
-## Cliente
-## HU 01 - Alta Cliente
+### Cliente
+#### HU 01 - Alta Cliente
 
 Como **administrdor** quiero **registrar nuevos clientes**
 para **habilitar su cuenta**
@@ -51,7 +51,7 @@ Criterios de aceptación
 Notas técnicas
 - La relacion entre cliente y cuenta es 1 a 1.
 
-## HU 02 - Modificar cliente
+#### HU 02 - Modificar cliente
 
 Como **administrador**
 quiero **modificar datos del cliente**
@@ -62,7 +62,7 @@ Criterios de aceptación
 - No se puede modificar el DNI o CUIT a uno registrado.
 - Puede cambiar el estado de la cuenta a activa, suspendida o baja.
 
-## HU 03 - Baja cliente
+#### HU 03 - Baja cliente
 
 Como **administrador**
 quiero **cambiar el estado de cuenta del cliente**
@@ -75,7 +75,7 @@ Criterios de aceptación
 Notas técnicas
 - Actualizacion del estado afecta la logica de facturacion.
 
-## HU-04 — Asignar servicios a cliente
+#### HU-04 — Asignar servicios a cliente
 
 Como **administrador** quiero **asignar/quitar servicios a un cliente** para **usarlos en la facturación.**
 
@@ -87,8 +87,8 @@ Criterios de aceptación
 Notas técnicas
 - Relación cliente–servicios (N:M) con vigencias (fecha desde/hasta).
 
-## Facturacion
-## HU 05 - Definir periodo de facturacion
+### Facturacion
+#### HU 05 - Definir periodo de facturacion
 
 Como **administrador**
 quiero **seleccionar fechas de inicio y fin**
@@ -98,7 +98,7 @@ Criterios de aceptación
 - El periodo debe de ser un mes.
 - La fecha de inicio debe de ser menor a la fecha de fin.
 
-## HU 06 - Facturacion masiva manual
+#### HU 06 - Facturacion masiva manual
 
 Como **administrador**
 quiero **iniciar la facturacion masiva**
@@ -112,7 +112,7 @@ Notas técnicas
 - Queda registrado la facturacion masiva.
 - Mantiene numeración correlativa.
 
-## HU 07 - Facturacion individual
+#### HU 07 - Facturacion individual
 
 Como **administrador**
 quiero **emitir una factura**
@@ -127,7 +127,7 @@ Criterios de aceptación
 Notas técnicas
 - Mantiene numeración correlativa.
 
-## HU 08 - Detalle de factura
+#### HU 08 - Detalle de factura
 
 Como **administrador**
 quiero **que el sistema genere los items correspondientes a los servicios**
@@ -142,7 +142,7 @@ Notas técnicas
 - El proporcional se calcula según dias restantes al mes.
 - El descuento se carga manualmente.
 
-## HU 09 - Registro de facturacion masiva
+#### HU 09 - Registro de facturacion masiva
 
 Como **administrador**
 quiero **registrar cada ejecucion de facturacion masiva**
@@ -156,7 +156,7 @@ Notas técnicas
 - Interfaz con listado y filtros por fecha o periodo.
 - Las facturaciones masivas se registran automaticamente al presionar el boton de facturar.
 
-## HU-10 — Ver estado de cuenta del cliente
+#### HU-10 — Ver estado de cuenta del cliente
 
 Como **administrador** quiero **ver el estado de cuenta** para **conocer facturas emitidas, pagadas e impagas.**
 
@@ -164,7 +164,7 @@ Criterios de aceptación
 - Listar facturas por estado: Vigente / Vencida / Anulada / Pagada / Parcialmente pagada.
 - El sistema debe mostrar el saldo actual del cliente, calculado como la suma total de las facturas emitidas no anuladas.
 
-## HU-11 — Anulación de factura
+#### HU-11 — Anulación de factura
 Como **administrador**
 quiero **anular una factura emitida mediante una nota de crédito**
 para **revertir completamente la operación y mantener la trazabilidad del proceso.**
@@ -177,9 +177,9 @@ Criterios de aceptación
 - La factura anulada deja de considerarse en el saldo del cliente.
 - Se debe poder consultar el vínculo entre la factura anulada y la nota de crédito generada.
 
-## Pagos
+### Pagos
 
-## HU-12 — Registrar Pagos
+#### HU-12 — Registrar Pagos
 Como **administrador**
 quiero **registrar el pago total o parcial de una o más facturas**
 para **mantener actualizado el estado de cuenta del cliente.**
@@ -195,7 +195,7 @@ Criterios de aceptación
 Notas técnicas
 - Cada pago se almacena en una entidad Pago vinculada a las facturas afectadas.
 
-## HU-13 — Emisión de recibos
+#### HU-13 — Emisión de recibos
 Como **administrador**
 quiero **emitir un recibo de pago**
 para **dejar constancia de las facturas y servicios abonados por el cliente.**
