@@ -26,8 +26,12 @@ como también honorarios extras a contadores por retrabajos contables.
 Un beneficiario indirecto es el **cliente final** de la empresa. Aunque este no usará el sistema, también se ve afectado por los problemas actuales: recibe facturas con demoras, posiblemente con errores, o debe esperar respuestas lentas a sus consultas.
  
 ## Solución propuesta
+La solución propuesta es un sistema de facturación diseñado para gestionar la emisión de comprobantes de servicios, ajustándose automáticamente a la condición fiscal (IVA) de cada cliente.
 
-Escriban algunas oraciones que describan cómo la solución de software resolverá el problema descrito anteriormente.
+El sistema permitirá administrar de forma centralizada tanto el **catálogo de servicios** (permitiendo agregar, modificar y eliminar prestaciones) como la **gestión completa de las cuentas de clientes**.
+Esta gestión centralizada garantizará la **trazabilidad total** de los pagos, las deudas pendientes y el historial fiscal, simplificando radicalmente el seguimiento financiero.
+
+El núcleo funcional del sistema será su motor de facturación, el cual permitirá al cliente realizar una **facturación masiva por período** para todas las cuentas activas. Asímismo, ofrecerá la flexibilidad de emitir **facturaciones individuales** cuando sea necesario.
 
 ## Requisitos
 
@@ -35,27 +39,11 @@ Enumeren los requisitos en formato de historias de usuarios. Piensen que tipos d
 
 ## Arquitectura de software
 
-¿Será esta una aplicación web / de escritorio / móvil *(todas o algún otro tipo)*? ¿Se ajustaría a la arquitectura de software Cliente-Servidor? ¿Qué lenguajes de programación, frameworks, bases de datos,... se utilizarán para desarrollar e implementar el software?
+La solución será una **Aplicación Web**, diseñada bajo una arquitectura **Cliente-Servidor**.
+
+* El **Servidor (backend)** centralizará toda la lógica de negocio y el acceso a datos. El **Cliente (frontend)** será la interfaz de usuario renderizada en el navegador web del usuario.
+* Se utilizará el lenguaje **Java** con el framework Spring Boot.
+* Se empleará una **Base de Datos** en PostgreSQL para garantizar la integridad y persistencia de los datos.
 
 
 
-## Requerimientos funcionales
-
-### Gestión de cuentas
-El sistema deberá permitir la gestión de cuentas, deberá contar con:
-* Alta de cuentas
-* Baja de cuentas
-* Modificación de cuentas
-
-Existe una cuenta por cliente, en donde se asocian los servicios del mismo. Una cuenta tiene condición de IVA y en base a esta se realiza la facturación correspondiente.
-Es importante el estado de la cuenta, teniendo en cuenta si esta adeuda algún servicio.
-
-### Gestión de servicios
-Para la gestión de servicios, el sistema debe contar con un ABM de servicios. Agregar precios. Servicio clásico, servicio Premium.
-
-Debe permitir suspender o renaudar el servicio dependiendo del estado de la cuenta, si esta adeuda más de ...?
-
-### Facturación
-El sistema deberá permitir la facturación de servicios de cada cuenta según su condición de IVA. 
-Deberá tener módulos de facturación masiva como facturación individual.
-También debe facturar individualmente
