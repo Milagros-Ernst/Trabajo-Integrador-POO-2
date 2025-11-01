@@ -1,6 +1,3 @@
-un plan tentativo de las historias de usuario que se entregarán en
-cada iteración (son 2) de acuerdo con las pautas tratadas en planificación de
-proyectos.
 
 # Roadmap
 Plan tentativo de historias de usuario que se entregarán en cada iteración
