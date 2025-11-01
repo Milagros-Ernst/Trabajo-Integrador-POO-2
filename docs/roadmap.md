@@ -17,4 +17,6 @@ Las historias de Usuario que se entregarán en la iteración 1 son:
 
 ## Iteración 2
 Las historias de Usuario que se entregarán en la iteración 2 son:
-
+* HU 05 - Modificación de servicio
+* HU 06 - Baja lógica de servicio
+* HU 15 - 
