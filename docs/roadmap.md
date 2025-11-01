@@ -10,13 +10,17 @@ Las historias de Usuario que se entregarán en la iteración 1 son:
 * HU 01 - Alta Cliente
 * HU 03 - Asignar servicios a clientes
 * HU 04 - Alta de servicio
-* HU 09 - Facturación masiva manual
-* HU 10 - Facturación individual
-* HU 14 - Anulación de factura
+* HU 07 - Facturación masiva manual
+* HU 08 - Facturación individual
+* HU 11 - Anulación de factura
 * HU 02 - Modificar cliente
 
 ## Iteración 2
 Las historias de Usuario que se entregarán en la iteración 2 son:
 * HU 05 - Modificación de servicio
 * HU 06 - Baja lógica de servicio
-* HU 15 - 
+* HU 12 - Registrar pago total
+* HU 13 - Registrar pago parcial
+* HU 09 - Ver estado de cuenta del cliente
+* HU 10 - Emisión de recibos de pagos
+* HU 14 - Informe de historial de facturación masiva
