@@ -8,7 +8,6 @@ Criterios de aceptación
 - Campos obligatorios: razon social, nombre, CUIT, DNI, email, telefono, domicilio, condicion IVA, estado de cuenta.
 - El sistema debe validar que el CUIT y DNI no este repetido.
 - La cuenta se crea asociado a un cliente.
-- El sistema valida que el cliente no este registrado previamente.
 
 Notas técnicas
 - La relacion entre cliente y cuenta es 1 a 1.
@@ -170,7 +169,7 @@ Criterios de aceptación
 Notas técnicas
 - Recalcular saldo acumulado del cliente.
 
-## HU-23 — Pagos adelantados
+## HU-14 — Pagos adelantados
 
 Como **administrador** quiero **registrar pagos adelantados** para **generar saldo a favor e imputarlo automáticamente en futuras facturas.**
 
@@ -182,7 +181,7 @@ Criterios de aceptación
 Notas técnicas
 - (ver)
 
-## HU-21 — Pagos con combinación de métodos de pago
+## HU-15 — Pagos con combinación de métodos de pago
 
 Como **administrador** quiero **cargar pagos usando múltiples métodos combinados** para **reflejar la realidad de cobranza.**
 
@@ -192,13 +191,11 @@ Criterios de aceptación
 - Persistir responsable y fecha/hora.
 
 Notas técnicas
-- Entidad Pago con colección MediosDePago.
+- (ver)
 
-## HU-13 — Emisión de recibos de pago
+## HU-16 — Emisión de recibos de pago
 
-Como **administrador**
-quiero **emitir un recibo de pago**
-para **dejar constancia de las facturas y servicios abonados por el cliente.**
+Como **administrador** quiero **emitir un recibo de pago** para **dejar constancia de las facturas y servicios abonados por el cliente.**
 
 Criterios de aceptación
 - El recibo se puede emitir tanto por pagos totales como parciales de una o más facturas.
