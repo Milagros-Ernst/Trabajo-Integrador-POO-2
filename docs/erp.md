@@ -36,177 +36,120 @@ El núcleo funcional del sistema será su motor de facturación, el cual permiti
 ## Requisitos
 
 Los requisitos del sistema enumerados en historias de usuario son los siguientes:
-### Cliente
-#### HU 01 - Alta Cliente
 
-Como **administrdor** quiero **registrar nuevos clientes**
-para **habilitar su cuenta**
+### HU 01 - Alta Cliente
 
-Criterios de aceptación
+#### Descripción
+Como **Administrador** quiero **registrar nuevos clientes** para **habilitar su cuenta.**
+
+#### Criterios de aceptación
 - Campos obligatorios: razon social, nombre, CUIT, DNI, email, telefono, domicilio, condicion IVA, estado de cuenta.
 - El sistema debe validar que el CUIT y DNI no este repetido.
-- La cuenta se crea asociado a un cliente.
--  El sistema valida que el cliente no este registrado previamente.
 
-Notas técnicas
-- La relacion entre cliente y cuenta es 1 a 1.
+### HU 02 - Modificar Cliente
 
-#### HU 02 - Modificar cliente
+#### Descripción
+Como **Administrador** quiero **modificar datos del cliente** para **facturar con datos correctos.**
 
-Como **administrador**
-quiero **modificar datos del cliente**
-para **facturar con datos correctos**
-
-Criterios de aceptación
-- Cambios en la condicion de IVA afecta solo a futuras facturas.
+#### Criterios de aceptación
+-  Cambios en la condicion de IVA afecta solo a futuras facturas.
 - No se puede modificar el DNI o CUIT a uno registrado.
-- Puede cambiar el estado de la cuenta a activa, suspendida o baja.
+- Puede cambiar el estado de la cuenta a activa o inactiva.
 
-#### HU 03 - Baja cliente
+#### Notas técnicas
+El sistema debe validar los permisos del usuario
 
-Como **administrador**
-quiero **cambiar el estado de cuenta del cliente**
-para **no generar mas facturas a su nombre**
+### HU 03 - Asignar servicios a cliente
 
-Criterios de aceptación
-- Filtros por nombre, CUIT/DNI, condición de IVA y estado (Activa, Suspendida, Baja).
-- Los estados de cuentas activas o suspendidas pueden cambiar a baja.
+#### Descripción
+Como **Administrador** quiero **modificar el estado del servicio a un cliente** para **usarlos en la facturación.**
 
-Notas técnicas
-- Actualizacion del estado afecta la logica de facturacion.
-
-#### HU-04 — Asignar servicios a cliente
-
-Como **administrador** quiero **asignar/quitar servicios a un cliente** para **usarlos en la facturación.**
-
-Criterios de aceptación
-- Listar servicios disponibles y los contratados por el cliente.
-- Guardar concepto del servicio e importe.
+#### Criterios de aceptación
+- El sistema lista los servicios disponibles y los contratados por el cliente.
+- Si se da de baja un servicio, se excluye de la facturación.
 - Si el alta del servicio es a mitad de mes, el sistema marca que puede facturarse proporcional.
 
-Notas técnicas
-- Relación cliente–servicios (N:M) con vigencias (fecha desde/hasta).
+#### Notas técnicas
+Relación cliente–servicios (N:M)
 
-### Facturacion
-#### HU 05 - Definir periodo de facturacion
+### HU 04 - Alta de servicio
 
-Como **administrador**
-quiero **seleccionar fechas de inicio y fin**
-para **el periodo mensual a facturar**
+#### Descripción
+Como **Administrador** quiero **crear un nuevo servicio con nombre, descripción, precio y tipo de IVA** para **poder usarlo al momento de generar una factura.**
 
-Criterios de aceptación
-- El periodo debe de ser un mes.
-- La fecha de inicio debe de ser menor a la fecha de fin.
+#### Descripción
+- La opción "Nuevo Servicio" debe estar accesible desde la página principal de "Gestión de Servicios".
+- El formulario debe solicitar: Nombre, Descripción, Precio Unitario y Tipo de IVA (ej. 21%, 10.5%, 0%).
+- Al hacer clic en "Guardar", el sistema debe validar los datos.
+- Si los datos son válidos, el servicio se crea y se redirige a la lista de servicios, mostrando el nuevo ítem.
+- Si los datos no son válidos, se deben mostrar mensajes de error claros junto a los campos correspondientes (ej. "El nombre no puede estar vacío").
 
-#### HU 06 - Facturacion masiva manual
+#### Notas técnicas
+- Se debe usar la anotación Valid en el controlador para disparar la validación del objeto Servicio.
+- La entidad Servicio debe tener las siguientes anotaciones de validación:
+- nombre: NotBlank (no puede ser nulo ni solo espacios en blanco).
+- precioUnitario: NotNull y PositiveOrZero (el precio puede ser 0 o mayor).
+- tipoIva: NotNull (debe seleccionar una opción).
+- El endpoint debe ser POST /servicios, siguiendo la convención de la API.
 
-Como **administrador**
-quiero **iniciar la facturacion masiva**
-para **todas las cuentas activas**
+### HU 05 - Modificación de servicio
+Como **Administrador** quiero **modificar un servicio existente** para **actualizar su precio, descripción o tipo de IVA.**
 
-Criterios de aceptación
+#### Criterios de aceptación
+- La opción "Editar" debe estar disponible en la lista de servicios, junto a cada ítem.
+- Al hacer clic en "Editar", se debe navegar a una página con el formulario de edición, mostrando los datos actuales del servicio.
+- El formulario de edición es el mismo que el de creación, pero con los campos pre-cargados.
+- Al hacer clic en "Guardar", se deben validar los datos y, si son correctos, actualizar el servicio en la base de datos.
+- Tras guardar, se debe redirigir a la lista de servicios donde se verán los cambios reflejados.
+
+#### Notas técnicas
+- El endpoint debe ser PUT /servicios/{id}, siguiendo la convención de la API.
+- Se deben aplicar las mismas anotaciones de validación (NotBlank , PositiveOrZero ) que en la creación del servicio.
+- La página de edición podría reutilizar la misma plantilla HTML que la de "Nuevo Servicio" (ej. actualizarServicio.html basado en actualizarPersona.html).
+
+### HU 06 - Baja lógica de servicio
+
+#### Descripción
+Como **Administrador** quiero **desactivar un servicio obsoleto** para **que no aparezca como opción al facturar, pero sin borrar el historial.**
+
+#### Criterios de aceptación
+- La opción "Desactivar" debe estar disponible en la lista de servicios (en lugar de un borrado físico).
+- Al hacer clic en "Desactivar", el sistema debe solicitar una confirmación (ej. "¡Está seguro?").
+- Si se confirma, el servicio debe marcarse como "inactivo" y ya no debe aparecer en la lista principal de servicios.
+- El servicio desactivado NO debe aparecer en el selector de ítems al crear una nueva factura.
+- La lista de servicios debe tener un filtro o switch para "Mostrar servicios inactivos". (opcional)
+
+#### Notas técnicas
+- Esto implementa una baja lógica (soft delete). Se requiere añadir un campo boolean activo a la entidad Servicio.
+- El endpoint DELETE /servicios/{id} no borrará el registro (DELETE de SQL), sino que ejecutará una actualización (UPDATE) para setear activo = false.
+- Las consultas para listar servicios (para facturar o para la lista principal del ABM) deberán filtrar por WHERE activo = true.
+
+### HU 07 - Facturacion masiva manual
+
+#### Descripción
+Como **Administrador** quiero **iniciar la facturacion masiva** para **todas las cuentas activas.**
+
+#### Criterios de aceptación
 - Solo incluye cuentas Activas.
 - Se registran fecha, vencimiento, cantidad de facturas, periodo facturado y empleado responsable.
+- Debe generar un log a modo de historial de las veces que se realizó una facturación masiva.
+- Debe poder seleccionarse un periodo mensual de facturación o facturar en el instante. Propuesta de llamada
+- En la factura estan detallados todos los conceptos correspondientes.
 
-Notas técnicas
+#### Notas técnicas
 - Queda registrado la facturacion masiva.
 - Mantiene numeración correlativa.
 
-#### HU 07 - Facturacion individual
+### HU 08 - Facturacion individual
 
-Como **administrador**
-quiero **emitir una factura**
-para **un cliente y los servicios contratados**
+#### Descripción
+Como **administrador** quiero **emitir una factura** para **un cliente y los servicios contratados.**
 
-Criterios de aceptación
-- Se debe seleccionar cliente, período y servicios a incluir.
-- Si un servicio comenzó a mitad de mes, calcular proporcional
-- Registrar fecha de emisión, vencimiento, responsable y condición de IVA vigente del cliente al momento de emitir.
-- Facturación unicamente a cuentas Activas.
+#### Criterios de aceptación
 
-Notas técnicas
-- Mantiene numeración correlativa.
 
-#### HU 08 - Detalle de factura
 
-Como **administrador**
-quiero **que el sistema genere los items correspondientes a los servicios**
-para **mostrar en la factura los conceptos y montos facturados**
 
-Criterios de aceptación
-- Cada servicio contratado del cliente es un item del detalle.
-- Si un servicio fue contratado el dia 15 o en adelante, se le cobra un monto proporcional al monto mensual.
-- En los items de descuento los importes son negativos y se deben de justificar el motivo.
-
-Notas técnicas
-- El proporcional se calcula según dias restantes al mes.
-- El descuento se carga manualmente.
-
-#### HU 09 - Registro de facturacion masiva
-
-Como **administrador**
-quiero **registrar cada ejecucion de facturacion masiva**
-para **tener un historial de cada proceso.**
-
-Criterios de aceptación
-- Permitir consultar/filtrar por período o fecha de ejecución.
-- No se puede modificar y eliminar manualmente.
-
-Notas técnicas
-- Interfaz con listado y filtros por fecha o periodo.
-- Las facturaciones masivas se registran automaticamente al presionar el boton de facturar.
-
-#### HU-10 — Ver estado de cuenta del cliente
-
-Como **administrador** quiero **ver el estado de cuenta** para **conocer facturas emitidas, pagadas e impagas.**
-
-Criterios de aceptación
-- Listar facturas por estado: Vigente / Vencida / Anulada / Pagada / Parcialmente pagada.
-- El sistema debe mostrar el saldo actual del cliente, calculado como la suma total de las facturas emitidas no anuladas.
-
-#### HU-11 — Anulación de factura
-Como **administrador**
-quiero **anular una factura emitida mediante una nota de crédito**
-para **revertir completamente la operación y mantener la trazabilidad del proceso.**
-
-Criterios de aceptación
-- Solo se deben poder anular facturas emitidas.
-- Se debe registrar motivo de anulación y responsable.
-- La anulación genera automáticamente una Nota de Crédito total que referencia a la factura original.
-- La factura cambia su estado a Anulada y no puede volver a anularse.
-- La factura anulada deja de considerarse en el saldo del cliente.
-- Se debe poder consultar el vínculo entre la factura anulada y la nota de crédito generada.
-
-### Pagos
-
-#### HU-12 — Registrar Pagos
-Como **administrador**
-quiero **registrar el pago total o parcial de una o más facturas**
-para **mantener actualizado el estado de cuenta del cliente.**
-
-Criterios de aceptación
-- Se debe poder seleccionar el cliente y una o varias facturas pendientes.
-- El sistema debe permitir registrar pago total o parcial sobre cada factura.
-- Se deben registrar los siguientes datos: fecha del pago, importe, método de pago y responsable.
-- Si el pago cubre el total de la factura, esta pasa a Pagada; si no, a Parcialmente pagada.
-- El saldo pendiente de la factura se actualiza automáticamente luego del registro.
-- No se calculan intereses ni recargos por mora.
-
-Notas técnicas
-- Cada pago se almacena en una entidad Pago vinculada a las facturas afectadas.
-
-#### HU-13 — Emisión de recibos
-Como **administrador**
-quiero **emitir un recibo de pago**
-para **dejar constancia de las facturas y servicios abonados por el cliente.**
-
-Criterios de aceptación
-- El recibo debe incluir el número de recibo, cliente, fecha, importe total, detalle de facturas pagadas y métodos de pago utilizados.
-- Se debe poder consultar y descargar el recibo desde el estado de cuenta del cliente.
-- La numeración de recibos debe ser correlativa e independiente de facturas o notas de crédito.
-
-Notas técnicas
-- Cada recibo corresponde a uno o varios pagos efectuados en una misma operación.
 
 ## Arquitectura de software
 
