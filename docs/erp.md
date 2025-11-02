@@ -46,6 +46,7 @@ Como **Administrador** quiero **registrar nuevos clientes** para **habilitar su 
 - Campos obligatorios: razon social, nombre, CUIT, DNI, email, telefono, domicilio, condicion IVA, estado de cuenta.
 - El sistema debe validar que el CUIT y DNI no este repetido.
 
+
 ### HU 02 - Modificar Cliente
 
 #### Descripción
@@ -59,6 +60,7 @@ Como **Administrador** quiero **modificar datos del cliente** para **facturar co
 #### Notas técnicas
 El sistema debe validar los permisos del usuario
 
+
 ### HU 03 - Asignar servicios a cliente
 
 #### Descripción
@@ -71,6 +73,7 @@ Como **Administrador** quiero **modificar el estado del servicio a un cliente** 
 
 #### Notas técnicas
 Relación cliente–servicios (N:M)
+
 
 ### HU 04 - Alta de servicio
 
@@ -92,7 +95,10 @@ Como **Administrador** quiero **crear un nuevo servicio con nombre, descripción
 - tipoIva: NotNull (debe seleccionar una opción).
 - El endpoint debe ser POST /servicios, siguiendo la convención de la API.
 
+
 ### HU 05 - Modificación de servicio
+
+#### Descripción
 Como **Administrador** quiero **modificar un servicio existente** para **actualizar su precio, descripción o tipo de IVA.**
 
 #### Criterios de aceptación
@@ -106,6 +112,7 @@ Como **Administrador** quiero **modificar un servicio existente** para **actuali
 - El endpoint debe ser PUT /servicios/{id}, siguiendo la convención de la API.
 - Se deben aplicar las mismas anotaciones de validación (NotBlank , PositiveOrZero ) que en la creación del servicio.
 - La página de edición podría reutilizar la misma plantilla HTML que la de "Nuevo Servicio" (ej. actualizarServicio.html basado en actualizarPersona.html).
+
 
 ### HU 06 - Baja lógica de servicio
 
@@ -124,6 +131,7 @@ Como **Administrador** quiero **desactivar un servicio obsoleto** para **que no 
 - El endpoint DELETE /servicios/{id} no borrará el registro (DELETE de SQL), sino que ejecutará una actualización (UPDATE) para setear activo = false.
 - Las consultas para listar servicios (para facturar o para la lista principal del ABM) deberán filtrar por WHERE activo = true.
 
+
 ### HU 07 - Facturacion masiva manual
 
 #### Descripción
@@ -133,22 +141,117 @@ Como **Administrador** quiero **iniciar la facturacion masiva** para **todas las
 - Solo incluye cuentas Activas.
 - Se registran fecha, vencimiento, cantidad de facturas, periodo facturado y empleado responsable.
 - Debe generar un log a modo de historial de las veces que se realizó una facturación masiva.
-- Debe poder seleccionarse un periodo mensual de facturación o facturar en el instante. Propuesta de llamada
+- Debe poder seleccionarse un periodo mensual de facturación o facturar en el instante.
 - En la factura estan detallados todos los conceptos correspondientes.
 
 #### Notas técnicas
 - Queda registrado la facturacion masiva.
 - Mantiene numeración correlativa.
 
+
 ### HU 08 - Facturacion individual
 
 #### Descripción
-Como **administrador** quiero **emitir una factura** para **un cliente y los servicios contratados.**
+Como **Administrador** quiero **emitir una factura** para **un cliente y los servicios contratados.**
 
 #### Criterios de aceptación
 
+- Se debe seleccionar cliente, período y servicios a incluir.
+- Si un servicio comenzó a mitad de mes, calcular proporcional
+- Registrar fecha de emisión, vencimiento, responsable y condición de IVA vigente del cliente al momento de emitir.
+- Facturación unicamente a cuentas Activas.
+- En la factura estan detallados todos los conceptos correspondientes.
+
+#### Notas técnicas
+- Mantiene numeración correlativa.
 
 
+### HU 09 - Ver estado de cuenta del cliente
+
+#### Descripción
+Como **administrador** quiero **ver el estado de cuenta** para **conocer facturas emitidas, pagadas e impagas.**
+
+#### Criterios de aceptación
+- Listar facturas por estado: Vigente / Vencida / Anulada / Pagada / Parcialmente pagada.
+- El sistema debe mostrar el saldo actual del cliente, calculado como la suma total de las facturas emitidas no anuladas.
+
+
+### HU 10 - Emisión de recibos de pago
+
+#### Descripción
+Como **Administrador** quiero **emitir un recibo de pago** para **dejar constancia de las facturas y servicios abonados por el cliente.**
+
+#### Criterios de aceptación
+- El recibo se puede emitir tanto por pagos totales como parciales de una o más facturas.
+- El recibo debe incluir el número de recibo, cliente, fecha, importe total, detalle de facturas pagadas y métodos de pago utilizados.
+- Si el pago es parcial, el recibo debe mostrar el saldo pendiente de cada factura.
+- Se debe poder consultar y descargar el recibo desde el estado de cuenta del cliente.
+- El sistema debe permitir reimprimir o descargar copias del recibo, manteniendo el mismo número y datos originales.
+
+#### Notas técnicas
+- El número de recibo se genera mediante secuencia correlativa independiente de facturas o notas de crédito.
+
+
+### HU 11 - Anulación de factura
+
+#### Descripción
+Como **Administrador** quiero **anular una factura emitida mediante una nota de crédito** para **revertir completamente la operación y mantener la trazabilidad del proceso.**
+
+#### Criterios de aceptación
+- Solo se deben poder anular facturas emitidas.
+- Se debe registrar motivo de anulación y responsable.
+- La anulación genera automáticamente una Nota de Crédito total que referencia a la factura original.
+- La factura cambia su estado a Anulada y no puede volver a anularse.
+- La factura anulada deja de considerarse en el saldo del cliente.
+- Se debe poder consultar el vínculo entre la factura anulada y la nota de crédito generada.
+
+
+### HU 12 - Registrar pago total
+
+#### Descripción
+Como **Administrador** quiero **registrar el pago total de una o varias facturas** para **mantener el estado de cuenta del cliente actualizado.**
+
+#### Criterios de aceptación
+- Se debe poder seleccionar el cliente y una o varias facturas pendientes.
+- El importe total registrado debe coincidir exactamente con el saldo de las facturas seleccionadas.
+- Los datos obligatorios son: fecha del pago, importe total, método de pago y responsable.
+- Una vez que se registra el pago las facturas cambian de estado a Pagada.
+- El sistema debe impedir registrar un pago total si alguna de las facturas seleccionadas ya se encuentra Pagada o Anulada.
+
+#### Notas técnicas
+- Entidad Pago con relación 1:1 a Factura.
+
+
+### HU 13 - Registrar pago parcial
+
+#### Descripción
+Como **Administrador** quiero **registrar pagos parciales sobre una o varias facturas** para **reflejar el saldo pendiente real y mantener actualizado el estado de cuenta del cliente.**
+
+#### Criterios de aceptación
+- Se debe poder seleccionar el cliente y una o más facturas impagas o parcialmente pagadas.
+- El sistema debe permitir ingresar un importe menor al saldo pendiente de cada factura.
+- Se registran los datos obligatorios: fecha, importe abonado, método de pago, responsable y observaciones (opcional).
+- El saldo pendiente de cada factura se actualiza automáticamente.
+- Si el saldo llega a cero, la factura pasa a estado Pagada; si no, permanece Parcialmente pagada.
+- No se calculan intereses ni recargos por mora.
+- Los pagos parciales pueden realizarse en diferentes fechas y con distintos métodos de pago.
+
+#### Notas técnicas
+- Recalcular saldo acumulado del cliente.
+
+
+### HU 14 - Informe de historial de facturacion masiva
+
+#### Descripción
+Como **Administrador** quiero **ver las facturas afectadas por la facturación masiva** para **saber a quienes y qué se facturó.**
+
+#### Criterios de aceptación
+- El sistema permite consultar/filtrar por período o fecha de ejecución.
+- Las facturas afectadas se incorporan al historial automáticamente al facturar.
+
+#### Notas técnicas
+- Interfaz con listado y filtros por fecha o periodo.
+- Las facturaciones masivas se registran automaticamente en el historial al presionar el boton de facturar.
 
 
 ## Arquitectura de software
