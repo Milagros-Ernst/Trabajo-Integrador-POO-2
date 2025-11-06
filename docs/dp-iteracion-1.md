@@ -1,10 +1,10 @@
 # Trabajo en equipo
 Para la planificación y ejecución de esta primera iteración, el equipo distribuyó las responsabilidades de la siguiente manera: 
-* Ernst Milagros Shaiel: Desarrollo de módulo de gestión de Servicios
+* Ernst Milagros Shaiel: Desarrollo de las historias de usuario relacionadas con la gestión de Servicios
 * Maidana Julio Alberto: -Sin definir todavia-
-* Menacho Natalia Agustina: Desarrollo del módulo de Facturación Masiva y Facturación individual
+* Menacho Natalia Agustina: Desarrollo de las historias de usuario relacionadas con la Facturación Masiva y Facturación individual
 * Roko María Guillermina: Creación de Wireframes
-* Verón Juan Manuel: Desarrollo del módilo de gestión de Clientes
+* Verón Juan Manuel: Desarrollo de las historias de usuario relacionadas con la gestión de Clientes
 
 # Diseño Orientado a Objetos
 diagrama de clases 
