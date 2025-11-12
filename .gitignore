@@ -1,0 +1,28 @@
+# Maven
+target/
+
+# archivos generados por Maven
+*.class
+*.log
+.classpath
+.project
+.settings/
+
+# IDEs
+.idea/
+*.iml
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# entorno de desarrollo
+.env
+
+# artefactos de build
+*.jar
+*.war
+
+# si se agregan frontend tools
+node_modules/
