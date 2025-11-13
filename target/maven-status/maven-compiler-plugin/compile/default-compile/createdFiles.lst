@@ -1,1 +1,11 @@
 integrador\programa\Application.class
+integrador\programa\repositorios\DetalleFacturaRepositorio.class
+integrador\programa\servicios\FacturaServicio.class
+integrador\programa\modelo\TipoComprobante.class
+integrador\programa\controladores\FacturaControlador.class
+integrador\programa\modelo\Factura.class
+integrador\programa\repositorios\FacturaRepositorio.class
+integrador\programa\repositorios\b.class
+integrador\programa\modelo\DetalleFactura.class
+integrador\programa\controladores\hola.class
+integrador\programa\modelo\EstadoFactura.class
