@@ -8,6 +8,8 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
+import integrador.programa.modelo.enumeradores.EstadoFactura;
+import integrador.programa.modelo.enumeradores.TipoComprobante;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -61,7 +63,7 @@ public class Factura {
 
     public void agregarDetalle(DetalleFactura detalle) {
         if (detalle != null) {
-            detalle.setFactura(this);
+            // detalle.setFactura(this);
             if (!this.detalles.contains(detalle)) {
                 this.detalles.add(detalle);
             }
@@ -71,7 +73,7 @@ public class Factura {
     public void removerDetalle(DetalleFactura detalle) {
         if (detalle != null) {
             this.detalles.remove(detalle);
-            detalle.setFactura(null);
+            // detalle.setFactura(null);
         }
     }
 
