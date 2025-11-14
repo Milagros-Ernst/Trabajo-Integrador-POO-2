@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes - FlorecillaService</title>
+</head>
+
+<style>
+    /* --- Reset y Configuración Global --- */
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    /* --- Estructura principal (Layout) --- */
+    body {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        min-height: 100vh;
+    }
+
+    /* --- 1. Header --- */
+    header {
+        display: flex;
+        align-items: center;
+        padding: 16px 24px;
+        background-color: #ffffff;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    header img {
+        height: 40px;
+        width: 40px;
+        margin-right: 12px;
+    }
+
+    /* --- TÍTULO DEL HEADER --- */
+    header h1 {
+        font-size: 24px;
+        margin: 0;
+        color: #000; /* Color negro para " / Gestión de Clientes" */
+        font-weight: 600;
+    }
+
+    .logo-text {
+        color: #8D11B8; /* Violeta principal */
+        font-weight: 600;
+        -webkit-text-stroke: 0.5px #E1D27B;
+        text-stroke: 0.5px #E1D27B;
+    }
+
+    /* --- 2. Contenido Principal (Main) --- */
+    main {
+        padding: 24px 40px;
+    }
+
+    /* --- Botón "Atrás" --- */
+    .btn-atras {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #8D11B8;
+        font-weight: 600;
+        margin-bottom: 24px;
+    }
+
+    .btn-atras .icono-img-atras {
+        width: 28px;
+        height: 28px;
+        margin-right: 12px;
+    }
+
+    /* --- Formulario Superior --- */
+    .form-container {
+        background-color: #ffffff;
+        padding: 24px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+    }
+
+
+    .form-section-titles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-bottom: 16px;
+    }
+
+    .form-section-titles h3 {
+        font-size: 13px;
+        color: #555;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin: 0;
+        padding-left: 2px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    .form-group input[type="text"],
+    .form-group select {
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .form-actions-top {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    /* --- Estilos Generales de Botones --- */
+    .btn {
+        padding: 8px 20px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    /* Botón Sólido (Primario) */
+    .btn-primary {
+        background-color: #8D11B8;
+        color: white;
+        border-color: #8D11B8;
+    }
+    .btn-primary:hover {
+        background-color: #700e94;
+        border-color: #700e94;
+    }
+
+    /* Botón Contorno (Secundario) */
+    .btn-secondary {
+        background-color: white;
+        color: #8D11B8;
+        border-color: #8D11B8;
+    }
+    .btn-secondary:hover {
+        background-color: #fdf5ff;
+    }
+
+    /* --- Tabla Clientes Registrados --- */
+    .table-container {
+        margin-top: 32px;
+    }
+
+    .table-title {
+        background-color: rgba(253, 216, 53, 0.2);
+        padding: 14px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px 8px 0 0;
+        border: 1px solid #eee;
+        border-bottom: none;
+    }
+
+    .table-wrapper {
+        max-height: 450px; /* Altura para el scroll */
+        overflow-y: auto;
+        border: 1px solid #eee;
+        border-top: none;
+        background-color: #ffffff;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead th {
+        background-color: rgba(253, 216, 53, 0.04);
+        padding: 12px 20px;
+        text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #555;
+        position: sticky;
+        top: 0;
+    }
+
+    tbody td {
+        padding: 14px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+    }
+
+    /* Estilo para la fila de "tabla vacía" */
+    .empty-row td {
+        text-align: center;
+        color: #888;
+        padding: 32px 0;
+    }
+
+    .action-link {
+        color: #007bff; /* Azul estándar para links de acción */
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .action-link:hover {
+        text-decoration: underline;
+    }
+
+    /* --- Botones ABM (Fondo) --- */
+    .abm-actions {
+        text-align: center;
+        padding: 24px 0;
+        margin-top: 16px;
+    }
+
+    .abm-actions .btn {
+        margin: 0 8px;
+        padding: 10px 24px;
+        font-size: 16px;
+        min-width: 140px;
+    }
+
+    .btn-alta {
+        background-color: #9CCC65;
+        color: white;
+        border-color: #9CCC65;
+    }
+    .btn-alta:hover {
+        background-color: #8bc34a;
+        border-color: #8bc34a;
+    }
+
+    .btn-baja {
+        background-color: #E57373;
+        color: white;
+        border-color: #E57373;
+    }
+    .btn-baja:hover {
+        background-color: #ef5350;
+        border-color: #ef5350;
+    }
+</style>
+
+<body>
+
+<header>
+    <img src="/static/imagen/florLogo 1.png" alt="Logo FlorecillaService">
+    <h1><span class="logo-text">FlorecillaService</span> / Gestión de Clientes</h1>
+</header>
+
+<main>
+
+    <a href="inicio.html" class="btn-atras">
+        <img src="/static/imagen/botonAccion-Atras.png" alt="Atrás" class="icono-img-atras">
+        Atrás
+    </a>
+
+    <div class="form-container">
+        <form>
+            <div class="form-section-titles">
+                <h3>Información personal</h3>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre">
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Nro. Teléfono</label>
+                    <input type="text" id="telefono">
+                </div>
+                <div class="form-group">
+                    <label for="condicion-fiscal">Condición fiscal</label>
+                    <select id="condicion-fiscal">
+                        <option>Seleccione uno</option>
+                        <option>Monotributo</option>
+                        <option>Responsable Inscripto</option>
+                        <option>Consumidor final</option>
+                        <option>Exento</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" id="email">
+                </div>
+                <div class="form-group">
+                    <label for="direccion-fiscal">Dirección fiscal</label>
+                    <input type="text" id="direccion-fiscal">
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo-doc">Tipo de documento</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select id="tipo-doc" style="flex: 1;">
+                            <option>Seleccione uno</option>
+                            <option>DNI</option>
+                            <option>CUIT</option>
+                            <option>CUIL</option>
+                        </select>
+                        <input type="text" id="nro-doc" placeholder="Nro. doc" style="flex: 2;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" id="direccion">
+                </div>
+                <div></div>
+            </div>
+
+            <div class="form-actions-top">
+                <button type="button" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Confirmar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <h2 class="table-title">Clientes registrados</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Tipo Documento</th>
+                    <th>Nro. Documento</th>
+                    <th>Apellido</th>
+                    <th>Nombre</th>
+                    <th>Condición de IVA</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <!-- El <tbody> ahora tiene la lógica de Thymeleaf. el controlador TIENE QUE PASARLE UNA LISTA DE CLIENTES!!!!! -->
+                <tbody>
+                <!--
+                  FILA DINÁMICA:
+                  Se repite (th:each) por cada "cli" en la lista "clientes"
+                -->
+                <tr th:each="cli : ${clientes}">
+                    <td th:text="${cli.tipoDocumento}"></td>
+                    <td th:text="${cli.numeroDocumento}"></td>
+                    <td th:text="${cli.apellido}"></td>
+                    <td th:text="${cli.nombre}"></td>
+                    <td th:text="${cli.condIVA}"></td>
+                    <td>
+                        <a th:href="@{/gestionClientes-detalle/{id}(id=${cli.id})}" class="action-link">Ver más detalles</a>
+                    </td>
+                </tr>
+
+                <tr th:if="${clientes.isEmpty()}" class="empty-row">
+                    <td colspan="6">No hay clientes registrados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="abm-actions">
+        <button type="button" class="btn btn-alta">Alta</button>
+        <button type="button" class="btn btn-baja">Baja</button>
+        <button type="button" class="btn btn-secondary">Modificar</button>
+    </div>
+
+</main>
+
+</body>
+
+
+
+</html>
