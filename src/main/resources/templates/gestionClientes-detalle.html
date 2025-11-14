@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Cliente - FlorecillaService</title>
+
+    <style>
+        /* --- Reset y Configuración Global --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* --- Estructura principal (Layout) --- */
+        body {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            min-height: 100vh;
+        }
+
+        /* --- 1. Header --- */
+        header {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        header img {
+            height: 40px;
+            width: 40px;
+            margin-right: 12px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .logo-text {
+            color: #8D11B8;
+            font-weight: 600;
+            -webkit-text-stroke: 0.5px #E1D27B;
+            text-stroke: 0.5px #E1D27B;
+        }
+
+        /* --- 2. Contenido Principal (Main) --- */
+        main {
+            padding: 24px 40px;
+        }
+
+        /* --- Botón "Atrás" (con imagen) --- */
+        .btn-atras {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #8D11B8;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .btn-atras .icono-img-atras {
+            width: 28px;  /* Tamaño ajustado */
+            height: 28px;
+            margin-right: 12px;
+        }
+
+        /* --- Formulario Superior (Modo Detalle/Lectura) --- */
+        .form-container {
+            background-color: #ffffff;
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .form-section-titles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+
+        .form-section-titles h3 {
+            font-size: 13px;
+            color: #555;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin: 0;
+            padding-left: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            color: #555;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group select {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .form-group input[readonly],
+        .form-group select[disabled] {
+            border-color: transparent;
+            background-color: transparent;
+            color: #333;
+            box-shadow: none;
+            cursor: default;
+            padding-left: 0;
+            padding-right: 0;
+
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            pointer-events: none;
+        }
+
+
+        .form-group select[disabled] {
+            opacity: 1;
+            color: #333;
+        }
+
+        .form-inputs-active input,
+        .form-inputs-active select {
+            border-color: #ccc !important;
+            background-color: #ffffff !important;
+            cursor: auto !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
+
+        .form-inputs-active select {
+            -webkit-appearance: revert !important;
+            -moz-appearance: revert !important;
+            appearance: revert !important;
+            pointer-events: auto !important;
+        }
+
+        .form-actions-top {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+
+            display: none;
+        }
+
+        /* --- Estilos Generales de Botones --- */
+        .btn {
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        /* Botón Sólido (Primario) */
+        .btn-primary {
+            background-color: #8D11B8;
+            color: white;
+            border-color: #8D11B8;
+        }
+        .btn-primary:hover {
+            background-color: #700e94;
+            border-color: #700e94;
+        }
+
+        /* Botón Contorno (Secundario) */
+        .btn-secondary {
+            background-color: white;
+            color: #8D11B8;
+            border-color: #8D11B8;
+        }
+        .btn-secondary:hover {
+            background-color: #fdf5ff;
+        }
+
+        /* Botón Amarillo (Asignar) */
+        .btn-warning {
+            background-color: #FDD835;
+            color: #333;
+            border-color: #FDD835;
+        }
+        .btn-warning:hover {
+            background-color: #fbc02d;
+            border-color: #fbc02d;
+        }
+
+        /* --- Contenedores de Tablas --- */
+        .table-container {
+            margin-top: 24px;
+            position: relative;
+        }
+
+        .btn-wrapper-right {
+            text-align: right;
+            margin-top: 24px;
+        }
+
+        .table-title {
+            background-color: rgba(253, 216, 53, 0.2);
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid #eee;
+            border-bottom: none;
+        }
+
+        .table-wrapper {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-top: none;
+            background-color: #ffffff;
+        }
+
+        .table-wrapper-bottom {
+            border-radius: 0 0 8px 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background-color: rgba(253, 216, 53, 0.04);
+            padding: 12px 20px;
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #555;
+            position: sticky;
+            top: 0;
+        }
+
+        thead th:last-child, tbody td:last-child {
+            text-align: right;
+        }
+
+        tbody td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Estilo para la fila de "tabla vacía" */
+        tr.empty-row td {
+            text-align: center !important;
+            color: #888;
+            padding: 32px 0;
+        }
+
+        .action-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 16px;
+        }
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        .action-link-danger {
+            color: #E57373; /* Rojo pastel */
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 16px;
+        }
+        .action-link-danger:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Botones ABM (Fondo) --- */
+        .abm-actions {
+            text-align: center;
+            padding: 24px 0;
+            margin-top: 16px;
+        }
+
+        .abm-actions .btn {
+            margin: 0 8px;
+            padding: 10px 24px;
+            font-size: 16px;
+            min-width: 140px; /* Tamaño uniforme */
+        }
+
+        .btn-alta {
+            background-color: #9CCC65;
+            color: white;
+            border-color: #9CCC65;
+        }
+        .btn-alta:hover {
+            background-color: #8bc34a;
+            border-color: #8bc34a;
+        }
+
+        .btn-baja {
+            background-color: #E57373;
+            color: white;
+            border-color: #E57373;
+        }
+        .btn-baja:hover {
+            background-color: #ef5350;
+            border-color: #ef5350;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="/static/imagen/florLogo 1.png" alt="Logo FlorecillaService">
+    <h1><span class="logo-text">FlorecillaService</span> / Gestión de Clientes / Detalle</h1>
+</header>
+
+<main>
+
+    <a href="gestionClientes-inicio.html" class="btn-atras">
+        <img src="/static/imagen/botonAccion-Atras.png" alt="Atrás" class="icono-img-atras">
+        Atrás
+    </a>
+
+    <div class="form-container">
+        <!-- PASO 1: Definir el "objeto" para este formulario -->
+        <!-- Asumimos que tu controlador pasa un objeto llamado "cliente" -->
+        <form id="form-cliente" th:object="${cliente}">
+            <div class="form-section-titles">
+                <h3>Información personal</h3>
+            </div>
+
+            <div class="form-grid" id="form-inputs-container">
+
+                <!-- Campo Nombre -->
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" th:field="*{nombre}" readonly>
+                </div>
+
+                <!-- Campo Teléfono -->
+                <div class="form-group">
+                    <label for="telefono">Nro. Teléfono</label>
+                    <input type="text" th:field="*{telefono}" readonly>
+                </div>
+
+                <!-- Campo Condición Fiscal -->
+                <div class="form-group">
+                    <label for="condicion-fiscal">Condición fiscal</label>
+
+                    <select th:field="*{condIVA}" disabled>
+                        <option value="">Seleccione uno</option>
+                        <option value="MONOTRIBUTO">Monotributo</option>
+                        <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
+                        <option value="CONSUMIDOR_FINAL">Consumidor final</option>
+                        <option value="EXENTO">Exento</option>
+                    </select>
+                </div>
+
+                <!-- Campo Apellido -->
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" th:field="*{apellido}" readonly>
+                </div>
+
+                <!-- Campo Email (Corregido de estático a dinámico) -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <!-- Tu atributo es "mail" -->
+                    <input type="text" th:field="*{mail}" readonly>
+                </div>
+
+                <!-- Campo Dirección Fiscal (Corregido el atributo) -->
+                <div class="form-group">
+                    <label for="direccion-fiscal">Dirección fiscal</label>
+                    <!-- Tu atributo es "direccionFiscal" -->
+                    <input type="text" th:field="*{direccionFiscal}" readonly>
+                </div>
+
+                <!-- Campo Tipo y Nro de Documento (Corregido) -->
+                <div class="form-group">
+                    <label for="tipo-doc">Tipo de documento</label>
+                    <div style="display: flex; gap: 8px;">
+                        <!-- th:field se encarga de seleccionar el valor de "tipoDocumento" -->
+                        <select th:field="*{tipoDocumento}" style="flex: 1;" disabled>
+                            <option value="">Seleccione uno</option>
+                            <option value="DNI">DNI</option>
+                            <option value="CUIT">CUIT</option>
+                            <option value="CUIL">CUIL</option>
+                        </select>
+                        <!-- th:field se encarga del valor de "numeroDocumento" -->
+                        <input type="text" th:field="*{numeroDocumento}" placeholder="Nro. doc" style="flex: 2;" readonly>
+                    </div>
+                </div>
+
+                <!-- Campo Dirección -->
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" th:field="*{direccion}" readonly>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+            <div class="form-actions-top" id="form-top-actions">
+                <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Confirmar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLA DINAMICA, recibe una lista servicios -->
+    <div class="table-container">
+        <h2 class="table-title">Servicios contratados</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre de Servicio</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Fila dinámica -->
+                <tr th:if="${!servicios.isEmpty()}" th:each="servicio : ${servicios}">
+                    <td th:text="${servicio.nombre}"></td>
+                    <td th:text="${servicio.descripcion}"></td>
+                    <td th:text="${servicio.estado}"></td>
+                    <td>
+                        <a href="#" class="action-link">Ver facturas</a>
+                        <a href="#" class="action-link-danger">Baja servicio</a>
+                    </td>
+                </tr>
+                <!-- Fila para tabla vacía -->
+                <tr th:if="${servicios.isEmpty()}" class="empty-row">
+                    <td colspan="4">No hay servicios contratados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="btn-wrapper-right">
+        <a href="gestionClientes-asignServ.html">
+            <button type="button" class="btn btn-warning">Asignar Servicios</button>
+        </a>
+    </div>
+
+    <!-- TABLA dinámica, recibe una lista de clientes llamada subClientes -->
+    <div class="table-container">
+        <h2 class="table-title">Clientes registrados</h2>
+        <div class="table-wrapper table-wrapper-bottom">
+            <table>
+                <thead>
+                <tr>
+                    <th>Tipo Documento</th>
+                    <th>Nro. Documento</th>
+                    <th>Apellido</th>
+                    <th>Nombre</th>
+                    <th>Condición de IVA</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Fila dinámica -->
+                <tr th:if="${!subClientes.isEmpty()}" th:each="cli : ${subClientes}">
+                    <td th:text="${cli.tipoDocumento}"></td>
+                    <td th:text="${cli.numeroDocumento}"></td>
+                    <td th:text="${cli.apellido}"></td>
+                    <td th:text="${cli.nombre}"></td>
+                    <td th:text="${cli.condIVA}"></td>
+                    <td>
+                        <a th:href="@{/gestionClientes-detalle/{id}(id=${cli.id})}" class="action-link">Ver más detalles</a>
+                    </td>
+                </tr>
+                <!-- Fila para tabla vacía -->
+                <tr th:if="${subClientes.isEmpty()}" class="empty-row">
+                    <td colspan="6">No hay clientes registrados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="abm-actions" id="abm-bottom-actions">
+        <button type="button" class="btn btn-alta">Alta</button>
+        <button type="button" class="btn btn-baja">Baja</button>
+        <button type="button" class="btn btn-secondary" id="btn-modificar-form">Modificar</button>
+    </div>
+
+</main>
+<!--CODIGO DE JS, logica para el boton modificar (habilitación de campos para modificar) -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- 1. Encontrar los elementos ---
+        const btnModificar = document.getElementById('btn-modificar-form');
+        const btnCancelar = document.getElementById('btn-cancelar-edicion');
+
+        const topActions = document.getElementById('form-top-actions');
+        const bottomActions = document.getElementById('abm-bottom-actions');
+
+        const formContainer = document.getElementById('form-inputs-container');
+        const formFields = formContainer.querySelectorAll('input, select');
+
+        // --- 2. Guardar los valores originales ---
+        const originalValues = new Map();
+        formFields.forEach(field => {
+            // Guarda el valor (para input) o el selectedIndex (para select)
+            if (field.tagName === 'SELECT') {
+                originalValues.set(field, field.selectedIndex);
+            } else {
+                originalValues.set(field, field.value);
+            }
+        });
+
+        // --- 3. Función para HABILITAR el formulario ---
+        function habilitarFormulario() {
+            formFields.forEach(field => {
+                field.readOnly = false;
+                field.disabled = false; // Habilita 'select' e 'input'
+            });
+
+            formContainer.classList.add('form-inputs-active');
+            topActions.style.display = 'flex';
+            bottomActions.style.display = 'none';
+        }
+
+        // --- 4. Función para DESHABILITAR y Restaurar ---
+        function deshabilitarFormulario() {
+            formFields.forEach(field => {
+                // Restaurar valor original
+                if (field.tagName === 'SELECT') {
+                    field.selectedIndex = originalValues.get(field);
+                } else {
+                    field.value = originalValues.get(field);
+                }
+
+                // Bloquear campos
+                field.readOnly = true;
+                if (field.tagName === 'SELECT') {
+                    field.disabled = true;
+                }
+            });
+
+            formContainer.classList.remove('form-inputs-active');
+            topActions.style.display = 'none';
+            bottomActions.style.display = 'block'; // 'block' para centrarlo
+        }
+
+        // --- 5. Asignar los eventos ---
+        if (btnModificar) {
+            btnModificar.addEventListener('click', habilitarFormulario);
+        }
+
+        if (btnCancelar) {
+            btnCancelar.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevenir envío de formulario
+                deshabilitarFormulario();
+            });
+        }
+
+        // --- 6. Estado inicial (Bloquear Selects) ---
+        formContainer.querySelectorAll('select').forEach(select => {
+            select.disabled = true;
+        });
+    });
+</script>
+
+</body>
+</html>
