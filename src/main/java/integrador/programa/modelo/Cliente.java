@@ -38,14 +38,6 @@ public class Cliente extends Cuenta {
     @Column(name = "direccion_fiscal", nullable = false, length = 150)
     private String direccionFiscal;
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @OneToOne // O @ManyToOne si un cliente puede tener varias cuentas
-    @JoinColumn(name = "id_cuenta")
-    private Cuenta cuenta;
-    
     public Cliente() {
         super();
     }

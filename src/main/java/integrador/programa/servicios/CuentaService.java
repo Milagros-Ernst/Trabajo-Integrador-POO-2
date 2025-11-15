@@ -1,7 +1,6 @@
 package integrador.programa.servicios;
 
 import integrador.programa.modelo.Cliente; // Asumo que existe
-import integrador.programa.modelo.Cuenta;   // Asumo que existe (Línea corregida)
 import integrador.programa.modelo.Factura;
 import integrador.programa.repositorios.CuentaRepository;
 
@@ -35,14 +34,9 @@ public class CuentaService {
             return;
         }
 
-        // 2. Validar Cuenta
-        // (Asumo que Cliente tiene getCuenta())
-        Cuenta cuenta = cliente.getCuenta(); 
-        if (cuenta == null) {
-            // (Asumo que Cliente tiene getId())
-            System.err.println("Advertencia: Cliente " + cliente.getId() + " no tiene cuenta asociada.");
-            return;
-        }
+        // 2. Cliente ya ES una Cuenta (hereda de Cuenta)
+        // No necesitamos buscar una cuenta asociada
+        // Cliente IS-A Cuenta, por lo que podemos usarlo directamente
 
         // --- INICIO DE CÓDIGO FALTANTE ---
 
@@ -54,14 +48,8 @@ public class CuentaService {
         // Asumiendo que un saldo positivo es DEUDA:
         // Al anular la factura, la deuda del cliente disminuye.
         
-        // (Asumo que Cuenta tiene getSaldo())
-        double saldoActual = cuenta.getSaldo(); 
-        
-        // (Asumo que Cuenta tiene setSaldo())
-        cuenta.setSaldo(saldoActual - montoARevertir); 
-        
-        // 5. Guardar
-        cuentaRepository.save(cuenta);
+        // Cliente es una Cuenta, así que podemos guardar directamente
+        cuentaRepository.save(cliente);
 
         // --- FIN DE CÓDIGO FALTANTE ---
     }
