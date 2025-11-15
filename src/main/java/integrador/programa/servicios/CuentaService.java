@@ -34,24 +34,17 @@ public class CuentaService {
             return;
         }
 
-        // 2. Cliente ya ES una Cuenta (hereda de Cuenta)
-        // No necesitamos buscar una cuenta asociada
-        // Cliente IS-A Cuenta, por lo que podemos usarlo directamente
-
-        // --- INICIO DE CÓDIGO FALTANTE ---
-
-        // 3. Obtener Monto
-        // (Asumo que Factura tiene getPrecioTotal() gracias a Lombok)
+        // acá había código que tomaba que cliente no es cuenta, pero
+        // cliente ES cuenta entonces esa parte medio que causaba conflictos wa
         double montoARevertir = factura.getPrecioTotal(); 
         
         // 4. Revertir Saldo
         // Asumiendo que un saldo positivo es DEUDA:
         // Al anular la factura, la deuda del cliente disminuye.
         
-        // Cliente es una Cuenta, así que podemos guardar directamente
+        // como ya dije cliente es una Cuenta, así que podríamos guardar directamente
         cuentaRepository.save(cliente);
 
-        // --- FIN DE CÓDIGO FALTANTE ---
     }
     
     // ... otros métodos de CuentaService
