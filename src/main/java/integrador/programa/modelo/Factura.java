@@ -59,7 +59,8 @@ public class Factura {
 
     @NotNull
     private Month periodo;
-
+    // tengo que agregarle esto como atributo al diagrama así
+    // es cohesivo con la pantalla
     
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DetalleFactura> detalles = new ArrayList<>();
