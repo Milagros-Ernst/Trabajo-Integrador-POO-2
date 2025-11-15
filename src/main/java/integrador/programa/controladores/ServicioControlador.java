@@ -1,76 +1,76 @@
 package integrador.programa.controladores;
 
 import integrador.programa.modelo.Servicio;
-import integrador.programa.modelo.enumeradores.TipoIVA;
-//import integrador.programa.servicios.ServicioServicio; // Servicio de negocio para Servicio
-
+import integrador.programa.servicios.ServicioServicio;
 import jakarta.validation.Valid;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller                                  // Controlador MVC (devuelve vistas HTML)
-@RequestMapping("/servicios")                // Ruta base para la Gestión de Servicios
+@RestController
+@RequestMapping("servicios")
 public class ServicioControlador {
 
-    /*private final ServicioServicio servicioServicio;
+    private final ServicioServicio servicioServicio;
 
-    // Inyección del servicio por constructor
     public ServicioControlador(ServicioServicio servicioServicio) {
         this.servicioServicio = servicioServicio;
-    }*/
-
-    // GET /servicios Muestra la pantalla "Gestión de Servicios"
-    @GetMapping
-    public String mostrarGestionServicios(Model model) {
-
-        // 1) Obtenemos todos los servicios para la tabla
-        //  List<Servicio> servicios = servicioServicio.listarTodos();
-
-        // 2) Creamos un objeto vacío para vincular al formulario de alta
-        Servicio servicioForm = new Servicio();
-
-        // 3) Agregamos al modelo: el formulario, la lista de servicios, los tipos de IVA para el combo
-        model.addAttribute("servicioForm", servicioForm);
-       // model.addAttribute("listaServicios", servicios);
-        model.addAttribute("tiposIva", TipoIVA.values());
-
-        // 4) Nombre de la vista (ej: gestion-servicios.html)
-        return "gestion-servicios";
     }
 
-    // POST /servicios  (Alta de Servicio)
-    @PostMapping
-    public String guardarServicio(
-            @Valid
-            @ModelAttribute("servicioForm") Servicio servicioForm, // Datos del form
-            BindingResult bindingResult,                           // Resultado validaciones
-            Model model) {
+    // obtener todos los servicios
+    @GetMapping
+    public ResponseEntity<List<Servicio>> listarTodos() {
+        List<Servicio> servicios = servicioServicio.listarTodos();
+        return ResponseEntity.ok(servicios);
+    }
 
-        // 1) Si hay errores de validación...
-        if (bindingResult.hasErrors()) {
-
-            // Volvemos a cargar la lista y los tipos de IVA
-            // para que la vista se muestre completa
-          //  List<Servicio> servicios = servicioServicio.listarTodos();
-          //  model.addAttribute("listaServicios", servicios);
-            model.addAttribute("tiposIva", TipoIVA.values());
-
-            // Se queda en la misma vista para mostrar errores
-            return "gestion-servicios";
+    // obtener un servicio por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Servicio> obtenerPorId(@PathVariable String id) {
+        try {
+            Servicio servicio = servicioServicio.buscarPorId(id);
+            return ResponseEntity.ok(servicio);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
         }
+    }
 
-        // 2) Si no hay errores, se guarda el servicio
-       // servicioServicio.crearServicio(servicioForm);
+    // crear un nuevo servicio  (HU 04 - Alta de Servicio)
+    @PostMapping
+    public ResponseEntity<Servicio> crear(@Valid @RequestBody Servicio servicio) {
+        try {
+            Servicio nuevoServicio = servicioServicio.agregarServicio(servicio);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoServicio);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
-        // 3) Redirige a GET /servicios para evitar doble envío del formulario
-        return "redirect:/servicios";
+    // actualizar servicio por ID
+    @PutMapping("/{id}")
+    public ResponseEntity<Servicio> actualizar(
+            @PathVariable String id,
+            @Valid @RequestBody Servicio servicioActualizado) {
+        try {
+            Servicio actualizado = servicioServicio.actualizarServicio(id, servicioActualizado);
+            return ResponseEntity.ok(actualizado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // eliminar servicio
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable String id) {
+        try {
+            servicioServicio.eliminarServicio(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
