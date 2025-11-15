@@ -4,14 +4,11 @@ import integrador.programa.modelo.enumeradores.EstadoCuenta;
 import integrador.programa.modelo.enumeradores.TipoDocumento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "Cuenta")
-@Getter @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Cuenta {
 
@@ -19,7 +16,6 @@ public abstract class Cuenta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_cuenta")
     private Long idCuenta;
-    
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
@@ -112,7 +108,4 @@ public abstract class Cuenta {
                 ", estadoCuenta=" + estadoCuenta +
                 '}';
     }
-    
-    @Column(nullable = false)
-    private double saldo = 0.0;
 }
