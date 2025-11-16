@@ -1,75 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<link rel="stylesheet" href="/static/css/styles.css">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asignar Servicios - FlorecillaService</title>
-
-
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 
 <header>
-    <img src="/static/imagen/florLogo 1.png" alt="Logo FlorecillaService">
-    <!-- TÍTULO ACTUALIZADO -->
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
     <h1><span class="logo-text">FlorecillaService</span> / Gestión de Clientes / Asignar Servicios</h1>
 </header>
 
 <main>
 
-    <!-- BOTÓN "ATRÁS" ACTUALIZADO -->
-    <!-- Debe volver a la pantalla de detalle, no a la de inicio -->
-    <a href="detalle_cliente.html" class="btn-atras">
-        <img src="/static/imagen/botonAccion-Atras.png" alt="Atrás" class="icono-img-atras">
+    <a th:href="@{/clientes/{id}(id=${cliente.id})}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
         Atrás
     </a>
 
-    <!-- SECCIÓN DE INFORMACIÓN DEL CLIENTE (SIEMPRE BLOQUEADA) -->
     <div class="form-container">
         <form id="form-cliente" th:object="${cliente}">
             <div class="form-section-titles">
                 <h3>Información personal</h3>
             </div>
             <div class="form-grid" id="form-inputs-container">
-                <!-- Columna 1 -->
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
                     <input type="text" th:field="*{nombre}" readonly>
                 </div>
-                <!-- Columna 2 -->
                 <div class="form-group">
                     <label for="telefono">Nro. Teléfono</label>
                     <input type="text" th:field="*{telefono}" readonly>
                 </div>
-                <!-- Columna 3 -->
                 <div class="form-group">
                     <label for="condicion-fiscal">Condición fiscal</label>
                     <select th:field="*{condIVA}" disabled>
                         <option value="">Seleccione uno</option>
                         <option value="MONOTRIBUTO">Monotributo</option>
-                        <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
+                        <option value="RESPONSABLE_INSCRIPTO">Responsable Inscrito</option>
                         <option value="CONSUMIDOR_FINAL">Consumidor final</option>
                         <option value="EXENTO">Exento</option>
                     </select>
                 </div>
-                <!-- Columna 1 -->
                 <div class="form-group">
                     <label for="apellido">Apellido</label>
                     <input type="text" th:field="*{apellido}" readonly>
                 </div>
-                <!-- Columna 2 -->
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="text" th:field="*{mail}" readonly>
                 </div>
-                <!-- Columna 3 -->
                 <div class="form-group">
                     <label for="direccion-fiscal">Dirección fiscal</label>
                     <input type="text" th:field="*{direccionFiscal}" readonly>
                 </div>
-                <!-- Columna 1 -->
                 <div class="form-group">
                     <label for="tipo-doc">Tipo de documento</label>
                     <div style="display: flex; gap: 8px;">
@@ -82,7 +69,6 @@
                         <input type="text" th:field="*{numeroDocumento}" placeholder="Nro. doc" style="flex: 2;" readonly>
                     </div>
                 </div>
-                <!-- Columna 2 -->
                 <div class="form-group">
                     <label for="direccion">Dirección</label>
                     <input type="text" th:field="*{direccion}" readonly>
@@ -91,11 +77,8 @@
         </form>
     </div>
 
-    <!--
-    ================================================================
-    TABLA 1: SERVICIOS CONTRATADOS (EXISTENTES) - CON LÓGICA THYMELEAF
-    ================================================================
-  -->
+    <!-- TABLA 1 -->
+
     <div class="table-container">
         <h2 class="table-title">Servicios contratados</h2>
         <div class="table-wrapper">
@@ -108,31 +91,19 @@
                     <th>Acciones</th>
                 </tr>
                 </thead>
-                <!--
-                  Lógica de Thymeleaf:
-                  - Asume una lista "serviciosContratados"
-                -->
                 <tbody>
-                <!-- Fila dinámica (th:each) -->
                 <tr th:if="${!serviciosContratados.isEmpty()}" th:each="asig : ${serviciosContratados}">
-                    <!-- Asumo que la lista es de AsignacionServicio y accedemos al servicio -->
                     <td th:text="${asig.servicio.nombre}"></td>
                     <td th:text="${asig.servicio.descripcion}"></td>
                     <td th:text="${asig.estado}"></td>
                     <td>
-                        <!--
-                          El 'id' del cliente se pasa desde el objeto principal '${cliente}'
-                          El 'id' de la asignación se pasa desde el bucle '${asig}'
-                        -->
                         <a th:href="@{/clientes/{clienteId}/facturas(clienteId=${cliente.id})}" class="action-link">Ver facturas</a>
 
-                        <!-- Formulario para dar de baja el servicio (acción POST) -->
                         <form th:action="@{/clientes/{clienteId}/asignaciones/{asigId}/eliminar(clienteId=${cliente.id}, asigId=${asig.id})}" method="post" style="display: inline;">
                             <button type="submit" class="action-link-danger action-link-button">Baja servicio</button>
                         </form>
                     </td>
                 </tr>
-                <!-- Fila para tabla vacía (th:if) -->
                 <tr th:if="${serviciosContratados.isEmpty()}" class="empty-row">
                     <td colspan="4">No hay servicios contratados.</td>
                 </tr>
@@ -141,11 +112,8 @@
         </div>
     </div>
 
-    <!--
-      ================================================================
-      TABLA 2: SERVICIOS DEL SISTEMA CON LÓGICA THYMELEAF - PASAR UNA LISTA "serviciosDisponibles"
-      ================================================================
-    -->
+    <!-- TABLA 2 -->
+
     <div class="table-container">
         <h2 class="table-title">Servicios del sistema</h2>
         <div class="table-wrapper table-wrapper-bottom">
@@ -160,22 +128,14 @@
                 </tr>
                 </thead>
 
-                <!--Asume una lista "serviciosDisponibles"-->
-
                 <tbody>
-                <!-- Fila dinámica (th:each) -->
                 <tr th:if="${!serviciosDisponibles.isEmpty()}" th:each="serv : ${serviciosDisponibles}">
                     <td th:text="${serv.nombre}"></td>
                     <td th:text="${serv.descripcion}"></td>
                     <td th:text="${serv.precio}"></td>
                     <td th:text="${serv.porcentajeIVA}"></td>
                     <td>
-                        <!--
-                          Formulario para "Asignar"
-                          Envía el ID del servicio a asignar al cliente actual
-                        -->
                         <form th:action="@{/clientes/{clienteId}/asignar(clienteId=${cliente.id})}" method="post" style="display: inline;">
-                            <!-- Pasamos el ID del servicio a asignar como un campo oculto -->
                             <input type="hidden" name="servicioId" th:value="${serv.id}" />
                             <button type="submit" class="action-link-success action-link-button">Asignar servicio</button>
                         </form>
@@ -183,7 +143,6 @@
                         <a th:href="@{/servicios/{id}(id=${serv.id})}" class="action-link-info">Gestionar servicio</a>
                     </td>
                 </tr>
-                <!-- Fila para tabla vacía (th:if) -->
                 <tr th:if="${serviciosDisponibles.isEmpty()}" class="empty-row">
                     <td colspan="5">No hay servicios en el sistema para asignar.</td>
                 </tr>
@@ -193,18 +152,15 @@
     </div>
 
     <div class="page-actions-bottom">
-        <!-- AHORA ENVUELTOS EN ENLACES <a> -->
-        <a href="gestionClientes-detalle.html">
+        <a th:href="@{/clientes/{id}(id=${cliente.id})}">
             <button type="button" class="btn btn-secondary">Cancelar</button>
         </a>
-        <a href="gestionClientes-detalle.html">
-            <!-- Cambiado type="submit" a "button" ya que es un enlace de prototipo -->
+        <a th:href="@{/clientes/{id}(id=${cliente.id})}">
             <button type="button" class="btn btn-primary">Confirmar</button>
         </a>
     </div>
 
 </main>
-
 
 </body>
 </html>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<link rel="stylesheet" href="/static/css/styles.css">
+<link rel="stylesheet" th:href="@{/css/styles.css}">
 
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
 <body class="pagina-inicio">
 
 <header>
-    <img src="/static/imagen/florLogo 1.png" alt="Logo FlorecillaService">
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
     <h1>FlorecillaService</h1>
 </header>
 
@@ -20,15 +20,15 @@
 
     <nav>
         <ul>
-            <li><a href="gestionClientes-inicio.html">Clientes</a></li>
-            <li><a href="gestionServicio-ABM.html">Servicios</a></li>
-            <li><a href="facturacion-inicio.html">Facturación</a></li>
+            <li><a th:href="@{/clientes}">Clientes</a></li>
+            <li><a th:href="@{/servicios}">Servicios</a></li>
+            <li><a th:href="@{/facturacion}">Facturación</a></li>
         </ul>
     </nav>
 </main>
 
 <footer>
-    <img src="/static/imagen/logo unam 2.png" alt="Logo UNaM">
+    <img th:src="@{/imagen/logo-unam.png}" alt="Logo UNaM">
 
     <div class="footer-text">
         <p>Universidad Nacional de Misiones - Licenciatura en Sistemas de Información</p>
@@ -36,7 +36,7 @@
         <p>Ciclo lectivo 2025</p>
     </div>
 
-    <img src="/static/imagen/logo fceqyn 2.png" alt="Logo FCEQYN">
+    <img th:src="@{/imagen/logo-fceqyn.png}" alt="Logo FCEQYN">
 </footer>
 
 </body>

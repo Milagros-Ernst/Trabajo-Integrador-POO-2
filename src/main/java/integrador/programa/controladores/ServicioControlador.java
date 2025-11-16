@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController                     // Indica que esta clase expone endpoints REST en formato JSON
-@RequestMapping("servicios") 
+@RequestMapping("/api/servicios")
 public class ServicioControlador {
 
     private final ServicioServicio servicioServicio;

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/facturacion")
+@RequestMapping("/api/facturacion")
 public class FacturaControlador {
 
     @Autowired

@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<link rel="stylesheet" href="/static/css/styles.css">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle de Cliente - FlorecillaService</title>
-
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 
 <header>
-    <img src="/static/imagen/florLogo 1.png" alt="Logo FlorecillaService">
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
     <h1><span class="logo-text">FlorecillaService</span> / Gestión de Clientes / Detalle</h1>
 </header>
 
 <main>
 
-    <a href="gestionClientes-inicio.html" class="btn-atras">
-        <img src="/static/imagen/botonAccion-Atras.png" alt="Atrás" class="icono-img-atras">
+    <a th:href="@{/clientes}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
         Atrás
     </a>
 
     <div class="form-container">
-        <!-- el controlador para un objeto "cliente" -->
         <form id="form-cliente" th:object="${cliente}">
             <div class="form-section-titles">
                 <h3>Información personal</h3>
@@ -88,9 +86,6 @@
                 </div>
             </div>
 
-
-        </form>
-    </div>
             <div class="form-actions-top" id="form-top-actions">
                 <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Confirmar</button>
@@ -98,7 +93,6 @@
         </form>
     </div>
 
-    <!-- TABLA DINAMICA, recibe una lista servicios -->
     <div class="table-container">
         <h2 class="table-title">Servicios contratados</h2>
         <div class="table-wrapper">
@@ -112,7 +106,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Fila dinámica -->
                 <tr th:if="${!servicios.isEmpty()}" th:each="servicio : ${servicios}">
                     <td th:text="${servicio.nombre}"></td>
                     <td th:text="${servicio.descripcion}"></td>
@@ -122,7 +115,6 @@
                         <a href="#" class="action-link-danger">Baja servicio</a>
                     </td>
                 </tr>
-                <!-- Fila para tabla vacía -->
                 <tr th:if="${servicios.isEmpty()}" class="empty-row">
                     <td colspan="4">No hay servicios contratados.</td>
                 </tr>
@@ -132,12 +124,11 @@
     </div>
 
     <div class="btn-wrapper-right">
-        <a href="gestionClientes-asignServ.html">
+        <a th:href="@{/clientes/{id}/asignar(id=${cliente.id})}">
             <button type="button" class="btn btn-warning">Asignar Servicios</button>
         </a>
     </div>
 
-    <!-- TABLA dinámica, recibe una lista de clientes llamada subClientes -->
     <div class="table-container">
         <h2 class="table-title">Clientes registrados</h2>
         <div class="table-wrapper table-wrapper-bottom">
@@ -153,7 +144,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!-- Fila dinámica -->
                 <tr th:if="${!subClientes.isEmpty()}" th:each="cli : ${subClientes}">
                     <td th:text="${cli.tipoDocumento}"></td>
                     <td th:text="${cli.numeroDocumento}"></td>
@@ -161,10 +151,9 @@
                     <td th:text="${cli.nombre}"></td>
                     <td th:text="${cli.condIVA}"></td>
                     <td>
-                        <a th:href="@{/gestionClientes-detalle/{id}(id=${cli.id})}" class="action-link">Ver más detalles</a>
+                        <a th:href="@{/clientes/{id}(id=${cli.id})}" class="action-link">Ver más detalles</a>
                     </td>
                 </tr>
-                <!-- Fila para tabla vacía -->
                 <tr th:if="${subClientes.isEmpty()}" class="empty-row">
                     <td colspan="6">No hay clientes registrados.</td>
                 </tr>
@@ -180,11 +169,10 @@
     </div>
 
 </main>
-<!--CODIGO DE JS, logica para el boton modificar (habilitación de campos para modificar) -->
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // --- 1. Encontrar los elementos ---
         const btnModificar = document.getElementById('btn-modificar-form');
         const btnCancelar = document.getElementById('btn-cancelar-edicion');
 
@@ -194,10 +182,8 @@
         const formContainer = document.getElementById('form-inputs-container');
         const formFields = formContainer.querySelectorAll('input, select');
 
-        // --- 2. Guardar los valores originales ---
         const originalValues = new Map();
         formFields.forEach(field => {
-            // Guarda el valor (para input) o el selectedIndex (para select)
             if (field.tagName === 'SELECT') {
                 originalValues.set(field, field.selectedIndex);
             } else {
@@ -205,11 +191,10 @@
             }
         });
 
-        // --- 3. Función para HABILITAR el formulario ---
         function habilitarFormulario() {
             formFields.forEach(field => {
                 field.readOnly = false;
-                field.disabled = false; // Habilita 'select' e 'input'
+                field.disabled = false;
             });
 
             formContainer.classList.add('form-inputs-active');
@@ -217,17 +202,14 @@
             bottomActions.style.display = 'none';
         }
 
-        // --- 4. Función para DESHABILITAR y Restaurar ---
         function deshabilitarFormulario() {
             formFields.forEach(field => {
-                // Restaurar valor original
                 if (field.tagName === 'SELECT') {
                     field.selectedIndex = originalValues.get(field);
                 } else {
                     field.value = originalValues.get(field);
                 }
 
-                // Bloquear campos
                 field.readOnly = true;
                 if (field.tagName === 'SELECT') {
                     field.disabled = true;
@@ -236,22 +218,20 @@
 
             formContainer.classList.remove('form-inputs-active');
             topActions.style.display = 'none';
-            bottomActions.style.display = 'block'; // 'block' para centrarlo
+            bottomActions.style.display = 'block';
         }
 
-        // --- 5. Asignar los eventos ---
         if (btnModificar) {
             btnModificar.addEventListener('click', habilitarFormulario);
         }
 
         if (btnCancelar) {
             btnCancelar.addEventListener('click', (e) => {
-                e.preventDefault(); // Prevenir envío de formulario
+                e.preventDefault();
                 deshabilitarFormulario();
             });
         }
 
-        // --- 6. Estado inicial (Bloquear Selects) ---
         formContainer.querySelectorAll('select').forEach(select => {
             select.disabled = true;
         });

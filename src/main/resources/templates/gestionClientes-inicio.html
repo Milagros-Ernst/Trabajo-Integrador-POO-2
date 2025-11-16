@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<link rel="stylesheet" href="/static/css/styles.css">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Clientes - FlorecillaService</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body>
 
 <header>
-    <img src="/static/imagen/florLogo 1.png" alt="Logo FlorecillaService">
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
     <h1><span class="logo-text">FlorecillaService</span> / Gestión de Clientes</h1>
 </header>
 
 <main>
 
-    <a href="inicio.html" class="btn-atras">
-        <img src="/static/imagen/botonAccion-Atras.png" alt="Atrás" class="icono-img-atras">
+    <a th:href="@{/}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
         Atrás
     </a>
 
@@ -26,61 +26,61 @@
         <form id="form-cliente">
 
             <fieldset id="form-fieldset" disabled>
-            <div class="form-section-titles">
-                <h3>Información personal</h3>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre">
-                </div>
-                <div class="form-group">
-                    <label for="telefono">Nro. Teléfono</label>
-                    <input type="text" id="telefono">
-                </div>
-                <div class="form-group">
-                    <label for="condicion-fiscal">Condición fiscal</label>
-                    <select id="condicion-fiscal">
-                        <option>Seleccione uno</option>
-                        <option>Monotributo</option>
-                        <option>Responsable Inscripto</option>
-                        <option>Consumidor final</option>
-                        <option>Exento</option>
-                    </select>
+                <div class="form-section-titles">
+                    <h3>Información personal</h3>
                 </div>
 
-                <div class="form-group">
-                    <label for="apellido">Apellido</label>
-                    <input type="text" id="apellido">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" id="email">
-                </div>
-                <div class="form-group">
-                    <label for="direccion-fiscal">Dirección fiscal</label>
-                    <input type="text" id="direccion-fiscal">
-                </div>
-
-                <div class="form-group">
-                    <label for="tipo-doc">Tipo de documento</label>
-                    <div style="display: flex; gap: 8px;">
-                        <select id="tipo-doc" style="flex: 1;">
-                            <option>Seleccione uno</option>
-                            <option>DNI</option>
-                            <option>CUIT</option>
-                            <option>CUIL</option>
-                        </select>
-                        <input type="text" id="nro-doc" placeholder="Nro. doc" style="flex: 2;">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre">
                     </div>
+                    <div class="form-group">
+                        <label for="telefono">Nro. Teléfono</label>
+                        <input type="text" id="telefono">
+                    </div>
+                    <div class="form-group">
+                        <label for="condicion-fiscal">Condición fiscal</label>
+                        <select id="condicion-fiscal">
+                            <option>Seleccione uno</option>
+                            <option>Monotributo</option>
+                            <option>Responsable Inscripto</option>
+                            <option>Consumidor final</option>
+                            <option>Exento</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apellido">Apellido</label>
+                        <input type="text" id="apellido">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="text" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion-fiscal">Dirección fiscal</label>
+                        <input type="text" id="direccion-fiscal">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo-doc">Tipo de documento</label>
+                        <div style="display: flex; gap: 8px;">
+                            <select id="tipo-doc" style="flex: 1;">
+                                <option>Seleccione uno</option>
+                                <option>DNI</option>
+                                <option>CUIT</option>
+                                <option>CUIL</option>
+                            </select>
+                            <input type="text" id="nro-doc" placeholder="Nro. doc" style="flex: 2;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" id="direccion">
+                    </div>
+                    <div></div>
                 </div>
-                <div class="form-group">
-                    <label for="direccion">Dirección</label>
-                    <input type="text" id="direccion">
-                </div>
-                <div></div>
-            </div>
             </fieldset>
             <div class="form-actions-top" id="form-top-actions" style="display: none;">
                 <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
@@ -103,12 +103,7 @@
                     <th>Acciones</th>
                 </tr>
                 </thead>
-                <!-- El <tbody> ahora tiene la lógica de Thymeleaf. el controlador TIENE QUE PASARLE UNA LISTA DE CLIENTES!!!!! -->
                 <tbody>
-                <!--
-                  FILA DINÁMICA:
-                  Se repite (th:each) por cada "cli" en la lista "clientes"
-                -->
                 <tr th:each="cli : ${clientes}">
                     <td th:text="${cli.tipoDocumento}"></td>
                     <td th:text="${cli.numeroDocumento}"></td>
@@ -116,7 +111,7 @@
                     <td th:text="${cli.nombre}"></td>
                     <td th:text="${cli.condIVA}"></td>
                     <td>
-                        <a th:href="@{/gestionClientes-detalle/{id}(id=${cli.id})}" class="action-link">Ver más detalles</a>
+                        <a th:href="@{/clientes/{id}(id=${cli.id})}" class="action-link">Ver más detalles</a>
                     </td>
                 </tr>
 
@@ -139,7 +134,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // --- 1. Encontrar los elementos ---
         const btnAlta = document.getElementById('btn-alta-form');
         const btnCancelar = document.getElementById('btn-cancelar-edicion');
 
@@ -149,41 +143,34 @@
         const topActions = document.getElementById('form-top-actions');
         const bottomActions = document.getElementById('abm-bottom-actions');
 
-        // --- 2. Función para HABILITAR el formulario (Modo ALTA) ---
         function habilitarFormulario() {
-            formFieldset.disabled = false;      // Activa los inputs
-            topActions.style.display = 'flex';  // Muestra botones "Confirmar" y "Cancelar"
-            bottomActions.style.display = 'none'; // Oculta botones "Alta", "Baja", "Modificar"
+            formFieldset.disabled = false;
+            topActions.style.display = 'flex';
+            bottomActions.style.display = 'none';
 
-            form.reset(); // Limpia el formulario
+            form.reset();
 
-            // Pone el foco en el primer campo (Nombre)
             const firstInput = document.getElementById('nombre');
             if (firstInput) {
                 firstInput.focus();
             }
         }
 
-        // --- 3. Función para DESHABILITAR y Restaurar (Modo VISTA) ---
         function deshabilitarFormulario() {
-            formFieldset.disabled = true;       // Desactiva los inputs
-            topActions.style.display = 'none';  // Oculta botones "Confirmar" y "Cancelar"
-            bottomActions.style.display = 'block';// Muestra botones "Alta", "Baja", "Modificar"
+            formFieldset.disabled = true;
+            topActions.style.display = 'none';
+            bottomActions.style.display = 'block';
 
-            form.reset(); // Limpia el formulario
+            form.reset();
         }
 
-        // --- 4. Asignar los eventos ---
-
-        // Al hacer clic en "Alta"
         if (btnAlta) {
             btnAlta.addEventListener('click', habilitarFormulario);
         }
 
-        // Al hacer clic en "Cancelar" (en el formulario de arriba)
         if (btnCancelar) {
             btnCancelar.addEventListener('click', (e) => {
-                e.preventDefault(); // Prevenir envío de formulario
+                e.preventDefault();
                 deshabilitarFormulario();
             });
         }

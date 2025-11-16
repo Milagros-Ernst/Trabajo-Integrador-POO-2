@@ -1,29 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<link rel="stylesheet" href="/static/css/styles.css">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Servicios - FlorecillaService</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body>
 
 <header>
-    <img src="/static/imagen/florLogo 1.png" alt="Logo FlorecillaService">
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
     <h1><span class="logo-text">FlorecillaService</span> / Gestión de Servicios</h1>
 </header>
 
 <main>
 
-    <a href="inicio.html" class="btn-atras">
-        <img src="/static/imagen/botonAccion-Atras.png" alt="Atrás" class="icono-img-atras">
+    <a th:href="@{/}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
         Atrás
     </a>
 
     <div class="form-container">
-        <!-- El id es para controlarlo con JS // ESTO PODRIAMOS RECONSIDERARLO. es para activar y desactivar los botones del form.-->
         <form id="form-servicios">
 
             <fieldset id="form-fieldset" disabled>
@@ -72,10 +71,6 @@
         </form>
     </div>
 
-    <!--
-      TABLA DE SERVICIOS REGISTRADOS
-      - Con lógica Thymeleaf para iterar una lista "servicios" // RECIBE UNA LISTA DE SERVICIOS.
-    -->
     <div class="table-container">
         <h2 class="table-title">Servicios del sistema</h2>
         <div class="table-wrapper">
@@ -108,10 +103,6 @@
         </div>
     </div>
 
-    <!--
-      BOTONES ABM
-      - "Alta" tiene el ID para activar el formulario.
-    -->
     <div class="abm-actions" id="abm-bottom-actions">
         <button type="button" class="btn btn-alta" id="btn-alta-form">Alta</button>
         <button type="button" class="btn btn-baja">Baja</button>
@@ -120,15 +111,9 @@
 
 </main>
 
-<!--
-  SCRIPT JAVASCRIPT: Aca tiene la lógica para activar/desactivar el formulario cuando hacemos el alta o modificar.
-  Hace que quede mas lindo pero se podría sacar si nos  genera problemas a la hora de agregar el backend
-
--->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // --- 1. Encontrar los elementos ---
         const btnAlta = document.getElementById('btn-alta-form');
         const btnCancelar = document.getElementById('btn-cancelar');
 
@@ -138,11 +123,10 @@
         const topActions = document.getElementById('form-top-actions');
         const bottomActions = document.getElementById('abm-bottom-actions');
 
-        // --- 2. Función para HABILITAR el formulario (Modo ALTA) ---
         function habilitarFormulario() {
-            formFieldset.disabled = false;      // Activa los inputs
-            topActions.style.display = 'flex';  // Muestra botones "Confirmar" y "Cancelar"
-            bottomActions.style.display = 'none'; // Oculta botones "Alta", "Baja", "Modificar"
+            formFieldset.disabled = false;
+            topActions.style.display = 'flex';
+            bottomActions.style.display = 'none';
 
             form.reset();
 
@@ -152,22 +136,18 @@
             }
         }
 
-        // --- 3. Función para DESHABILITAR y Restaurar (Modo VISTA) ---
         function deshabilitarFormulario() {
-            formFieldset.disabled = true;       // Desactiva los inputs
-            topActions.style.display = 'none';  // Oculta botones "Confirmar" y "Cancelar"
-            bottomActions.style.display = 'block';// Muestra botones "Alta", "Baja", "Modificar"
+            formFieldset.disabled = true;
+            topActions.style.display = 'none';
+            bottomActions.style.display = 'block';
 
             form.reset();
         }
-
-        // --- 4. Asignar los eventos ---
 
         if (btnAlta) {
             btnAlta.addEventListener('click', habilitarFormulario);
         }
 
-        // Al hacer clic en "Cancelar" (en el formulario de arriba)
         if (btnCancelar) {
             btnCancelar.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -177,9 +157,6 @@
 
         if (form) {
             form.addEventListener('submit', (e) => {
-                // Aquí iría la lógica de envío
-                // e.preventDefault(); // Descomentar para probar sin backend (esto me tiro gemini. ver.)
-
 
             });
         }
