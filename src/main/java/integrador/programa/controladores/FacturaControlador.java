@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import integrador.programa.servicios.ClienteServicio;
 import integrador.programa.servicios.FacturaServicio;
+import integrador.programa.servicios.ServicioServicio;
 import jakarta.validation.Valid;
 import integrador.programa.modelo.*;
 
@@ -20,6 +22,10 @@ public class FacturaControlador {
 
     @Autowired
     private FacturaServicio facturaServicio;
+    @Autowired 
+    private ClienteServicio clienteServicio; 
+    @Autowired 
+    private ServicioServicio servicioServicio;
 
     public FacturaControlador(FacturaServicio facturaServicio){
         this.facturaServicio = facturaServicio;
@@ -41,13 +47,6 @@ public class FacturaControlador {
     public ResponseEntity<Factura> crear(@Valid @RequestBody Factura factura) {
         Factura saved = facturaServicio.agregarFactura(factura);
         return ResponseEntity.ok(saved);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<NotaCredito> eliminar(@PathVariable String id) {
-        NotaCredito nota = facturaServicio.bajaFactura(id);
-        if (nota == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(nota);
     }
 
     @PostMapping("/alta") 
@@ -82,5 +81,54 @@ public class FacturaControlador {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno o formato de datos incorrecto: " + e.getMessage());
         }
     }
+
+    @PostMapping("/alta/masiva") 
+    public ResponseEntity<?> emitirFacturaMasiva(@RequestBody Map<String, Object> requestBody) {
+        try {
+            @SuppressWarnings("unchecked") 
+            List<String> idServiciosFacturar = (List<String>) requestBody.get("idServicios");
+            Month periodo = Month.valueOf((String) requestBody.get("periodo"));
+            LocalDate fechaVencimiento = LocalDate.parse((String) requestBody.get("fechaVencimiento"));
+
+            if (idServiciosFacturar == null || idServiciosFacturar.isEmpty()) {
+                return ResponseEntity.badRequest().body("Debe seleccionar al menos un servicio.");
+            }
+            
+            LogFacturacionMasiva registro = facturaServicio.emitirFacturaMasiva(
+                idServiciosFacturar, 
+                periodo, 
+                fechaVencimiento
+            );
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(registro);
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno o formato de datos incorrecto: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/anular/{id}") 
+    public ResponseEntity<?> anularFactura(@PathVariable String id, 
+                                            @RequestBody Map<String, String> requestBody) {
+    
+    try {
+        String motivo = requestBody.get("motivoAnulacion"); 
+        
+        if (motivo == null || motivo.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El campo 'motivoAnulacion' es obligatorio.");
+        }
+        
+        NotaCredito nota = facturaServicio.bajaFactura(id, motivo);
+        
+        return ResponseEntity.ok(nota);
+    } catch (IllegalArgumentException | IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno al anular la factura.");
+    }
+}
 
 }
