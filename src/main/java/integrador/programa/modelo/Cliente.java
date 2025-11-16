@@ -42,4 +42,8 @@ public class Cliente extends Cuenta {
     @Size(min = 5, max = 150, message = "La dirección fiscal debe tener entre 5 y 150 caracteres")
     @Column(name = "direccion_fiscal", nullable = false, length = 150)
     private String direccionFiscal;
+
+    // lo relaciono con factura
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private java.util.List<Factura> facturas = new java.util.ArrayList<>();
 }
