@@ -121,10 +121,33 @@ public class FacturaServicio {
     }
     
         private String generarProximoNroSerie(TipoComprobante tipo) {
-        // por ahora hardcodeado
-        return "0001-00000001";
+        final int ACTUAL = 1; // 
+        final int LONGITUD_SERIE = 8; 
+
+        String ultimoNroSerie = facturaRepositorio.findMaxNroSerieByTipo(tipo);
+        long numeroActual = 0;
+        if (ultimoNroSerie != null) {
+            try {
+                String[] partes = ultimoNroSerie.split("-");
+                if (partes.length == 2) {
+                    // separamos en dos y pasamos a numero (ej: "00000001" es 1)
+                    numeroActual = Long.parseLong(partes[1]);
+                }
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                System.err.println("Advertencia: Error al parsear el número de serie. Iniciando desde 0. Error: " + e.getMessage());
+                numeroActual = 0;
+            }
+        }
+
+        long proximoNumero = numeroActual + 1;
+        String puntoActual = String.format("%04d", ACTUAL); //  1 -> "0001"
+        
+        String numeroSerieStr = String.format("%0" + LONGITUD_SERIE + "d", proximoNumero);
+        return puntoActual + "-" + numeroSerieStr;
     }
 
+
+    
     private double calcularPrecioProporcional(double precioUnitario, LocalDate fechaInicio, Month periodo) {
         LocalDate inicioMes = LocalDate.of(fechaInicio.getYear(), periodo, 1);
         
