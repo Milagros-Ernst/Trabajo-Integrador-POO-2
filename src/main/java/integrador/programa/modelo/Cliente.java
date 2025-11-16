@@ -1,13 +1,21 @@
 package integrador.programa.modelo;
 
 import integrador.programa.modelo.enumeradores.CondicionIVA;
-//import integrador.programa.modelo.enumeradores.TipoDocumento;
-//import integrador.programa.modelo.enumeradores.EstadoCuenta;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "Cliente")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public class Cliente extends Cuenta {
 
     @NotNull(message = "La condición frente al IVA es obligatoria")
@@ -34,10 +42,4 @@ public class Cliente extends Cuenta {
     @Size(min = 5, max = 150, message = "La dirección fiscal debe tener entre 5 y 150 caracteres")
     @Column(name = "direccion_fiscal", nullable = false, length = 150)
     private String direccionFiscal;
-    
-    
-    public Cliente() {
-        super();
-    }
 }
-
