@@ -1,268 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+<link rel="stylesheet" href="/static/css/styles.css">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Clientes - FlorecillaService</title>
 </head>
-
-<style>
-    /* --- Reset y Configuración Global --- */
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        background-color: #f9f9f9;
-        color: #333;
-    }
-
-    /* --- Estructura principal (Layout) --- */
-    body {
-        display: grid;
-        grid-template-rows: auto 1fr;
-        min-height: 100vh;
-    }
-
-    /* --- 1. Header --- */
-    header {
-        display: flex;
-        align-items: center;
-        padding: 16px 24px;
-        background-color: #ffffff;
-        border-bottom: 1px solid #eeeeee;
-    }
-
-    header img {
-        height: 40px;
-        width: 40px;
-        margin-right: 12px;
-    }
-
-    /* --- TÍTULO DEL HEADER --- */
-    header h1 {
-        font-size: 24px;
-        margin: 0;
-        color: #000; /* Color negro para " / Gestión de Clientes" */
-        font-weight: 600;
-    }
-
-    .logo-text {
-        color: #8D11B8; /* Violeta principal */
-        font-weight: 600;
-        -webkit-text-stroke: 0.5px #E1D27B;
-        text-stroke: 0.5px #E1D27B;
-    }
-
-    /* --- 2. Contenido Principal (Main) --- */
-    main {
-        padding: 24px 40px;
-    }
-
-    /* --- Botón "Atrás" --- */
-    .btn-atras {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        color: #8D11B8;
-        font-weight: 600;
-        margin-bottom: 24px;
-    }
-
-    .btn-atras .icono-img-atras {
-        width: 28px;
-        height: 28px;
-        margin-right: 12px;
-    }
-
-    /* --- Formulario Superior --- */
-    .form-container {
-        background-color: #ffffff;
-        padding: 24px;
-        border-radius: 8px;
-        border: 1px solid #eee;
-    }
-
-
-    .form-section-titles {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-        margin-bottom: 16px;
-    }
-
-    .form-section-titles h3 {
-        font-size: 13px;
-        color: #555;
-        font-weight: 600;
-        text-transform: uppercase;
-        margin: 0;
-        padding-left: 2px;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .form-group label {
-        font-size: 13px;
-        color: #555;
-        margin-bottom: 6px;
-        font-weight: 600;
-    }
-
-    .form-group input[type="text"],
-    .form-group select {
-        padding: 10px 12px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
-    .form-actions-top {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        margin-top: 24px;
-        padding-top: 24px;
-        border-top: 1px solid #f0f0f0;
-    }
-
-    /* --- Estilos Generales de Botones --- */
-    .btn {
-        padding: 8px 20px;
-        border-radius: 6px;
-        font-weight: bold;
-        font-size: 14px;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: all 0.2s ease;
-        box-sizing: border-box;
-    }
-
-    /* Botón Sólido (Primario) */
-    .btn-primary {
-        background-color: #8D11B8;
-        color: white;
-        border-color: #8D11B8;
-    }
-    .btn-primary:hover {
-        background-color: #700e94;
-        border-color: #700e94;
-    }
-
-    /* Botón Contorno (Secundario) */
-    .btn-secondary {
-        background-color: white;
-        color: #8D11B8;
-        border-color: #8D11B8;
-    }
-    .btn-secondary:hover {
-        background-color: #fdf5ff;
-    }
-
-    /* --- Tabla Clientes Registrados --- */
-    .table-container {
-        margin-top: 32px;
-    }
-
-    .table-title {
-        background-color: rgba(253, 216, 53, 0.2);
-        padding: 14px 20px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 8px 8px 0 0;
-        border: 1px solid #eee;
-        border-bottom: none;
-    }
-
-    .table-wrapper {
-        max-height: 450px; /* Altura para el scroll */
-        overflow-y: auto;
-        border: 1px solid #eee;
-        border-top: none;
-        background-color: #ffffff;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    thead th {
-        background-color: rgba(253, 216, 53, 0.04);
-        padding: 12px 20px;
-        text-align: left;
-        font-size: 12px;
-        text-transform: uppercase;
-        color: #555;
-        position: sticky;
-        top: 0;
-    }
-
-    tbody td {
-        padding: 14px 20px;
-        border-bottom: 1px solid #f0f0f0;
-        font-size: 14px;
-    }
-
-    /* Estilo para la fila de "tabla vacía" */
-    .empty-row td {
-        text-align: center;
-        color: #888;
-        padding: 32px 0;
-    }
-
-    .action-link {
-        color: #007bff; /* Azul estándar para links de acción */
-        text-decoration: none;
-        font-weight: 600;
-    }
-    .action-link:hover {
-        text-decoration: underline;
-    }
-
-    /* --- Botones ABM (Fondo) --- */
-    .abm-actions {
-        text-align: center;
-        padding: 24px 0;
-        margin-top: 16px;
-    }
-
-    .abm-actions .btn {
-        margin: 0 8px;
-        padding: 10px 24px;
-        font-size: 16px;
-        min-width: 140px;
-    }
-
-    .btn-alta {
-        background-color: #9CCC65;
-        color: white;
-        border-color: #9CCC65;
-    }
-    .btn-alta:hover {
-        background-color: #8bc34a;
-        border-color: #8bc34a;
-    }
-
-    .btn-baja {
-        background-color: #E57373;
-        color: white;
-        border-color: #E57373;
-    }
-    .btn-baja:hover {
-        background-color: #ef5350;
-        border-color: #ef5350;
-    }
-</style>
 
 <body>
 
@@ -279,7 +23,9 @@
     </a>
 
     <div class="form-container">
-        <form>
+        <form id="form-cliente">
+
+            <fieldset id="form-fieldset" disabled>
             <div class="form-section-titles">
                 <h3>Información personal</h3>
             </div>
@@ -335,9 +81,9 @@
                 </div>
                 <div></div>
             </div>
-
-            <div class="form-actions-top">
-                <button type="button" class="btn btn-secondary">Cancelar</button>
+            </fieldset>
+            <div class="form-actions-top" id="form-top-actions" style="display: none;">
+                <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Confirmar</button>
             </div>
         </form>
@@ -382,16 +128,67 @@
         </div>
     </div>
 
-    <div class="abm-actions">
-        <button type="button" class="btn btn-alta">Alta</button>
-        <button type="button" class="btn btn-baja">Baja</button>
-        <button type="button" class="btn btn-secondary">Modificar</button>
+    <div class="abm-actions" id="abm-bottom-actions">
+        <button type="button" class="btn btn-alta" id="btn-alta-form">Alta</button>
+        <button type="button" class="btn btn-baja" id="btn-baja-form">Baja</button>
+        <button type="button" class="btn btn-secondary" id="btn-modificar-form">Modificar</button>
     </div>
 
 </main>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- 1. Encontrar los elementos ---
+        const btnAlta = document.getElementById('btn-alta-form');
+        const btnCancelar = document.getElementById('btn-cancelar-edicion');
+
+        const form = document.getElementById('form-cliente');
+        const formFieldset = document.getElementById('form-fieldset');
+
+        const topActions = document.getElementById('form-top-actions');
+        const bottomActions = document.getElementById('abm-bottom-actions');
+
+        // --- 2. Función para HABILITAR el formulario (Modo ALTA) ---
+        function habilitarFormulario() {
+            formFieldset.disabled = false;      // Activa los inputs
+            topActions.style.display = 'flex';  // Muestra botones "Confirmar" y "Cancelar"
+            bottomActions.style.display = 'none'; // Oculta botones "Alta", "Baja", "Modificar"
+
+            form.reset(); // Limpia el formulario
+
+            // Pone el foco en el primer campo (Nombre)
+            const firstInput = document.getElementById('nombre');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }
+
+        // --- 3. Función para DESHABILITAR y Restaurar (Modo VISTA) ---
+        function deshabilitarFormulario() {
+            formFieldset.disabled = true;       // Desactiva los inputs
+            topActions.style.display = 'none';  // Oculta botones "Confirmar" y "Cancelar"
+            bottomActions.style.display = 'block';// Muestra botones "Alta", "Baja", "Modificar"
+
+            form.reset(); // Limpia el formulario
+        }
+
+        // --- 4. Asignar los eventos ---
+
+        // Al hacer clic en "Alta"
+        if (btnAlta) {
+            btnAlta.addEventListener('click', habilitarFormulario);
+        }
+
+        // Al hacer clic en "Cancelar" (en el formulario de arriba)
+        if (btnCancelar) {
+            btnCancelar.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevenir envío de formulario
+                deshabilitarFormulario();
+            });
+        }
+    });
+</script>
+
 </body>
-
-
-
 </html>

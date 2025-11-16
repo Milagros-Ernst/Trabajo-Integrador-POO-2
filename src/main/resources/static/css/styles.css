@@ -1,0 +1,518 @@
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* --- Estructura principal --- */
+body {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+}
+
+/* --- 1. Header --- */
+header {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+}
+
+header img {
+    height: 40px;
+    width: 40px;
+    margin-right: 12px;
+}
+
+header h1 {
+    font-size: 24px;
+    margin: 0;
+    color: #000;
+    font-weight: 600;
+}
+
+.logo-text {
+    color: #8D11B8;
+    font-weight: 600;
+    -webkit-text-stroke: 0.5px #E1D27B;
+    text-stroke: 0.5px #E1D27B;
+}
+
+/* --- 2. Contenido Principal --- */
+main {
+    padding: 24px 40px;
+}
+
+.btn-atras {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #8D11B8;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.btn-atras .icono-img-atras {
+    width: 28px;
+    height: 28px;
+    margin-right: 12px;
+}
+
+/* --- Estilos del Contenedor del Formulario --- */
+
+.form-container {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.form-section-titles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 16px;
+}
+
+.form-section-titles h3 {
+    font-size: 13px;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 0;
+    padding-left: 2px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: #555;
+    margin: 0;
+    font-weight: 600;
+}
+
+.form-group input[type="text"],
+.form-group select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-group input[readonly],
+.form-group select[disabled] {
+    border-color: transparent;
+    background-color: transparent;
+    color: #333;
+    box-shadow: none;
+    cursor: default;
+    padding-left: 0;
+    padding-right: 0;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    pointer-events: none;
+}
+
+.form-group select[disabled] {
+    opacity: 1;
+    color: #333;
+}
+
+.form-inputs-active input,
+.form-inputs-active select {
+    border-color: #ccc !important;
+    background-color: #ffffff !important;
+    cursor: auto !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+}
+
+.form-inputs-active select {
+    -webkit-appearance: revert !important;
+    -moz-appearance: revert !important;
+    appearance: revert !important;
+    pointer-events: auto !important;
+}
+
+.form-actions-top {
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+    display: none;
+}
+
+
+/* --- Estilos Generales de Botones --- */
+.btn {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+/* Botón Sólido (Primario) */
+.btn-primary {
+    background-color: #8D11B8;
+    color: white;
+    border-color: #8D11B8;
+}
+.btn-primary:hover {
+    background-color: #700e94;
+    border-color: #700e94;
+}
+
+/* Botón Contorno (Secundario) */
+.btn-secondary {
+    background-color: white;
+    color: #8D11B8;
+    border-color: #8D11B8;
+}
+.btn-secondary:hover {
+    background-color: #fdf5ff;
+}
+
+/* Botón Asignar servicios */
+.btn-warning {
+    background-color: #FDD835;
+    color: #333;
+    border-color: #FDD835;
+}
+.btn-warning:hover {
+    background-color: #fbc02d;
+    border-color: #fbc02d;
+}
+
+/* Botón Alta  */
+.btn-alta {
+    background-color: #9CCC65;
+    color: white;
+    border-color: #9CCC65;
+}
+.btn-alta:hover {
+    background-color: #8bc34a;
+    border-color: #8bc34a;
+}
+
+/* Botón Baja */
+.btn-baja {
+    background-color: #E57373;
+    color: white;
+    border-color: #E57373;
+}
+.btn-baja:hover {
+    background-color: #ef5350;
+    border-color: #ef5350;
+}
+
+
+/* --- Contenedores de Tablas --- */
+.table-container {
+    margin-top: 24px;
+    position: relative;
+}
+
+/* Contenedor para botón a la derecha (ÚNICO DEL ARCHIVO 2) */
+.btn-wrapper-right {
+    text-align: right;
+    margin-top: 24px;
+}
+
+.table-title {
+    background-color: rgba(253, 216, 53, 0.2);
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid #eee;
+    border-bottom: none;
+}
+
+.table-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-top: none;
+    background-color: #ffffff;
+}
+
+.table-wrapper-bottom {
+    border-radius: 0 0 8px 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    background-color: rgba(253, 216, 53, 0.04);
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #555;
+    position: sticky;
+    top: 0;
+}
+
+thead th:last-child, tbody td:last-child {
+    text-align: right;
+}
+
+tbody td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Estilo para la fila de "tabla vacía" */
+tr.empty-row td {
+    text-align: center !important;
+    color: #888;
+    padding: 32px 0;
+}
+
+/* --- Estilos de links de acción --- */
+.action-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 16px;
+}
+.action-link:hover { text-decoration: underline; }
+
+.action-link-danger {
+    color: #E57373;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 16px;
+}
+.action-link-danger:hover { text-decoration: underline; }
+
+.action-link-success {
+    color: #28a745;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 16px;
+}
+.action-link-success:hover { text-decoration: underline; }
+
+.action-link-info {
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 16px;
+}
+.action-link-info:hover { text-decoration: underline; }
+
+
+/* --- Botones ABM (Fondo) --- */
+.abm-actions {
+    text-align: center;
+    padding: 24px 0;
+    margin-top: 16px;
+}
+
+.abm-actions .btn {
+    margin: 0 8px;
+    padding: 10px 24px;
+    font-size: 16px;
+    min-width: 140px;
+}
+
+.page-actions-bottom {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.action-link-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit; /* Hereda el tamaño de fuente */
+}
+
+    /* Estilos para serviciosABM */
+
+.form-container fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.form-container fieldset[disabled] {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.form-section-titles h3 {
+    font-size: 13px;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 0 0 16px 0;
+    padding-left: 2px;
+}
+
+.form-grid-servicios {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.form-group-split {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .form-group-split {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+
+/* Estilo para el fieldset cuando está deshabilitado */
+fieldset[disabled] {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Estilo para los botones de abajo (puedes ignorar si ya lo tienes) */
+.abm-actions {
+    text-align: center;
+    padding: 24px 0;
+    margin-top: 16px;
+}
+
+/* === ESTILOS ESPECÍFICOS: PÁGINA INICIO === */
+
+body.pagina-inicio {
+    grid-template-rows: auto 1fr auto;
+}
+
+.pagina-inicio main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.pagina-inicio header h1 {
+    color: #8D11B8;
+    -webkit-text-stroke: 0.5px #E1D27B;
+    text-stroke: 0.5px #E1D27B;
+}
+
+.pagina-inicio main h2 {
+    font-size: 22px;
+    font-weight: 400;
+    color: #444;
+    margin-bottom: 32px;
+}
+
+.pagina-inicio main nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 300px;
+}
+
+.pagina-inicio main nav li {
+    margin-bottom: 20px;
+}
+
+.pagina-inicio main nav a {
+    display: block;
+    text-decoration: none;
+    color: #ffffff;
+    padding: 16px 24px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    background: linear-gradient(to bottom, #8D11B8, #C461E7);
+    border: none;
+}
+
+.pagina-inicio main nav a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pagina-inicio footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 40px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pagina-inicio .footer-text {
+    text-align: center;
+    font-size: 11px;
+    color: #888;
+    line-height: 1.5;
+}
+
+.pagina-inicio .footer-text p {
+    margin: 2px 0;
+}
+
+.pagina-inicio footer img {
+    height: 45px;
+    object-fit: contain;
+}
+
+
+
+
+
+
+
+
+

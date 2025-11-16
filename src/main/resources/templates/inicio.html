@@ -1,135 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+<link rel="stylesheet" href="/static/css/styles.css">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlorecillaService - Inicio</title>
-
-    <style>
-        /* --- Reset y Configuración Global --- */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-
-        /* --- Estructura principal (Layout) --- */
-        body {
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            min-height: 100vh;
-        }
-
-        /* --- 1. Header --- */
-        header {
-            display: flex;
-            align-items: center;
-            padding: 16px 24px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #eeeeee;
-        }
-
-        header img {
-            height: 40px;
-            width: 40px;
-            margin-right: 12px;
-        }
-
-        header h1 {
-            font-size: 24px;
-            margin: 0;
-            color: #8D11B8; /* Color de relleno de la letra */
-            font-weight: 600;
-
-            /* agrego un borde amarillo. Requiere prefijo -webkit- */
-            -webkit-text-stroke: 0.5px #E1D27B;
-            text-stroke: 0.5px #E1D27B;
-        }
-
-        /* --- 2. Contenido Principal (Main) --- */
-        main {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        main h2 {
-            font-size: 22px;
-            font-weight: 400;
-            color: #444;
-            margin-bottom: 32px;
-        }
-
-        main nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-            max-width: 300px;
-        }
-
-        main nav li {
-            margin-bottom: 20px;
-        }
-
-        main nav a {
-            display: block;
-            text-decoration: none;
-            color: #ffffff;
-            padding: 16px 24px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-
-
-            background: linear-gradient(to bottom, #8D11B8, #C461E7);
-            border: none;
-        }
-
-        /* Efecto al pasar el mouse */
-        main nav a:hover {
-            /* Mantenemos el efecto de "salto" y sombra */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
-        }
-
-        /* --- 3. Pie de Página (Footer) --- */
-        footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px 40px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .footer-text {
-            text-align: center;
-            font-size: 11px;
-            color: #888;
-            line-height: 1.5;
-        }
-
-        .footer-text p {
-            margin: 2px 0;
-        }
-
-        footer img {
-            height: 45px;
-            object-fit: contain;
-        }
-
-    </style>
 </head>
-<body>
+
+<body class="pagina-inicio">
 
 <header>
     <img src="/static/imagen/florLogo 1.png" alt="Logo FlorecillaService">
@@ -142,8 +21,8 @@
     <nav>
         <ul>
             <li><a href="gestionClientes-inicio.html">Clientes</a></li>
-            <li><a href="gestionServicios.html">Servicios</a></li>
-            <li><a href="facturacionInicio.html">Facturación</a></li>
+            <li><a href="gestionServicio-ABM.html">Servicios</a></li>
+            <li><a href="facturacion-inicio.html">Facturación</a></li>
         </ul>
     </nav>
 </main>
