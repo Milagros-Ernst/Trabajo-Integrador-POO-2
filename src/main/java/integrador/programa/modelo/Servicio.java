@@ -1,17 +1,23 @@
 package integrador.programa.modelo;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import integrador.programa.modelo.enumeradores.EstadoServicio;
 import integrador.programa.modelo.enumeradores.TipoIVA;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.AccessLevel;
+import lombok.Setter;
 
 @Entity
 @Table(name = "Servicio")
 public class Servicio {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_servicio")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "id_servicio", columnDefinition = "VARCHAR(36)")
+    @Setter(AccessLevel.NONE) // evita que Lombok genere setter (si lo usás a nivel de clase)
     private String idServicio;
 
     @NotBlank(message = "El nombre del servicio es obligatorio")
@@ -25,8 +31,10 @@ public class Servicio {
     private String descripcion;
 
     @NotNull(message = "El precio unitario es obligatorio")
+    @PositiveOrZero(message = "El precio unitario debe ser mayor o igual a 0")
     @Column(name = "precio_unitario", nullable = false)
     private Double precioUnitario;
+
 
     @NotNull(message = "El tipo de IVA es obligatorio")
     @Enumerated(EnumType.STRING)
@@ -59,10 +67,6 @@ public class Servicio {
 
     public String getIdServicio() {
         return idServicio;
-    }
-
-    public void setIdServicio(String idServicio) {
-        this.idServicio = idServicio;
     }
 
     public String getNombre() {                
