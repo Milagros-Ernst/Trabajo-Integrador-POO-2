@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Clientes - FlorecillaService</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/main.js}"></script>
 </head>
 
 <body>
@@ -17,7 +18,7 @@
 
 <main>
 
-    <a th:href="@{/inicio}" class="btn-atras">
+    <a th:href="@{/}" class="btn-atras">
         <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
         Atrás
     </a>
@@ -130,52 +131,5 @@
     </div>
 
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        const btnAlta = document.getElementById('btn-alta-form');
-        const btnCancelar = document.getElementById('btn-cancelar-edicion');
-
-        const form = document.getElementById('form-cliente');
-        const formFieldset = document.getElementById('form-fieldset');
-
-        const topActions = document.getElementById('form-top-actions');
-        const bottomActions = document.getElementById('abm-bottom-actions');
-
-        function habilitarFormulario() {
-            formFieldset.disabled = false;
-            topActions.style.display = 'flex';
-            bottomActions.style.display = 'none';
-
-            form.reset();
-
-            const firstInput = document.getElementById('nombre');
-            if (firstInput) {
-                firstInput.focus();
-            }
-        }
-
-        function deshabilitarFormulario() {
-            formFieldset.disabled = true;
-            topActions.style.display = 'none';
-            bottomActions.style.display = 'block';
-
-            form.reset();
-        }
-
-        if (btnAlta) {
-            btnAlta.addEventListener('click', habilitarFormulario);
-        }
-
-        if (btnCancelar) {
-            btnCancelar.addEventListener('click', (e) => {
-                e.preventDefault();
-                deshabilitarFormulario();
-            });
-        }
-    });
-</script>
-
 </body>
 </html>

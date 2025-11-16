@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle de Cliente - FlorecillaService</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/main.js}"></script>
 </head>
 <body>
 
@@ -169,74 +170,5 @@
     </div>
 
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        const btnModificar = document.getElementById('btn-modificar-form');
-        const btnCancelar = document.getElementById('btn-cancelar-edicion');
-
-        const topActions = document.getElementById('form-top-actions');
-        const bottomActions = document.getElementById('abm-bottom-actions');
-
-        const formContainer = document.getElementById('form-inputs-container');
-        const formFields = formContainer.querySelectorAll('input, select');
-
-        const originalValues = new Map();
-        formFields.forEach(field => {
-            if (field.tagName === 'SELECT') {
-                originalValues.set(field, field.selectedIndex);
-            } else {
-                originalValues.set(field, field.value);
-            }
-        });
-
-        function habilitarFormulario() {
-            formFields.forEach(field => {
-                field.readOnly = false;
-                field.disabled = false;
-            });
-
-            formContainer.classList.add('form-inputs-active');
-            topActions.style.display = 'flex';
-            bottomActions.style.display = 'none';
-        }
-
-        function deshabilitarFormulario() {
-            formFields.forEach(field => {
-                if (field.tagName === 'SELECT') {
-                    field.selectedIndex = originalValues.get(field);
-                } else {
-                    field.value = originalValues.get(field);
-                }
-
-                field.readOnly = true;
-                if (field.tagName === 'SELECT') {
-                    field.disabled = true;
-                }
-            });
-
-            formContainer.classList.remove('form-inputs-active');
-            topActions.style.display = 'none';
-            bottomActions.style.display = 'block';
-        }
-
-        if (btnModificar) {
-            btnModificar.addEventListener('click', habilitarFormulario);
-        }
-
-        if (btnCancelar) {
-            btnCancelar.addEventListener('click', (e) => {
-                e.preventDefault();
-                deshabilitarFormulario();
-            });
-        }
-
-        formContainer.querySelectorAll('select').forEach(select => {
-            select.disabled = true;
-        });
-    });
-</script>
-
 </body>
 </html>
