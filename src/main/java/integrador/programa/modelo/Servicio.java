@@ -1,55 +1,119 @@
 package integrador.programa.modelo;
 
 import integrador.programa.modelo.enumeradores.EstadoServicio;
+import integrador.programa.modelo.enumeradores.TipoIVA;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.AccessLevel;
-
-@Entity                                        // Indica que esta clase es una entidad JPA
-@Getter @Setter                                // Lombok genera getters y setters
-@NoArgsConstructor                             // Lombok genera constructor vacío
-@Table(name = "Servicio")                      // Nombre de la tabla en la BD
+@Entity
+@Table(name = "Servicio")
 public class Servicio {
 
-    // ID generado como UUID (igual que en Factura y DetalleFactura)
     @Id
-    @GeneratedValue(generator = "uuid2")       // Genera el UUID
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id_servicio", columnDefinition = "VARCHAR(36)")
-    @Setter(AccessLevel.NONE)                  // No permite setear el ID manualmente
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_servicio")
     private String idServicio;
 
-    // Nombre del servicio — obligatorio
-    @NotBlank(message = "El nombre no puede estar vacío")
-    @Size(min = 3, max = 100, message = "El nombre debe tener entre 3 y 100 caracteres")
+    @NotBlank(message = "El nombre del servicio es obligatorio")
+    @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    // Descripción opcional (sin validación obligatoria)
-    @Size(max = 255, message = "La descripción no puede superar los 255 caracteres")
-    @Column(name = "descripcion", length = 255)
+    @NotBlank(message = "La descripción es obligatoria")
+    @Size(min = 5, max = 255, message = "La descripción debe tener entre 5 y 255 caracteres")
+    @Column(name = "descripcion", nullable = false, length = 255)
     private String descripcion;
 
-    // Precio obligatorio — puede ser 0 o más
     @NotNull(message = "El precio unitario es obligatorio")
-    @PositiveOrZero(message = "El precio unitario debe ser mayor o igual a 0")
     @Column(name = "precio_unitario", nullable = false)
     private Double precioUnitario;
 
-    // Tipo de IVA obligatorio (21, 10.5, 0, etc.)
     @NotNull(message = "El tipo de IVA es obligatorio")
-    @Column(name = "tipo_iva", nullable = false)
-    private Double tipoIva;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_iva", nullable = false, length = 20)
+    private TipoIVA tipoIva;
 
-    // Estado del servicio (ALTA o BAJA)
     @NotNull(message = "El estado del servicio es obligatorio")
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado_servicio", nullable = false, length = 10)
-    private EstadoServicio estadoServicio = EstadoServicio.ALTA; // valor por defecto
+    @Column(name = "estado_servicio", nullable = false, length = 20)
+    private EstadoServicio estadoServicio; // ALTA o BAJ
+
+    // se inicia por defecto con estado ALTA
+    public Servicio() {
+         this.estadoServicio = EstadoServicio.ALTA;
+    }
+
+    public Servicio(String nombre,
+                    String descripcion,
+                    Double precioUnitario,
+                    TipoIVA tipoIva,
+                    EstadoServicio estadoServicio) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precioUnitario = precioUnitario;
+        this.tipoIva = tipoIva;
+        this.estadoServicio = estadoServicio;
+    }
+
+    //Getters y Setters requeridos por ServicioServicio
+
+    public String getIdServicio() {
+        return idServicio;
+    }
+
+    public void setIdServicio(String idServicio) {
+        this.idServicio = idServicio;
+    }
+
+    public String getNombre() {                
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDescripcion() {           
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Double getPrecioUnitario() {        
+        return precioUnitario;
+    }
+
+    public void setPrecioUnitario(Double precioUnitario) {
+        this.precioUnitario = precioUnitario;
+    }
+
+    public TipoIVA getTipoIva() {              
+        return tipoIva;
+    }
+
+    public void setTipoIva(TipoIVA tipoIva) {
+        this.tipoIva = tipoIva;
+    }
+
+    public EstadoServicio getEstadoServicio() { 
+        return estadoServicio;
+    }
+
+    public void setEstadoServicio(EstadoServicio estadoServicio) { 
+        this.estadoServicio = estadoServicio;
+    }
+
+    @Override
+    public String toString() {
+        return "Servicio{" +
+                "idServicio=" + idServicio +
+                ", nombre='" + nombre + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                ", precioUnitario=" + precioUnitario +
+                ", tipoIva=" + tipoIva +
+                ", estadoServicio=" + estadoServicio +
+                '}';
+    }
 }

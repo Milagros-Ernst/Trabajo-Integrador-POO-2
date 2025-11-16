@@ -8,17 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Servicio de negocio para la entidad Servicio.
- *
- * Se encarga de:
- *  - Listar todos los servicios
- *  - Buscar servicio por id
- *  - Dar de alta (crear) un servicio
- *  - Modificar un servicio existente
- *  - Cambiar estado (ALTA/BAJA)
- *  - Eliminar un servicio
- */
 @Service
 public class ServicioServicio {
 
