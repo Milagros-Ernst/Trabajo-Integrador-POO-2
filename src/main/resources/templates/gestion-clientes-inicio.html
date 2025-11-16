@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes - FlorecillaService</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/main.js}"></script>
+</head>
+
+<body>
+
+<header>
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
+    <h1><span class="logo-text">FlorecillaService</span> / Gestión de Clientes</h1>
+</header>
+
+<main>
+
+    <a th:href="@{/}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
+        Atrás
+    </a>
+
+    <div class="form-container">
+        <form id="form-cliente">
+
+            <fieldset id="form-fieldset" disabled>
+                <div class="form-section-titles">
+                    <h3>Información personal</h3>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Nro. Teléfono</label>
+                        <input type="text" id="telefono">
+                    </div>
+                    <div class="form-group">
+                        <label for="condicion-fiscal">Condición fiscal</label>
+                        <select id="condicion-fiscal">
+                            <option value="">Seleccione uno</option>
+                            <option value="MONOTRIBUTO">Monotributo</option>
+                            <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
+                            <option value="CONSUMIDOR_FINAL">Consumidor final</option>
+                            <option value="EXENTO">Exento</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apellido">Apellido</label>
+                        <input type="text" id="apellido">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="text" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion-fiscal">Dirección fiscal</label>
+                        <input type="text" id="direccion-fiscal">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo-doc">Tipo de documento</label>
+                        <div style="display: flex; gap: 8px;">
+                            <select id="tipo-doc" style="flex: 1;">
+                                <option value="">Seleccione uno</option>
+                                <option value="DNI">DNI</option>
+                                <option value="CUIT">CUIT</option>
+                                <option value="CUIL">CUIL</option>
+                            </select>
+                            <input type="text" id="nro-doc" placeholder="Nro. doc" style="flex: 2;">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" id="direccion">
+                    </div>
+                    <div></div>
+                </div>
+            </fieldset>
+            <div class="form-actions-top" id="form-top-actions" style="display: none;">
+                <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Confirmar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <h2 class="table-title">Clientes registrados</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Tipo Documento</th>
+                    <th>Nro. Documento</th>
+                    <th>Apellido</th>
+                    <th>Nombre</th>
+                    <th>Condición de IVA</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cli : ${clientes}">
+                    <td th:text="${cli.tipoDocumento}"></td>
+                    <td th:text="${cli.numeroDocumento}"></td>
+                    <td th:text="${cli.apellido}"></td>
+                    <td th:text="${cli.nombre}"></td>
+                    <td th:text="${cli.condIVA}"></td>
+                    <td>
+                        <a th:href="@{/clientes/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>                    </td>
+                </tr>
+
+                <tr th:if="${clientes.isEmpty()}" class="empty-row">
+                    <td colspan="6">No hay clientes registrados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="abm-actions" id="abm-bottom-actions">
+        <button type="button" class="btn btn-alta" id="btn-alta-form">Alta</button>
+        <button type="button" class="btn btn-baja" id="btn-baja-form">Baja</button>
+        <button type="button" class="btn btn-secondary" id="btn-modificar-form">Modificar</button>
+    </div>
+
+</main>
+</body>
+</html>

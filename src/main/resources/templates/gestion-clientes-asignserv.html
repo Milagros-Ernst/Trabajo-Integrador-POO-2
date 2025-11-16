@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asignar Servicios - FlorecillaService</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+
+<header>
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
+    <h1><span class="logo-text">FlorecillaService</span> / Gestión de Clientes / Asignar Servicios</h1>
+</header>
+
+<main>
+
+    <a th:href="@{/clientes/{id}(id=${cliente.id})}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
+        Atrás
+    </a>
+
+    <div class="form-container">
+        <form id="form-cliente" th:object="${cliente}">
+            <div class="form-section-titles">
+                <h3>Información personal</h3>
+            </div>
+            <div class="form-grid" id="form-inputs-container">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" th:field="*{nombre}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Nro. Teléfono</label>
+                    <input type="text" th:field="*{telefono}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="condicion-fiscal">Condición fiscal</label>
+                    <select th:field="*{condIVA}" disabled>
+                        <option value="">Seleccione uno</option>
+                        <option value="MONOTRIBUTO">Monotributo</option>
+                        <option value="RESPONSABLE_INSCRIPTO">Responsable Inscrito</option>
+                        <option value="CONSUMIDOR_FINAL">Consumidor final</option>
+                        <option value="EXENTO">Exento</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" th:field="*{apellido}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" th:field="*{mail}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="direccion-fiscal">Dirección fiscal</label>
+                    <input type="text" th:field="*{direccionFiscal}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="tipo-doc">Tipo de documento</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select th:field="*{tipoDocumento}" style="flex: 1;" disabled>
+                            <option value="">Seleccione uno</option>
+                            <option value="DNI">DNI</option>
+                            <option value="CUIT">CUIT</option>
+                            <option value="CUIL">CUIL</option>
+                        </select>
+                        <input type="text" th:field="*{numeroDocumento}" placeholder="Nro. doc" style="flex: 2;" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" th:field="*{direccion}" readonly>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLA 1 -->
+
+    <div class="table-container">
+        <h2 class="table-title">Servicios contratados</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre de Servicio</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${!serviciosContratados.isEmpty()}" th:each="asig : ${serviciosContratados}">
+                    <td th:text="${asig.servicio.nombre}"></td>
+                    <td th:text="${asig.servicio.descripcion}"></td>
+                    <td th:text="${asig.estado}"></td>
+                    <td>
+                        <a th:href="@{/clientes/{clienteId}/facturas(clienteId=${cliente.id})}" class="action-link">Ver facturas</a>
+
+                        <form th:action="@{/clientes/{clienteId}/asignaciones/{asigId}/eliminar(clienteId=${cliente.id}, asigId=${asig.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="action-link-danger action-link-button">Baja servicio</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${serviciosContratados.isEmpty()}" class="empty-row">
+                    <td colspan="4">No hay servicios contratados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TABLA 2 -->
+
+    <div class="table-container">
+        <h2 class="table-title">Servicios del sistema</h2>
+        <div class="table-wrapper table-wrapper-bottom">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre de Servicio</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>% de IVA</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:if="${!serviciosDisponibles.isEmpty()}" th:each="serv : ${serviciosDisponibles}">
+                    <td th:text="${serv.nombre}"></td>
+                    <td th:text="${serv.descripcion}"></td>
+                    <td th:text="${serv.precio}"></td>
+                    <td th:text="${serv.porcentajeIVA}"></td>
+                    <td>
+                        <form th:action="@{/clientes/{clienteId}/asignar(clienteId=${cliente.id})}" method="post" style="display: inline;">
+                            <input type="hidden" name="servicioId" th:value="${serv.id}" />
+                            <button type="submit" class="action-link-success action-link-button">Asignar servicio</button>
+                        </form>
+
+                        <a th:href="@{/servicios/{id}(id=${serv.id})}" class="action-link-info">Gestionar servicio</a>
+                    </td>
+                </tr>
+                <tr th:if="${serviciosDisponibles.isEmpty()}" class="empty-row">
+                    <td colspan="5">No hay servicios en el sistema para asignar.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="page-actions-bottom">
+        <a th:href="@{/clientes/{id}(id=${cliente.id})}">
+            <button type="button" class="btn btn-secondary">Cancelar</button>
+        </a>
+        <a th:href="@{/clientes/{id}(id=${cliente.id})}">
+            <button type="button" class="btn btn-primary">Confirmar</button>
+        </a>
+    </div>
+
+</main>
+
+</body>
+</html>

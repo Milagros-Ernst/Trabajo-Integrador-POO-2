@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Servicios - FlorecillaService</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/main.js}"></script>
+</head>
+
+<body>
+
+<header>
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
+    <h1><span class="logo-text">FlorecillaService</span> / Gestión de Servicios</h1>
+</header>
+
+<main>
+
+    <a th:href="@{/}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
+        Atrás
+    </a>
+
+    <div class="form-container">
+        <form id="form-servicios">
+
+            <fieldset id="form-fieldset" disabled>
+                <div class="form-section-titles">
+                    <h3>Información básica</h3>
+                </div>
+
+                <div class="form-grid-servicios">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <input type="text" id="descripcion">
+                    </div>
+
+                    <div class="form-group-split">
+                        <div class="form-group">
+                            <label for="precio-base">Precio base</label>
+                            <input type="text" id="precio-base">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="iva">% de IVA</label>
+                            <select id="iva">
+                                <option value="">Seleccione...</option>
+                                <option value="IVA_21">21%</option>
+                                <option value="IVA_105">10,5%</option>
+                                <option value="IVA_0">0%</option>
+                                <option value="IVA_27">27%</option>
+                            </select>
+                        </div>
+
+                        <div></div>
+                    </div>
+                </div>
+            </fieldset>
+
+
+            <div class="form-actions-top" id="form-top-actions" style="display: none;">
+                <button type="button" class="btn btn-secondary" id="btn-cancelar">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="btn-confirmar">Confirmar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <h2 class="table-title">Servicios del sistema</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre de Servicio</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>% de IVA</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="serv : ${servicios}">
+                    <td th:text="${serv.nombre}"></td>
+                    <td th:text="${serv.descripcion}"></td>
+                    <td th:text="${serv.precioUnitario}"></td>
+                    <td th:text="${serv.tipoIva}"></td>
+                    <td th:text="${serv.estadoServicio}"></td>
+                </tr>
+
+                <tr th:if="${servicios.isEmpty()}" class="empty-row">
+                    <td colspan="5">No hay servicios registrados en el sistema.</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="abm-actions" id="abm-bottom-actions">
+        <button type="button" class="btn btn-alta" id="btn-alta-form">Alta</button>
+        <button type="button" class="btn btn-baja">Baja</button>
+        <button type="button" class="btn btn-secondary">Modificar</button>
+    </div>
+
+</main>
+
+</body>
+</html>
