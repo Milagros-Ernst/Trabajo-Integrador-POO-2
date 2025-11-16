@@ -39,7 +39,7 @@ public class Factura {
     @Size(min = 4, max = 8)
     private String nroSerie;
 
-    @NotBlank
+    @NotNull(message = "El precio total es obligatorio")
     private double precioTotal;
 
     @NotNull
@@ -49,7 +49,7 @@ public class Factura {
 
     @NotNull
     @Future
-    private Date vencimiento;
+    private LocalDate vencimiento;
 
     @NotNull
     private EstadoFactura estado;
@@ -100,13 +100,14 @@ public class Factura {
         this.detalles.clear();
     }
 
+    public void calcularTotal() {
+        double subtotal = 0.0;
+        for (DetalleFactura detalle : this.detalles) {
+            subtotal += detalle.getPrecio(); 
+        }
+        this.precioTotal = subtotal;
+    }
 
-    //relacion con cliente:
-    //@OneToOne(mappedBy = "factura");
-
-    // y le tendría que agregar algo tipo:
-    //@OneToOne
-    //@JoinColumn(name="id_factura")
-    //private Factura factura;
+   
 
 }
