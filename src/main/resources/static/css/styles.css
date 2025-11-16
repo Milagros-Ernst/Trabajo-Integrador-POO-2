@@ -512,7 +512,93 @@ body.pagina-inicio {
 
 
 
+/* Estilos de facturación inicio */
 
 
+.facturacion-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 80px;
+    padding-bottom: 40px;
+    text-align: center;
+    height: 100%;
+    justify-content: flex-start;
+}
+
+.facturacion-main h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 40px;
+}
+
+.facturacion-options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 280px;
+
+}
+
+.facturacion-options .btn {
+    padding: 15px 30px;
+    font-size: 16px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+
+/* Estilos de facturacionMAsiva FEA */
+
+.facturacion-form-group select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    width: 200px;
+    appearance: revert;
+}
+body:not(.pagina-inicio) {
+    grid-template-rows: auto 1fr;
+}
+
+.content-container {
+    padding: 0 40px;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.facturacion-form-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.facturacion-form-group label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    line-height: 1.5;
+    flex-shrink: 0;
+}
+
+.facturacion-form-group select {
+    font-size: 14px;
+    box-sizing: border-box;
+    width: 200px;
+}
+
+.btn-facturar {
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 700;
+}
 
 

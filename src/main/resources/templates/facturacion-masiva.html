@@ -1,10 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlorecillaService - Facturación Masiva</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 <body>
+
+<header>
+    <!-- Estructura del header corregida: El nombre de la aplicación lleva el span .logo-text -->
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
+    <h1><span class="logo-text">FlorecillaService</span> / Facturación / Masiva</h1>
+</header>
+
+<main>
+
+    <a th:href="@{/facturacion}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
+        Atrás
+    </a>
+
+    <div class="content-container">
+        <form action="#" method="post">
+            <div class="facturacion-form-group">
+                <label for="periodo">Período a facturar</label>
+                <!-- Inicio del Select: Asumimos que el modelo tiene 'periodosDisponibles' -->
+                <select id="periodo" name="periodo" required>
+                    <option value="">Ingrese un mes</option>
+
+                    <!-- Iteración sobre una lista de periodos (ejemplo: objetos YearMonth) -->
+                    <!-- En Java, podrías usar un DTO o YearMonth.toString() como valor. -->
+                    <!-- Usamos Month.name() para el valor y lo formateamos para el texto visible. -->
+                    <option th:each="periodo : ${periodosDisponibles}"
+                            th:value="${periodo.mes.name() + '-' + periodo.anio}"
+                            th:text="${periodo.mes.getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).forLanguageTag('es')) + ' ' + periodo.anio}">
+                    </option>
+
+                </select>
+            </div>
+
+            <!-- Botón FACTURAR con estilo amarillo (btn-warning) -->
+            <button type="submit" class="btn btn-warning btn-facturar">
+                FACTURAR
+            </button>
+        </form>
+    </div>
+</main>
 
 </body>
 </html>

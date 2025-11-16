@@ -9,21 +9,32 @@
   <script th:src="@{/js/main.js}"></script>
 </head>
 
-<body class="facturacion-inicio">
 <header>
+  <!-- Estructura del header corregida: El nombre de la aplicación lleva el span .logo-text -->
   <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
-  <h1><span class="logo-text">FlorecillaService</span> / Facturacion</h1>
+  <h1><span class="logo-text">FlorecillaService</span> / Facturación</h1>
 </header>
 
 <main>
-
+  <!-- Botón de Atrás -->
   <a th:href="@{/}" class="btn-atras">
     <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
     Atrás
   </a>
 
-  <h3>EN PROCESO</h3>
+  <!-- Contenedor principal para centrar las opciones -->
+  <div class="facturacion-main">
+    <h2>Seleccione el tipo de facturación</h2>
 
+    <div class="facturacion-options">
+
+      <a th:href="@{/facturacion/masiva}" class="btn btn-warning">Facturación Masiva</a>
+
+      <a th:href="@{/facturacion/individual}" class="btn btn-warning">Facturación Individual</a>
+
+    </div>
+  </div>
 </main>
+
 </body>
 </html>
