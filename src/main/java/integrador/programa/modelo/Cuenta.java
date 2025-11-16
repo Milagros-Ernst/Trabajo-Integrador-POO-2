@@ -4,12 +4,21 @@ import integrador.programa.modelo.enumeradores.EstadoCuenta;
 import integrador.programa.modelo.enumeradores.TipoDocumento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import lombok.Builder;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "Cuenta")
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public abstract class Cuenta {
 
     @Id
@@ -42,13 +51,8 @@ public abstract class Cuenta {
     @NotNull(message = "El estado de la cuenta es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_cuenta", nullable = false, length = 20)
-    private EstadoCuenta estadoCuenta;
-
-    // constructores
-    public Cuenta() {
-        this.estadoCuenta = EstadoCuenta.ACTIVA; // estado por defecto al inicio
-    }
-
+    @Builder.Default
+    private EstadoCuenta estadoCuenta = EstadoCuenta.ACTIVA;
 
     public String getNombreCompleto() {
         return nombre + " " + apellido;
