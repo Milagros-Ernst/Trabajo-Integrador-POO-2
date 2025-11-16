@@ -5,6 +5,7 @@ C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabaj
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\repositorios\ClienteRepositorio.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\modelo\enumeradores\EstadoServicio.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\repositorios\NotaRepositorio.java
+C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\modelo\LogFacturacionMasiva.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\modelo\Cliente.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\repositorios\ServicioRepositorio.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\modelo\Cuenta.java
@@ -12,6 +13,7 @@ C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabaj
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\modelo\Servicio.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\modelo\NotaCredito.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\repositorios\DetalleFacturaRepositorio.java
+C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\repositorios\LogFacturacionMasRepositorio.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\controladores\NotaControlador.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\controladores\FacturaControlador.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\repositorios\FacturaRepositorio.java
@@ -26,3 +28,4 @@ C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabaj
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\modelo\Factura.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\servicios\NotaServicio.java
 C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\controladores\ClienteControlador.java
+C:\Users\menac\Desktop\Uni\2025\Segundo cuatri\Poo II\INTEGRADOR\Semana 1\Trabajo-Integrador-POO-2\src\main\java\integrador\programa\repositorios\DetalleNotaRepositorio.java
