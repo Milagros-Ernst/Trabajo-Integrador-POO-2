@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html lang="es">
-<link rel="stylesheet" href="/static/css/styles.css">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Facturacion - FlorecillaService</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 
 <body class="facturacion-inicio">
 <header>
-  <img src="/imagen/florLogo.png" alt="Logo FlorecillaService">
+  <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
   <h1><span class="logo-text">FlorecillaService</span> / Facturacion</h1>
 </header>
 
 <main>
 
-  <a href="inicio.html" class="btn-atras">
-    <img src="/static/imagen/botonAccion-Atras.png" alt="Atrás" class="icono-img-atras">
+  <a th:href="@{/}" class="btn-atras">
+    <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
     Atrás
   </a>
 
   <h3>EN PROCESO</h3>
 
-  </main>
+</main>
 </body>
 </html>

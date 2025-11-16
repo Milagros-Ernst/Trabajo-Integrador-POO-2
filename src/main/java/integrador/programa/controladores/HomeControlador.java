@@ -17,12 +17,12 @@ public class HomeControlador extends Object {
 
     @GetMapping("/clientes")
     public String irAClientes() {
-        return "gestionClientes-inicio";
+        return "gestion-clientes-inicio";
     }
 
     @GetMapping("/servicios")
     public String irAServicios() {
-        return "gestionServicio-ABM";
+        return "gestion-servicio-abm";
     }
 
     @GetMapping("/facturacion")
