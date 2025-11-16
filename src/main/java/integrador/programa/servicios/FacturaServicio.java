@@ -56,16 +56,24 @@ public class FacturaServicio {
     }
 
     @Transactional
-    public NotaCredito bajaFactura(String id) {
-        Optional<Factura> opt = facturaRepositorio.findById(id);
-        if (opt.isEmpty()) return null;
-        Factura factura = opt.get();
-        // marco factura como anulada y guardo
-        factura.setEstado(EstadoFactura.ANULADA);
-        facturaRepositorio.save(factura);
-        NotaCredito nota = notaServicio.altaNotaPorFactura(factura);
-        return nota;
+    public NotaCredito bajaFactura(String idFactura, String motivoAnulacion) {
+    Factura factura = facturaRepositorio.findById(idFactura)
+        .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + idFactura));
+
+    if (!factura.getEstado().equals(EstadoFactura.VIGENTE)) {
+        throw new IllegalStateException("La factura no está VIGENTE y no puede ser anulada. Estado actual: " + factura.getEstado());
     }
+    
+    if (motivoAnulacion == null || motivoAnulacion.trim().isEmpty()) {
+        throw new IllegalArgumentException("Debe proporcionar un motivo para la anulación.");
+    }
+    
+    NotaCredito nota = notaServicio.altaNotaPorFactura(factura, motivoAnulacion);
+    factura.setEstado(EstadoFactura.ANULADA);
+    factura.setNotaCredito(nota); 
+    facturaRepositorio.save(factura);
+    return nota;
+}
 
 
 
