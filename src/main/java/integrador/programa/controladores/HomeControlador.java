@@ -76,4 +76,9 @@ public class HomeControlador extends Object {
         }
     }
 
+    @GetMapping("facturacion/masiva")
+    public String irAFacturacionMasiva() {
+        return "facturacion-masiva";
+    }
+
 }
