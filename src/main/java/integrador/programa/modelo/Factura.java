@@ -59,11 +59,25 @@ public class Factura {
 
     @NotNull
     private Month periodo;
-    // tengo que agregarle esto como atributo al diagrama así
-    // es cohesivo con la pantalla
-    
+
+    @NotBlank
+    @Size(min = 3, max = 100)
+    @Column(name = "empleado_responsable", nullable = false, length = 100)
+    private String empleadoResponsable;
+    // hardcodeariamos un nombre
+
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DetalleFactura> detalles = new ArrayList<>();
+
+    // Relación con NotaCredito. le puse optional por si no hay nota
+    @OneToOne(mappedBy = "facturaAnulada", fetch = FetchType.LAZY, optional = true)
+    private NotaCredito notaCredito;
+
+    // Relación con Cliente 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_cliente", nullable = false)
+    @NotNull(message = "La factura debe estar asociada a un cliente")
+    private Cliente cliente;
 
 
     public void agregarDetalle(DetalleFactura detalle) {
