@@ -1,6 +1,7 @@
 package integrador.programa.controladores;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,11 +9,14 @@ import integrador.programa.servicios.FacturaServicio;
 import jakarta.validation.Valid;
 import integrador.programa.modelo.*;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/facturas")
+@RequestMapping("/facturacion")
 public class FacturaControlador {
 
     @Autowired
@@ -45,6 +49,39 @@ public class FacturaControlador {
         NotaCredito nota = facturaServicio.bajaFactura(id);
         if (nota == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(nota);
+    }
+
+    @PostMapping("/alta") 
+    public ResponseEntity<?> emitirFactura(@RequestBody Map<String, Object> requestBody) {        
+        try {
+            Long idCliente = (long)requestBody.get("idCliente");
+            
+            Month periodo = Month.valueOf((String) requestBody.get("periodo"));
+            LocalDate fechaVencimiento = LocalDate.parse((String) requestBody.get("fechaVencimiento"));
+            
+            @SuppressWarnings("unchecked") 
+            Map<String, LocalDate> serviciosConFechaInicio = (Map<String, LocalDate>) requestBody.get("serviciosConFechaInicio"); 
+
+            if (serviciosConFechaInicio == null || serviciosConFechaInicio.isEmpty()) {
+                return ResponseEntity.badRequest().body("Debe incluir al menos un servicio para facturar.");
+            }
+            
+            Factura nuevaFactura = facturaServicio.emitirFacturaIndividual(
+                idCliente, 
+                periodo, 
+                fechaVencimiento, 
+                serviciosConFechaInicio
+            );
+            
+            // si funciona
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaFactura);
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno o formato de datos incorrecto: " + e.getMessage());
+        }
     }
 
 }
