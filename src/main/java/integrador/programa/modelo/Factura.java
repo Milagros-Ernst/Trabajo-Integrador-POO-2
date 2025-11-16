@@ -85,4 +85,14 @@ public class Factura {
     public void limpiarDetalles() {
         this.detalles.clear();
     }
+
+
+    //relacion con cliente:
+    //@OneToOne(mappedBy = "factura");
+
+    // y le tendría que agregar algo tipo:
+    //@OneToOne
+    //@JoinColumn(name="id_factura")
+    //private Factura factura;
+
 }
