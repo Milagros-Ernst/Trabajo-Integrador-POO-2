@@ -30,22 +30,19 @@ public class DetalleFactura {
     @Setter(AccessLevel.NONE)
     private String idDetalle;
 
-    @NotBlank(message = "El número de serie no puede estar vacío")
-    @Size(min = 1, max = 250, message = "El número de serie debe tener entre 1 y 250 caracteres")
-    @Column(name = "nro_serie")
-    private String nroSerie;
+    @NotBlank(message = "La descripción no puede estar vacía.")
+    @Size(min = 1, max = 250, message = "La descripción debe tener entre 1 y 250 caracteres.")
+    @Column(name = "descripción")
+    private String descripcion;
 
-    @NotNull(message = "El precio total no puede ser nulo")
-    @Positive(message = "El precio total debe ser positivo")
-    @Column(name = "precio_total")
-    private double precioTotal;
+    // pensar en que descripcion sea de tipo servicio???
 
     @NotNull(message = "La cantidad no puede ser nula")
     @Positive(message = "La cantidad debe ser positiva")
     @Column(name = "cantidad")
     private int cantidad;
 
-
+    // relaciones en bd
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_factura", nullable = false)
     @NotNull(message = "El detalle debe pertenecer a una factura")
