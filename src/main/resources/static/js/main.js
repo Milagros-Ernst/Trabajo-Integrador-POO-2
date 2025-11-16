@@ -6,17 +6,14 @@
   - gestion-servicio-abm.html
 
  */
-
 document.addEventListener('DOMContentLoaded', () => {
-
 
     //LÓGICA PARA: gestion-clientes-inicio.html
 
     const formClienteInicio = document.getElementById('form-cliente');
     const btnAltaCliente = document.getElementById('btn-alta-form');
-    const btnModificarCliente = document.getElementById('btn-modificar-form');
 
-    if (formClienteInicio && btnAltaCliente && !btnModificarCliente) {
+    if (formClienteInicio && btnAltaCliente) {
 
         const btnCancelar = document.getElementById('btn-cancelar-edicion');
         const formFieldset = document.getElementById('form-fieldset');
@@ -60,7 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 direccionFiscal: document.getElementById('direccion-fiscal').value,
                 condIVA: document.getElementById('condicion-fiscal').value,
                 tipoDocumento: document.getElementById('tipo-doc').value,
-                numeroDocumento: document.getElementById('nro-doc').value
+                numeroDocumento: document.getElementById('nro-doc').value,
+                estadoCuenta: 'ACTIVA'
             };
 
             fetch('/api/clientes', {
@@ -82,7 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // LÓGICA PARA: gestion-servicio-abm.html
+
+    //LÓGICA PARA: gestion-servicio-abm.html
 
     const formServicios = document.getElementById('form-servicios');
 
@@ -93,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formFieldset = document.getElementById('form-fieldset');
         const topActions = document.getElementById('form-top-actions');
         const bottomActions = document.getElementById('abm-bottom-actions');
+
 
         function habilitarFormularioServicio() {
             formFieldset.disabled = false;
@@ -126,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 nombre: document.getElementById('nombre').value,
                 descripcion: document.getElementById('descripcion').value,
                 precioUnitario: document.getElementById('precio-base').value,
-                tipoIva: document.getElementById('iva').value
+                tipoIva: document.getElementById('iva').value,
+                estadoServicio: 'ALTA'
             };
 
             fetch('/api/servicios', {
@@ -148,12 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //LÓGICA PARA: gestion-clientes-detalle.html
+    // LÓGICA PARA: gestion-clientes-detalle.html
 
     const formClienteDetalle = document.getElementById('form-cliente');
     const btnModificar = document.getElementById('btn-modificar-form');
+    const btnAltaDetalle = document.getElementById('btn-alta-form');
 
-    if (formClienteDetalle && btnModificar) {
+    if (formClienteDetalle && btnModificar && !btnAltaDetalle) {
 
         const btnCancelar = document.getElementById('btn-cancelar-edicion');
         const topActions = document.getElementById('form-top-actions');
@@ -207,9 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formClienteDetalle.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // Asumimos que el ID del cliente está en la URL
             const urlParts = window.location.pathname.split('/');
-            const clienteId = urlParts[urlParts.length - 1]; // Toma el último segmento de la URL
+            const clienteId = urlParts[urlParts.length - 1];
 
             if (!clienteId) {
                 alert('Error: No se pudo determinar el ID del cliente desde la URL.');
@@ -217,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const clienteData = {
-                idCuenta: clienteId, // Incluimos el ID para la actualización
+                idCuenta: clienteId,
                 nombre: formContainer.querySelector('[th\\:field="*{nombre}"]').value,
                 apellido: formContainer.querySelector('[th\\:field="*{apellido}"]').value,
                 telefono: formContainer.querySelector('[th\\:field="*{telefono}"]').value,
@@ -247,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         });
 
-        // Estado inicial de la página de detalle
         formContainer.querySelectorAll('select').forEach(select => {
             select.disabled = true;
         });

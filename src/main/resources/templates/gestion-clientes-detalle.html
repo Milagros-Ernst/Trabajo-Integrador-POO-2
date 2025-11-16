@@ -125,8 +125,8 @@
     </div>
 
     <div class="btn-wrapper-right">
-        <a th:href="@{/clientes/{id}/asignar(id=${cliente.id})}">
-            <button type="button" class="btn btn-warning">Asignar Servicios</button>
+        <a th:href="@{/clientes/{id}/asignar(id=${cliente.idCuenta})}" class="btn btn-warning">
+            Asignar Servicios
         </a>
     </div>
 
@@ -152,7 +152,7 @@
                     <td th:text="${cli.nombre}"></td>
                     <td th:text="${cli.condIVA}"></td>
                     <td>
-                        <a th:href="@{/clientes/{id}(id=${cli.id})}" class="action-link">Ver más detalles</a>
+                        <a th:href="@{/clientes/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>
                     </td>
                 </tr>
                 <tr th:if="${subClientes.isEmpty()}" class="empty-row">

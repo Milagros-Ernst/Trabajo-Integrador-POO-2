@@ -43,11 +43,11 @@
                     <div class="form-group">
                         <label for="condicion-fiscal">Condición fiscal</label>
                         <select id="condicion-fiscal">
-                            <option>Seleccione uno</option>
-                            <option>Monotributo</option>
-                            <option>Responsable Inscripto</option>
-                            <option>Consumidor final</option>
-                            <option>Exento</option>
+                            <option value="">Seleccione uno</option>
+                            <option value="MONOTRIBUTO">Monotributo</option>
+                            <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
+                            <option value="CONSUMIDOR_FINAL">Consumidor final</option>
+                            <option value="EXENTO">Exento</option>
                         </select>
                     </div>
 
@@ -68,10 +68,10 @@
                         <label for="tipo-doc">Tipo de documento</label>
                         <div style="display: flex; gap: 8px;">
                             <select id="tipo-doc" style="flex: 1;">
-                                <option>Seleccione uno</option>
-                                <option>DNI</option>
-                                <option>CUIT</option>
-                                <option>CUIL</option>
+                                <option value="">Seleccione uno</option>
+                                <option value="DNI">DNI</option>
+                                <option value="CUIT">CUIT</option>
+                                <option value="CUIL">CUIL</option>
                             </select>
                             <input type="text" id="nro-doc" placeholder="Nro. doc" style="flex: 2;">
                         </div>
@@ -112,8 +112,7 @@
                     <td th:text="${cli.nombre}"></td>
                     <td th:text="${cli.condIVA}"></td>
                     <td>
-                        <a th:href="@{/clientes/{id}(id=${cli.id})}" class="action-link">Ver más detalles</a>
-                    </td>
+                        <a th:href="@{/clientes/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>                    </td>
                 </tr>
 
                 <tr th:if="${clientes.isEmpty()}" class="empty-row">

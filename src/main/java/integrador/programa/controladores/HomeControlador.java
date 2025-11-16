@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -48,4 +50,30 @@ public class HomeControlador extends Object {
     public String irAFacturacion() {
         return "facturacion-inicio";
     }
+
+    @GetMapping("/clientes/{id}")
+    public String irADetalleCliente(@PathVariable Long id, Model model) {
+
+        try {
+            // 1. Busca el cliente principal
+            Cliente cliente = clienteServicio.buscarPorId(id);
+            model.addAttribute("cliente", cliente);
+
+            // lista x si no tenemos servicios cargados
+            // List<AsignacionServicio> servicios = asignacionServicio.buscarPorCliente(id);
+            // model.addAttribute("servicios", servicios);
+
+            List<Cliente> subClientes = clienteServicio.listarTodos();
+            subClientes.removeIf(c -> c.getIdCuenta().equals(id));
+            model.addAttribute("subClientes", subClientes);
+
+            model.addAttribute("servicios", Collections.emptyList());
+
+            return "gestion-clientes-detalle";
+
+        } catch (Exception e) {
+            return "redirect:/clientes";
+        }
+    }
+
 }

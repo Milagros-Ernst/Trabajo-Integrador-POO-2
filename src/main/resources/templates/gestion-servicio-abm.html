@@ -90,9 +90,9 @@
                 <tr th:each="serv : ${servicios}">
                     <td th:text="${serv.nombre}"></td>
                     <td th:text="${serv.descripcion}"></td>
-                    <td th:text="${serv.precio}"></td>
-                    <td th:text="${serv.porcentajeIVA}"></td>
-                    <td th:text="${serv.estado}"></td>
+                    <td th:text="${serv.precioUnitario}"></td>
+                    <td th:text="${serv.tipoIva}"></td>
+                    <td th:text="${serv.estadoServicio}"></td>
                 </tr>
 
                 <tr th:if="${servicios.isEmpty()}" class="empty-row">
@@ -111,58 +111,6 @@
     </div>
 
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        const btnAlta = document.getElementById('btn-alta-form');
-        const btnCancelar = document.getElementById('btn-cancelar');
-
-        const form = document.getElementById('form-servicios');
-        const formFieldset = document.getElementById('form-fieldset');
-
-        const topActions = document.getElementById('form-top-actions');
-        const bottomActions = document.getElementById('abm-bottom-actions');
-
-        function habilitarFormulario() {
-            formFieldset.disabled = false;
-            topActions.style.display = 'flex';
-            bottomActions.style.display = 'none';
-
-            form.reset();
-
-            const firstInput = formFieldset.querySelector('input');
-            if (firstInput) {
-                firstInput.focus();
-            }
-        }
-
-        function deshabilitarFormulario() {
-            formFieldset.disabled = true;
-            topActions.style.display = 'none';
-            bottomActions.style.display = 'block';
-
-            form.reset();
-        }
-
-        if (btnAlta) {
-            btnAlta.addEventListener('click', habilitarFormulario);
-        }
-
-        if (btnCancelar) {
-            btnCancelar.addEventListener('click', (e) => {
-                e.preventDefault();
-                deshabilitarFormulario();
-            });
-        }
-
-        if (form) {
-            form.addEventListener('submit', (e) => {
-
-            });
-        }
-    });
-</script>
 
 </body>
 </html>
