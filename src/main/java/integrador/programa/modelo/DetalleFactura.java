@@ -36,6 +36,7 @@ public class DetalleFactura {
     private String descripcion;
 
     // pensar en que descripcion sea de tipo servicio???
+    // en realidad debería tomar por ahi la de servicio pero no ser tipo
 
     @NotNull(message = "La cantidad no puede ser nula")
     @Positive(message = "La cantidad debe ser positiva")
@@ -47,4 +48,14 @@ public class DetalleFactura {
     @JoinColumn(name = "id_factura", nullable = false)
     @NotNull(message = "El detalle debe pertenecer a una factura")
     private Factura factura;
+
+    // Relación con Servicio 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_servicio", nullable = false)
+    @NotNull(message = "El detalle debe estar asociado a un servicio")
+    private Servicio servicio;
+
+    // Relación con DetalleNota 
+    @OneToOne(mappedBy = "detalleFactura", fetch = FetchType.LAZY)
+    private DetalleNota detalleNota;
 }
