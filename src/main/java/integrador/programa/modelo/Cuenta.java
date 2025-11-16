@@ -13,9 +13,7 @@ import lombok.Builder;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "Cuenta")
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 @Getter
 @Setter
 @NoArgsConstructor
