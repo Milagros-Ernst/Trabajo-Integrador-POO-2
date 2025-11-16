@@ -53,6 +53,15 @@ public class NotaCredito {
     @NotNull
     private TipoComprobante tipo;
 
+    @NotBlank
+    @Size(min = 3, max = 100)
+    @Column(name = "empleado_responsable", nullable = false, length = 100)
+    private String empleadoResponsable;
+
+    @NotBlank(message = "El motivo de anulación es obligatorio")
+    @Column(name = "motivo_anulacion", nullable = false, length = 255)
+    private String motivoAnulacion;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_factura_anulada", referencedColumnName = "id_factura", unique = true)
     private Factura facturaAnulada;
