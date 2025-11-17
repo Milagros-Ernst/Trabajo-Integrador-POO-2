@@ -61,13 +61,8 @@ public class HomeControlador extends Object {
     public String irADetalleCliente(@PathVariable Long id, Model model) {
 
         try {
-            // 1. Busca el cliente principal
             Cliente cliente = clienteServicio.buscarPorId(id);
             model.addAttribute("cliente", cliente);
-
-            // lista x si no tenemos servicios cargados
-            // List<AsignacionServicio> servicios = asignacionServicio.buscarPorCliente(id);
-            // model.addAttribute("servicios", servicios);
 
             List<Cliente> subClientes = clienteServicio.listarTodos();
             subClientes.removeIf(c -> c.getIdCuenta().equals(id));
@@ -81,6 +76,29 @@ public class HomeControlador extends Object {
             return "redirect:/clientes";
         }
     }
+
+    @GetMapping("/clientes/{id}/asignar")
+    public String irAAsignarServicios(@PathVariable Long id, Model model) {
+        try {
+            Cliente cliente = clienteServicio.buscarPorId(id);
+            model.addAttribute("cliente", cliente);
+
+            // metodo que busque las asignaciones de cliente x id
+            // List<AsignacionServicio> contratados = asignacionServicio.buscarPorClienteId(id);
+            //model.addAttribute("serviciosContratados", contratados);
+
+
+            List<Servicio> disponibles = servicioServicio.listarTodos();
+            model.addAttribute("serviciosDisponibles", disponibles);
+
+            return "gestionClientes-asignServ";
+
+        } catch (Exception e) {
+            // si el cliente no existe, vuelve a la lista general
+            return "redirect:/clientes";
+        }
+    }
+
 
     @GetMapping("facturacion/masiva")
     public String irAFacturacionMasiva(Model model) {
