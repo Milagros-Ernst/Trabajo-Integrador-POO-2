@@ -66,13 +66,11 @@ public class ClienteControlador {
             @PathVariable Long id,
             @Valid @RequestBody Cliente cliente) {
         try {
-            clienteServicio.buscarPorId(id);
-            cliente.setIdCuenta(id);
-            
-            Cliente clienteActualizado = clienteServicio.actualizarCliente(cliente);
+            // El servicio ahora maneja la validación y asignación del ID
+            Cliente clienteActualizado = clienteServicio.actualizarCliente(id, cliente);
             return ResponseEntity.ok(clienteActualizado);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
