@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -26,11 +25,6 @@
 
     <div class="form-container">
         <form id="facturacion-form-group" th:action="@{/facturacion/masiva}" th:method="post">
-
-            <!-- Success / Error messages -->
-            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
-
             <fieldset id="form-fieldset">
                 <div class="form-section-titles">
                     <h3>Información para facturación.</h3>
