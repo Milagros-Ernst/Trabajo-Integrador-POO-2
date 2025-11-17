@@ -2,6 +2,7 @@ package integrador.programa.controladores;
 import integrador.programa.modelo.Cliente;
 import integrador.programa.modelo.Servicio;
 import integrador.programa.servicios.ClienteServicio;
+import integrador.programa.servicios.ClienteServicioServicio;
 import integrador.programa.servicios.ServicioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,9 @@ import integrador.programa.servicios.FacturaServicio;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Set;
+import integrador.programa.servicios.ClienteServicioServicio;
 
 @Controller
 public class HomeControlador extends Object {
@@ -25,7 +29,11 @@ public class HomeControlador extends Object {
     private ClienteServicio clienteServicio;
 
     @Autowired
+    private ClienteServicioServicio clienteServicioServicio;
+
+    @Autowired
     private ServicioServicio servicioServicio;
+
     @Autowired
     private FacturaServicio facturaServicio;
 
@@ -77,26 +85,49 @@ public class HomeControlador extends Object {
         }
     }
 
+
     @GetMapping("/clientes/{id}/asignar")
     public String irAAsignarServicios(@PathVariable Long id, Model model) {
         try {
             Cliente cliente = clienteServicio.buscarPorId(id);
             model.addAttribute("cliente", cliente);
 
-            // metodo que busque las asignaciones de cliente x id
-            // List<AsignacionServicio> contratados = asignacionServicio.buscarPorClienteId(id);
-            //model.addAttribute("serviciosContratados", contratados);
+            List<integrador.programa.modelo.ClienteServicio> contratados = clienteServicioServicio.listarServiciosActivosDeCliente(id);
+            model.addAttribute("serviciosContratados", contratados);
 
+            List<Servicio> todosLosServicios = servicioServicio.listarTodos();
 
-            List<Servicio> disponibles = servicioServicio.listarTodos();
+            Set<String> idsServiciosContratados = contratados.stream()
+                    .map(asignacion -> asignacion.getServicio().getIdServicio())
+                    .collect(Collectors.toSet());
+
+            List<Servicio> disponibles = todosLosServicios.stream()
+                    .filter(servicio -> !idsServiciosContratados.contains(servicio.getIdServicio()))
+                    .collect(Collectors.toList());
+
             model.addAttribute("serviciosDisponibles", disponibles);
 
-            return "gestionClientes-asignServ";
+            return "gestion-clientes-asignserv";
 
         } catch (Exception e) {
-            // si el cliente no existe, vuelve a la lista general
+
+            System.err.println("Error en irAAsignarServicios: " + e.getMessage());
             return "redirect:/clientes";
         }
+    }
+
+    @PostMapping("/clientes/{id}/asignar")
+    public String asignarServicioACliente(@PathVariable Long id,
+                                          @RequestParam String servicioId) {
+
+        try {
+            clienteServicioServicio.asignarServicioACliente(id, servicioId);
+
+        } catch (Exception e) {
+            System.out.println("Error al asignar servicio: " + e.getMessage());
+        }
+
+        return "redirect:/clientes/" + id + "/asignar";
     }
 
 

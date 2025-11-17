@@ -17,7 +17,7 @@
 
 <main>
 
-    <a th:href="@{/clientes/{id}(id=${cliente.id})}" class="btn-atras">
+    <a th:href="@{/clientes/{id}(id=${cliente.idCuenta})}" class="btn-atras">
         <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
         Atrás
     </a>
@@ -93,18 +93,23 @@
                 </tr>
                 </thead>
                 <tbody>
+
                 <tr th:if="${!serviciosContratados.isEmpty()}" th:each="asig : ${serviciosContratados}">
+
                     <td th:text="${asig.servicio.nombre}"></td>
                     <td th:text="${asig.servicio.descripcion}"></td>
-                    <td th:text="${asig.estado}"></td>
-                    <td>
-                        <a th:href="@{/clientes/{clienteId}/facturas(clienteId=${cliente.id})}" class="action-link">Ver facturas</a>
 
-                        <form th:action="@{/clientes/{clienteId}/asignaciones/{asigId}/eliminar(clienteId=${cliente.id}, asigId=${asig.id})}" method="post" style="display: inline;">
+
+                    <td th:text="${asig.estadoServicio}"></td>
+
+                    <td>
+                        <a th:href="@{/clientes/facturas(asigId=${asig.idClienteServicio})}" class="action-link">Ver facturas</a>
+                        <form th:action="@{/clientes/{clienteId}/asignaciones/{asigId}/eliminar(clienteId=${cliente.idCuenta}, asigId=${asig.idClienteServicio})}" method="post" style="display: inline;">
                             <button type="submit" class="action-link-danger action-link-button">Baja servicio</button>
                         </form>
                     </td>
                 </tr>
+
                 <tr th:if="${serviciosContratados.isEmpty()}" class="empty-row">
                     <td colspan="4">No hay servicios contratados.</td>
                 </tr>
@@ -130,20 +135,24 @@
                 </thead>
 
                 <tbody>
-                <tr th:if="${!serviciosDisponibles.isEmpty()}" th:each="serv : ${serviciosDisponibles}">
-                    <td th:text="${serv.nombre}"></td>
-                    <td th:text="${serv.descripcion}"></td>
-                    <td th:text="${serv.precio}"></td>
-                    <td th:text="${serv.porcentajeIVA}"></td>
-                    <td>
-                        <form th:action="@{/clientes/{clienteId}/asignar(clienteId=${cliente.id})}" method="post" style="display: inline;">
-                            <input type="hidden" name="servicioId" th:value="${serv.id}" />
-                            <button type="submit" class="action-link-success action-link-button">Asignar servicio</button>
-                        </form>
 
-                        <a th:href="@{/servicios/{id}(id=${serv.id})}" class="action-link-info">Gestionar servicio</a>
-                    </td>
-                </tr>
+                    <tr th:if="${!serviciosDisponibles.isEmpty()}" th:each="serv : ${serviciosDisponibles}">
+
+                        <td th:text="${serv.nombre}"></td>
+                        <td th:text="${serv.descripcion}"></td>
+                        <td th:text="${serv.precioUnitario}"></td>
+                        <td th:text="${serv.tipoIva}"></td>
+                        <td>
+
+                            <form th:action="@{/clientes/{clienteId}/asignar(clienteId=${cliente.idCuenta})}" method="post" style="display: inline;">
+                                <input type="hidden" name="servicioId" th:value="${serv.idServicio}" />
+                                <button type="submit" class="action-link-success action-link-button">Asignar servicio</button>
+                            </form>
+                            <a th:href="@{/servicios/{id}(id=${serv.idServicio})}" class="action-link-info">Gestionar servicio</a>
+                        </td>
+                    </tr>
+
+
                 <tr th:if="${serviciosDisponibles.isEmpty()}" class="empty-row">
                     <td colspan="5">No hay servicios en el sistema para asignar.</td>
                 </tr>
@@ -153,10 +162,10 @@
     </div>
 
     <div class="page-actions-bottom">
-        <a th:href="@{/clientes/{id}(id=${cliente.id})}">
+        <a th:href="@{/clientes/{id}(id=${cliente.idCuenta})}">
             <button type="button" class="btn btn-secondary">Cancelar</button>
         </a>
-        <a th:href="@{/clientes/{id}(id=${cliente.id})}">
+        <a th:href="@{/clientes/{id}(id=${cliente.idCuenta})}">
             <button type="button" class="btn btn-primary">Confirmar</button>
         </a>
     </div>
