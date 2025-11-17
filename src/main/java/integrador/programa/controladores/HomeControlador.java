@@ -114,12 +114,19 @@ public class HomeControlador extends Object {
             java.time.LocalDate fechaVencimiento = ym.atEndOfMonth();
 
             // Llamada al servicio que genera las facturas masivas y devuelve un registro
-            integrador.programa.modelo.LogFacturacionMasiva registro = facturaServicio.emitirFacturaMasiva(serviciosIds, periodo, fechaVencimiento);
+            integrador.programa.modelo.LogFacturacionMasiva registro = null;
+            try {
+                registro = facturaServicio.emitirFacturaMasiva(serviciosIds, periodo, fechaVencimiento);
+            } catch (Exception inner) {
+                System.err.println("[ERROR] Error executing emitirFacturaMasiva: " + inner.getMessage());
+                inner.printStackTrace();
+                throw inner;
+            }
 
-            model.addAttribute("registro", registro);
-            model.addAttribute("success", "Facturación masiva ejecutada. Facturas generadas: " + registro.getCantidadFacturas());
             return "facturacion-masiva";
         } catch (Exception e) {
+            System.err.println("[ERROR] procesarFacturacionMasivaFormulario failed: " + e.getMessage());
+            e.printStackTrace();
             model.addAttribute("error", "Error al procesar la facturación masiva: " + e.getMessage());
             return "facturacion-masiva";
         }

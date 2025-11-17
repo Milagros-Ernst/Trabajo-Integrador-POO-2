@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlorecillaService - Facturación Masiva</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
 
 <body>
-
 
 <header>
     <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
@@ -26,96 +25,97 @@
     </a>
 
     <div class="form-container">
-         <form id="facturacion-form-group">
-        <form th:action="@{/facturacion/masiva}" method="post">
+        <form id="facturacion-form-group" th:action="@{/facturacion/masiva}" th:method="post">
+
+            <!-- Success / Error messages -->
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
 
             <fieldset id="form-fieldset">
-            <div class="form-section-titles">
-                <h3>Información para facturación.</h3>
-            </div>           
-
-            <div class="form-grid-servicios">
-                <div class="form-group">
-                <label for="mes">Periodo a procesar:</label>
-
-                    <select id="mes" name="mes" required>
-                        <option value="" disabled selected>Seleccionar mes</option>
-                        <option value="1">Enero</option>
-                        <option value="2">Febrero</option>
-                        <option value="3">Marzo</option>
-                        <option value="4">Abril</option>
-                        <option value="5">Mayo</option>
-                        <option value="6">Junio</option>
-                        <option value="7">Julio</option>
-                        <option value="8">Agosto</option>
-                        <option value="9">Septiembre</option>
-                        <option value="10">Octubre</option>
-                        <option value="11">Noviembre</option>
-                        <option value="12">Diciembre</option>
-                    </select>
+                <div class="form-section-titles">
+                    <h3>Información para facturación.</h3>
                 </div>
-            
-            
-                <div class="form-group">
-                    <label for="tipoFac">Tipo de facturación:</label>
-                        <select id="tipoFac" name="tipoFac" required>
+
+                <div class="form-grid-servicios">
+                    <div class="form-group">
+                        <label for="mes">Periodo a procesar:</label>
+
+                        <select id="mes" name="mes" required>
+                            <option value="" disabled selected>Seleccionar mes</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoFac">Tipo de facturación:</label>
+                        <select id="tipoFac" name="tipoFac">
                             <option value="" disabled selected>Servicio</option>
                         </select>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div>
+                <h4>Seleccione los servicios a facturar</h4>
+            </div>
+
+            <!-- Tabla de servicios disponible para seleccionar en la facturación masiva -->
+            <div class="table-container">
+                <h2 class="table-title">Servicios del sistema</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre de Servicio</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>% de IVA</th>
+                                <th>Seleccionar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr th:each="serv : ${servicios}">
+                                <td th:text="${serv.nombre}"></td>
+                                <td th:text="${serv.descripcion}"></td>
+                                <td th:text="${serv.precioUnitario}"></td>
+                                <td th:text="${serv.tipoIva}"></td>
+                                <td>
+                                    <input type="checkbox" name="serviciosIds" th:value="${serv.idServicio}" />
+                                </td>
+                            </tr>
+
+                            <tr th:if="${servicios.isEmpty()}" class="empty-row">
+                                <td colspan="5">No hay servicios registrados en el sistema.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-    </fieldset>
-    </div>
-    </form>
 
-    <div>
-        <h4>Seleccione los servicios a facturar</h4>
-    </div>  
-
-
-        <!-- Tabla de servicios disponible para seleccionar en la facturación masiva -->
-        <div class="table-container">
-            <h2 class="table-title">Servicios del sistema</h2>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre de Servicio</th>
-                            <th>Descripción</th>
-                            <th>Precio</th>
-                            <th>% de IVA</th>
-                            <th>Seleccionar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    <tr th:each="serv : ${servicios}">
-                        <td th:text="${serv.nombre}"></td>
-                        <td th:text="${serv.descripcion}"></td>
-                        <td th:text="${serv.precioUnitario}"></td>
-                        <td th:text="${serv.tipoIva}"></td>
-                        <td>
-                            <input type="checkbox" name="serviciosIds" th:value="${serv.idServicio}" />
-                        </td>
-                    </tr>
-
-                    <tr th:if="${servicios.isEmpty()}" class="empty-row">
-                        <td colspan="5">No hay servicios registrados en el sistema.</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="abm-actions" id="abm-bottom-actions">
+                <button type="submit" class="btn btn-warning btn-facturar">
+                    Facturar Servicios
+                </button>
             </div>
-        </div>
 
-        <div class="abm-actions" id="abm-bottom-actions">
-            <button type="submit" class="btn btn-warning btn-facturar">
-                Facturar Servicios
-            </button>
-        </div>
+        </form>
     </div>
+
 </main>
 
-
-
 </body>
+</html>
 
 </html>
