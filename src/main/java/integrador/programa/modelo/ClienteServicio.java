@@ -15,9 +15,7 @@ import lombok.AccessLevel;
 
 @Entity
 @Table(name = "cliente_servicio") 
-@Getter
-@Setter
-@NoArgsConstructor
+@Getter@Setter@NoArgsConstructor
 public class ClienteServicio {
 
     @Id
