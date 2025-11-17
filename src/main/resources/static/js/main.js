@@ -7,6 +7,7 @@
 
  */
 document.addEventListener('DOMContentLoaded', () => {
+    
 
     //LÓGICA PARA: gestion-clientes-inicio.html
 
@@ -266,4 +267,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // lógica facturación que le agregué para mas felicidad
+
+    const selectAllCheckbox = document.getElementById('seleccionar-todo');
+    
+    if (selectAllCheckbox) { 
+        
+        const serviceCheckboxes = document.querySelectorAll('.checkbox-servicio');
+        const facturacionForm = document.getElementById('facturacion-form-group');
+
+        selectAllCheckbox.addEventListener('click', function() {
+            serviceCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        serviceCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                const allChecked = Array.from(serviceCheckboxes).every(cb => cb.checked);
+                selectAllCheckbox.checked = allChecked;
+            });
+        });
+
+        if (facturacionForm) {
+            facturacionForm.addEventListener('submit', function(e) {
+                const checkedCount = document.querySelectorAll('.checkbox-servicio:checked').length;
+                
+                if (checkedCount === 0) {
+                    e.preventDefault(); 
+                    alert('Debe seleccionar al menos un servicio para facturar.');
+                }
+            });
+        }
+    }
 });
+
