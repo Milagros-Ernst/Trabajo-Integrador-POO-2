@@ -15,7 +15,7 @@ import integrador.programa.modelo.NotaCredito;
 import integrador.programa.modelo.Servicio;
 import integrador.programa.modelo.enumeradores.EstadoCuenta;
 import integrador.programa.modelo.enumeradores.EstadoFactura;
-import integrador.programa.modelo.enumeradores.TipoComprobante;
+import integrador.programa.modelo.enumeradores.TipoComprobante; // Asegúrate que esté importado
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,12 +39,14 @@ public class FacturaServicio {
     @Autowired
     private ClienteRepositorio clienteRepositorio; 
     @Autowired
+    private ClienteServicioServicio clienteServicioServicio; 
+    @Autowired
     private ServicioServicio servicioServicio; 
     @Autowired
     private ServicioRepositorio servicioRepositorio;
     @Autowired
     private LogFacturacionMasRepositorio factMasivaRepositorio;
-     
+    
     public Factura agregarFactura(Factura factura) {
         return facturaRepositorio.save(factura);
     }
@@ -59,74 +61,81 @@ public class FacturaServicio {
 
     @Transactional
     public NotaCredito bajaFactura(String idFactura, String motivoAnulacion) {
-    Factura factura = facturaRepositorio.findById(idFactura)
-        .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + idFactura));
+        Factura factura = facturaRepositorio.findById(idFactura)
+            .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + idFactura));
 
-    if (!factura.getEstado().equals(EstadoFactura.VIGENTE)) {
-        throw new IllegalStateException("La factura no está VIGENTE y no puede ser anulada. Estado actual: " + factura.getEstado());
-    }
+        // CORRECCIÓN: Tu enum es VIGENTE, no PENDIENTE
+        if (!factura.getEstado().equals(EstadoFactura.VIGENTE)) {
+            throw new IllegalStateException("La factura no está VIGENTE y no puede ser anulada. Estado actual: " + factura.getEstado());
+        }
     
-    if (motivoAnulacion == null || motivoAnulacion.trim().isEmpty()) {
-        throw new IllegalArgumentException("Debe proporcionar un motivo para la anulación.");
+        if (motivoAnulacion == null || motivoAnulacion.trim().isEmpty()) {
+            throw new IllegalArgumentException("Debe proporcionar un motivo para la anulación.");
+        }
+        
+        NotaCredito nota = notaServicio.altaNotaPorFactura(factura, motivoAnulacion);
+        factura.setEstado(EstadoFactura.ANULADA);
+        factura.setNotaCredito(nota); 
+        facturaRepositorio.save(factura);
+        return nota;
     }
-    
-    NotaCredito nota = notaServicio.altaNotaPorFactura(factura, motivoAnulacion);
-    factura.setEstado(EstadoFactura.ANULADA);
-    factura.setNotaCredito(nota); 
-    facturaRepositorio.save(factura);
-    return nota;
-}
 
 
-
-    // alerta de mucho texto. función para el alta.
-@Transactional
+    @Transactional
     public Factura emitirFacturaIndividual(
             Cliente cliente,
             List<String> serviciosIds,
-            int periodo, // Usamos 'int' para ser consistentes con tu método de masiva
-            LocalDate fechaVencimiento
+            int periodo,
+            java.time.LocalDate fechaVencimiento
     ) throws Exception {
 
-        // 1. Crear la Factura y setear datos básicos
         Factura factura = new Factura();
         factura.setCliente(cliente);
-        factura.setPeriodo(periodo); // Guardamos el número del mes
-        factura.setFecha(LocalDate.now());
+        factura.setPeriodo(periodo);
+        factura.setFecha(java.time.LocalDate.now());
         factura.setVencimiento(fechaVencimiento);
-        factura.setEstado(EstadoFactura.VIGENTE);
-
-        // 2. Determinar el Tipo de Comprobante (lógica de tu fact. masiva)
+        factura.setEstado(EstadoFactura.VIGENTE); // El estado PENDIENTE no existe en tu enum
+        factura.setEmpleadoResponsable(RESPONSABLE); // Usamos la constante
+        factura.setNroSerie("F-001"); // Hardcodeado
+        
+        // --- INICIO DE CORRECCIÓN (Enums) ---
         switch (cliente.getCondIVA()) {
             case RESPONSABLE_INSCRIPTO:
-                factura.setTipo(TipoComprobante.A);
+                factura.setTipo(TipoComprobante.A); // Era 'A'
                 break;
             case MONOTRIBUTO:
             case CONSUMIDOR_FINAL:
             case EXENTO:
-                factura.setTipo(TipoComprobante.B);
+                factura.setTipo(TipoComprobante.B); // Era 'B'
                 break;
             default:
-                factura.setTipo(TipoComprobante.C);
+                factura.setTipo(TipoComprobante.C); // Era 'C'
         }
+        // --- FIN DE CORRECCIÓN ---
 
         List<DetalleFactura> detalles = new ArrayList<>();
         for (String servicioId : serviciosIds) {
             Servicio servicioAFacturar = servicioServicio.buscarPorId(servicioId);
-
-            DetalleFactura detalle = new DetalleFactura(servicioAFacturar, factura);
+            
+            DetalleFactura detalle = new DetalleFactura(); 
+            
+            detalle.setFactura(factura);
+            detalle.setServicio(servicioAFacturar);
+            detalle.setDescripcion(servicioAFacturar.getDescripcion());
+            // Tu modelo DetalleFactura espera un 'int' para precio
+            detalle.setPrecio(servicioAFacturar.getPrecioUnitario().intValue());
             
             detalles.add(detalle);
         }
 
         factura.setDetalles(detalles);
-        factura.calcularTotal(); // Tu modelo Factura ya sabe cómo hacer esto
+        factura.calcularTotal(); // Esto usa la lógica que corregimos en Factura.java
         
         return facturaRepositorio.save(factura);
     }
 
 
-@Transactional
+    @Transactional
     public LogFacturacionMasiva emitirFacturaMasiva(
             List<String> idServiciosFacturar,
             int periodo,
@@ -136,12 +145,13 @@ public class FacturaServicio {
             throw new IllegalArgumentException("Debe seleccionar al menos un servicio para la facturación masiva.");
         }
         
+        // Esta lógica está bien, trae los objetos Servicio
         List<Servicio> serviciosFacturar = idServiciosFacturar.stream()
                 .map(id -> servicioRepositorio.findById(id).orElse(null))
                 .filter(s -> s != null)
                 .collect(Collectors.toList());
 
-
+        // Trae clientes activos
         List<Cliente> clientesActivos = clienteRepositorio.findAll().stream()
                 .filter(c -> c.getEstadoCuenta().equals(EstadoCuenta.ACTIVA))
                 .collect(Collectors.toList());
@@ -149,24 +159,41 @@ public class FacturaServicio {
         int facturasGeneradas = 0;
 
         for (Cliente cliente : clientesActivos) {
-            LocalDate fechaInicio = LocalDate.of(LocalDate.now().getYear(), periodo, 1);
-    
-            Map<String, LocalDate> serviciosConFechaInicio = new HashMap<>();
+            
+            // Reutilizamos la lista de IDs de servicios que recibimos
+            // (La lógica anterior de crear un Map era innecesaria)
+            List<String> idsParaEsteCliente = new ArrayList<>(idServiciosFacturar);
 
-
-            for (Servicio servicio : serviciosFacturar) {
-                serviciosConFechaInicio.put(servicio.getIdServicio(), fechaInicio); 
+            // Filtramos servicios a los que el cliente SÍ está suscripto
+            // (Esta es la lógica que faltaba)
+            try {
+                List<integrador.programa.modelo.ClienteServicio> serviciosDelCliente = 
+                    clienteServicioServicio.listarServiciosActivosDeCliente(cliente.getIdCuenta());
+                
+                List<String> idsServiciosDelCliente = serviciosDelCliente.stream()
+                    .map(cs -> cs.getServicio().getIdServicio())
+                    .collect(Collectors.toList());
+                
+                // Dejamos en la lista solo los servicios que estén EN AMBAS listas
+                idsParaEsteCliente.retainAll(idsServiciosDelCliente);
+                
+            } catch (Exception e) {
+                System.err.println("Error obteniendo servicios para cliente " + cliente.getIdCuenta() + ": " + e.getMessage());
+                idsParaEsteCliente.clear(); // No facturar si no podemos verificar
             }
 
-            if (!serviciosConFechaInicio.isEmpty()) {
-                
+            if (!idsParaEsteCliente.isEmpty()) {
                 try {
+                    // --- INICIO DE CORRECCIÓN (Llamada al método) ---
+                    // Armamos los argumentos que el método SÍ espera
                     emitirFacturaIndividual(
-                        cliente.getIdCuenta(), 
-                        periodo, 
-                        fechaVencimiento, 
-                        serviciosConFechaInicio
+                        cliente,             // Arg 1: El objeto Cliente
+                        idsParaEsteCliente,  // Arg 2: La List<String> de IDs
+                        periodo,             // Arg 3: El int del periodo
+                        fechaVencimiento     // Arg 4: El LocalDate de vencimiento
                     );
+                    // --- FIN DE CORRECCIÓN ---
+                    
                     facturasGeneradas++;
                 } catch (Exception e) {
                     System.err.println("Error al facturar cliente " + cliente.getIdCuenta() + ": " + e.getMessage());
