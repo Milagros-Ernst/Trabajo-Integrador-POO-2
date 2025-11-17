@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ public class FacturaServicio {
     private NotaServicio notaServicio; 
     @Autowired
     private ClienteRepositorio clienteRepositorio; 
+    @Autowired
+    private ServicioServicio servicioServicio; 
     @Autowired
     private ServicioRepositorio servicioRepositorio;
     @Autowired
@@ -77,96 +80,49 @@ public class FacturaServicio {
 
 
     // alerta de mucho texto. función para el alta.
+@Transactional
     public Factura emitirFacturaIndividual(
-            Long idCliente,
-            int periodo,
-            LocalDate fechaVencimiento,
-            Map<String, LocalDate> serviciosConFechaInicio 
-    ) {
-        
-        Cliente cliente = clienteRepositorio.findById(idCliente)
-            .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado."));
-        
-        if (cliente.getEstadoCuenta() == null || !cliente.getEstadoCuenta().equals(EstadoCuenta.ACTIVA)) { 
-            throw new IllegalStateException("Solo se puede facturar a cuentas Activas.");
+            Cliente cliente,
+            List<String> serviciosIds,
+            int periodo, // Usamos 'int' para ser consistentes con tu método de masiva
+            LocalDate fechaVencimiento
+    ) throws Exception {
+
+        // 1. Crear la Factura y setear datos básicos
+        Factura factura = new Factura();
+        factura.setCliente(cliente);
+        factura.setPeriodo(periodo); // Guardamos el número del mes
+        factura.setFecha(LocalDate.now());
+        factura.setVencimiento(fechaVencimiento);
+        factura.setEstado(EstadoFactura.VIGENTE);
+
+        // 2. Determinar el Tipo de Comprobante (lógica de tu fact. masiva)
+        switch (cliente.getCondIVA()) {
+            case RESPONSABLE_INSCRIPTO:
+                factura.setTipo(TipoComprobante.A);
+                break;
+            case MONOTRIBUTO:
+            case CONSUMIDOR_FINAL:
+            case EXENTO:
+                factura.setTipo(TipoComprobante.B);
+                break;
+            default:
+                factura.setTipo(TipoComprobante.C);
         }
 
-        Factura nuevaFactura = new Factura();
-        nuevaFactura.setCliente(cliente);
-        nuevaFactura.setFecha(LocalDate.now()); 
-        nuevaFactura.setVencimiento(fechaVencimiento);
-        nuevaFactura.setEmpleadoResponsable(RESPONSABLE);
-        nuevaFactura.setEstado(EstadoFactura.VIGENTE);
-        nuevaFactura.setPeriodo(periodo);
-        nuevaFactura.setTipo(TipoComprobante.A); // por defecto. lo cambiaría para recibir por pantalla
-        
-        nuevaFactura.setNroSerie(generarProximoNroSerie(TipoComprobante.A)); 
+        List<DetalleFactura> detalles = new ArrayList<>();
+        for (String servicioId : serviciosIds) {
+            Servicio servicioAFacturar = servicioServicio.buscarPorId(servicioId);
 
-        for (Map.Entry<String, LocalDate> entry : serviciosConFechaInicio.entrySet()) {
-            String idServicio = entry.getKey();
-            LocalDate fechaInicio = entry.getValue();
-
-            Servicio servicioModel = servicioRepositorio.findById(idServicio)
-                .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado: " + idServicio));
+            DetalleFactura detalle = new DetalleFactura(servicioAFacturar, factura);
             
-            double precioFinal = calcularPrecioProporcional(
-                servicioModel.getPrecioUnitario(), 
-                fechaInicio, 
-                periodo
-            );
-
-            DetalleFactura detalle = new DetalleFactura();
-            
-            detalle.setDescripcion(servicioModel.getNombre());
-            detalle.setPrecio((int)precioFinal);
-            
-            nuevaFactura.agregarDetalle(detalle);
+            detalles.add(detalle);
         }
 
-        nuevaFactura.calcularTotal(); 
-        return facturaRepositorio.save(nuevaFactura);
-    }
-    
-        private String generarProximoNroSerie(TipoComprobante tipo) {
-        final int ACTUAL = 1; // 
-        final int LONGITUD_SERIE = 8; 
-
-        String ultimoNroSerie = facturaRepositorio.findMaxNroSerieByTipo(tipo);
-        long numeroActual = 0;
-        if (ultimoNroSerie != null) {
-            try {
-                String[] partes = ultimoNroSerie.split("-");
-                if (partes.length == 2) {
-                    // separamos en dos y pasamos a numero (ej: "00000001" es 1)
-                    numeroActual = Long.parseLong(partes[1]);
-                }
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                System.err.println("Advertencia: Error al parsear el número de serie. Iniciando desde 0. Error: " + e.getMessage());
-                numeroActual = 0;
-            }
-        }
-
-        long proximoNumero = numeroActual + 1;
-        String puntoActual = String.format("%04d", ACTUAL); //  1 -> "0001"
+        factura.setDetalles(detalles);
+        factura.calcularTotal(); // Tu modelo Factura ya sabe cómo hacer esto
         
-        String numeroSerieStr = String.format("%0" + LONGITUD_SERIE + "d", proximoNumero);
-        return puntoActual + "-" + numeroSerieStr;
-    }
-
-
-    
-    private double calcularPrecioProporcional(double precioUnitario, LocalDate fechaInicio, int periodo) {
-        LocalDate inicioMes = LocalDate.of(fechaInicio.getYear(), periodo, 1);
-        
-        if (fechaInicio.isBefore(inicioMes) || fechaInicio.isEqual(inicioMes)) {
-            return precioUnitario;
-        }
-        LocalDate finMes = inicioMes.plusMonths(1).minusDays(1);
-        long diasDelMes = ChronoUnit.DAYS.between(inicioMes, finMes) + 1;
-        long diasFacturar = ChronoUnit.DAYS.between(fechaInicio, finMes) + 1;
-
-        double precioPorDia = precioUnitario / diasDelMes;
-        return precioPorDia * diasFacturar;
+        return facturaRepositorio.save(factura);
     }
 
 
