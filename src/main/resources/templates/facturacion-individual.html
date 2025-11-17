@@ -46,10 +46,14 @@
                     <h3>Cliente a facturar</h3>
                 </div>
                 <div class="form-grid-servicios">
-                    <p><strong>ID Cliente:</strong> <span th:text="${cliente.idCuenta}"></span></p>
-                    <p><strong>Nombre:</strong> <span th:text="${cliente.nombre}"></span></p>
+                <p><strong>ID Cliente:</strong> <span th:text="${cliente.idCuenta}"></span></p>
+                <p><strong>Nombre:</strong> <span th:text="${cliente.nombre}"></span></p>
+                <p><strong>Documento:</strong> 
+                    <span th:text="${cliente.tipoDocumento}"></span>: 
+                    <span th:text="${cliente.numeroDocumento}"></span>
+                </p>
                 </div>
-                <input type="hidden" name="clienteIdForm" th:value="${cliente.idCuenta}" />
+            <input type="hidden" name="clienteIdForm" th:value="${cliente.idCuenta}" />
             </fieldset> <fieldset id="form-fieldset">
                 <div class="form-section-titles">
                     <h3>Información para facturación</h3>
