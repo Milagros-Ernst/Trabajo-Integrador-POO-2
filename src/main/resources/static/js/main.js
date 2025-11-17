@@ -217,17 +217,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const nombreEl = document.getElementById('nombre');
+            const apellidoEl = document.getElementById('apellido');
+            const telefonoEl = document.getElementById('telefono');
+            const mailEl = document.getElementById('mail');
+            const direccionEl = document.getElementById('direccion');
+            const direccionFiscalEl = document.getElementById('direccionFiscal');
+            const condIVAEl = document.getElementById('condIVA');
+            const tipoDocumentoEl = document.getElementById('tipoDocumento');
+            const numeroDocumentoEl = document.getElementById('numeroDocumento');
+
             const clienteData = {
-                idCuenta: clienteId,
-                nombre: formContainer.querySelector('[th\\:field="*{nombre}"]').value,
-                apellido: formContainer.querySelector('[th\\:field="*{apellido}"]').value,
-                telefono: formContainer.querySelector('[th\\:field="*{telefono}"]').value,
-                mail: formContainer.querySelector('[th\\:field="*{mail}"]').value,
-                direccion: formContainer.querySelector('[th\\:field="*{direccion}"]').value,
-                direccionFiscal: formContainer.querySelector('[th\\:field="*{direccionFiscal}"]').value,
-                condIVA: formContainer.querySelector('[th\\:field="*{condIVA}"]').value,
-                tipoDocumento: formContainer.querySelector('[th\\:field="*{tipoDocumento}"]').value,
-                numeroDocumento: formContainer.querySelector('[th\\:field="*{numeroDocumento}"]').value
+                nombre: nombreEl?.value || '',
+                apellido: apellidoEl?.value || '',
+                telefono: telefonoEl?.value || '',
+                mail: mailEl?.value || '',
+                direccion: direccionEl?.value || '',
+                direccionFiscal: direccionFiscalEl?.value || '',
+                condIVA: condIVAEl?.value || '',
+                tipoDocumento: tipoDocumentoEl?.value || '',
+                numeroDocumento: numeroDocumentoEl?.value || ''
             };
 
             fetch(`/api/clientes/${clienteId}`, {
@@ -237,14 +246,18 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then(response => {
                     if (response.ok) {
-                        location.reload();
+                        return response.json();
                     } else {
-                        alert('Error al modificar el cliente. Verifique los datos.');
+                        return response.text().then(text => {
+                            throw new Error(text || 'Error al modificar el cliente');
+                        });
                     }
                 })
+                .then(data => {
+                    location.reload();
+                })
                 .catch(error => {
-                    console.error('Error en el fetch:', error);
-                    alert('Error de red. No se pudo conectar con el servidor.');
+                    alert('Error al modificar el cliente: ' + error.message);
                 });
         });
 

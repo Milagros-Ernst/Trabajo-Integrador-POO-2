@@ -99,17 +99,4 @@ public abstract class Cuenta {
     public int hashCode() {
         return Objects.hash(numeroDocumento, tipoDocumento);
     }
-
-    // toString
-    @Override
-    public String toString() {
-        return "Cuenta{" +
-                "idCuenta=" + idCuenta +
-                ", nombre='" + nombre + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", tipoDocumento=" + tipoDocumento +
-                ", numeroDocumento='" + numeroDocumento + '\'' +
-                ", estadoCuenta=" + estadoCuenta +
-                '}';
-    }
 }
