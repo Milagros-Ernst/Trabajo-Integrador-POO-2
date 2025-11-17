@@ -21,6 +21,11 @@ public class ClienteServicio {
     }
 
     public Cliente crearCliente(@Valid Cliente cliente) {
+        if (clienteRepositorio.existsByTipoDocumentoAndNumeroDocumento(
+                cliente.getTipoDocumento(), cliente.getNumeroDocumento())) {
+            throw new IllegalArgumentException("Ya existe un cliente con ese documento");
+        }
+        
         return clienteRepositorio.save(cliente);
     }
 
@@ -45,8 +50,22 @@ public class ClienteServicio {
         return clienteRepositorio.findByApellidoContainingIgnoreCase(apellido);
     }
 
-    public Cliente actualizarCliente(@Valid Cliente cliente) {
-        return clienteRepositorio.save(cliente);
+    public Cliente actualizarCliente(Long id, @Valid Cliente clienteActualizado) {
+        Cliente clienteExistente = buscarPorId(id);
+        // se valida que el documento no esté en uso por otro cliente
+        if (!clienteExistente.getNumeroDocumento().equals(clienteActualizado.getNumeroDocumento()) ||
+            clienteExistente.getTipoDocumento() != clienteActualizado.getTipoDocumento()) {
+            Optional<Cliente> clienteConDocumento = buscarPorDocumento(
+                clienteActualizado.getTipoDocumento(), 
+                clienteActualizado.getNumeroDocumento()
+            );
+            if (clienteConDocumento.isPresent() && !clienteConDocumento.get().getIdCuenta().equals(id)) {
+                throw new IllegalArgumentException("El documento ya está en uso por otro cliente");
+            }
+        }
+
+        clienteActualizado.setIdCuenta(id);
+        return clienteRepositorio.save(clienteActualizado);
     }
 
     public void eliminarCliente(Long id) {

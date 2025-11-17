@@ -21,7 +21,6 @@ public class ClienteControlador {
         this.clienteServicio = clienteServicio;
     }
 
-
     // obtener todos los clientes
     @GetMapping
     public ResponseEntity<List<Cliente>> listarTodos() {
@@ -67,27 +66,24 @@ public class ClienteControlador {
             @PathVariable Long id,
             @Valid @RequestBody Cliente cliente) {
         try {
-            // Verificar que el cliente existe
-            clienteServicio.buscarPorId(id);
-            
-            // Actualizar
-            Cliente clienteActualizado = clienteServicio.actualizarCliente(cliente);
+            // El servicio ahora maneja la validación y asignación del ID
+            Cliente clienteActualizado = clienteServicio.actualizarCliente(id, cliente);
             return ResponseEntity.ok(clienteActualizado);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     // eliminar cliente
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        try {
-            clienteServicio.eliminarCliente(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+    //     try {
+    //         clienteServicio.eliminarCliente(id);
+    //         return ResponseEntity.noContent().build();
+    //     } catch (Exception e) {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
 }
