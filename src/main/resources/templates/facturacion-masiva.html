@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label for="mes">Periodo a procesar:</label>
 
-                        <select id="mes" name="mes" required>
+                        <select id="mes" name="periodo" required>
                             <option value="" disabled selected>Seleccionar mes</option>
                             <option value="1">Enero</option>
                             <option value="2">Febrero</option>
@@ -52,6 +52,8 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="fechaVencimiento">Fecha de Vencimiento:</label>
+                        <input type="date" id="fechaVencimiento" name="fechaVencimiento"/>
                         <label for="tipoFac">Tipo de facturación:</label>
                         <select id="tipoFac" name="tipoFac">
                             <option value="" disabled selected>Servicio</option>
@@ -86,7 +88,7 @@
                                 <td th:text="${serv.precioUnitario}"></td>
                                 <td th:text="${serv.tipoIva}"></td>
                                 <td>
-                                    <input type="checkbox" name="serviciosIds" th:value="${serv.idServicio}" class="checkbox-servicio" />
+                                    <input type="checkbox" name="idServiciosFacturar" th:value="${serv.idServicio}" class="checkbox-servicio" />
                                 </td>
                             </tr>
 

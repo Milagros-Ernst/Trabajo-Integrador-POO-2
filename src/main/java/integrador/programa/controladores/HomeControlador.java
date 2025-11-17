@@ -1,5 +1,6 @@
 package integrador.programa.controladores;
 import integrador.programa.modelo.Cliente;
+import integrador.programa.modelo.LogFacturacionMasiva;
 import integrador.programa.modelo.Servicio;
 import integrador.programa.servicios.ClienteServicio;
 import integrador.programa.servicios.ClienteServicioServicio;
@@ -18,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Set;
-import integrador.programa.servicios.ClienteServicioServicio;
 
 @Controller
 public class HomeControlador extends Object {
@@ -142,40 +142,40 @@ public class HomeControlador extends Object {
 
     @PostMapping("/facturacion/masiva")
     public String procesarFacturacionMasivaFormulario(
-            @RequestParam(value = "serviciosIds", required = true) List<String> serviciosIds,
-            @RequestParam("mes") String mes,
-            Model model
-    ) {
-        // asegura que siempre se cargue la lista de servicios
-        List<Servicio> misServicios = servicioServicio.listarTodos();
-        model.addAttribute("servicios", misServicios);
-
-        /*if (serviciosIds == null || serviciosIds.isEmpty()) {
-            model.addAttribute("error", "Debe seleccionar al menos un servicio para la facturación masiva.");
-            return "facturacion-masiva";
-        }*/
+            @RequestParam("periodo") int periodo,
+            @RequestParam("fechaVencimiento") LocalDate fechaVencimiento,
+            @RequestParam(name = "idServiciosFacturar", required = false) List<String> idServiciosFacturar,
+            Model model) {
 
         try {
-            int mesInt = Integer.parseInt(mes);
-            int anioInt = LocalDate.now().getYear();
-            java.time.YearMonth ym = java.time.YearMonth.of(anioInt, mesInt);
-            java.time.Month periodo = java.time.Month.of(mesInt);
-            java.time.LocalDate fechaVencimiento = ym.atEndOfMonth();
 
-            // Llamada al servicio que genera las facturas masivas y devuelve un registro
-            integrador.programa.modelo.LogFacturacionMasiva registro = null;
-            try {
-                registro = facturaServicio.emitirFacturaMasiva(serviciosIds, periodo, fechaVencimiento);
-            } catch (Exception inner) {
-                System.err.println("[ERROR] Error executing emitirFacturaMasiva: " + inner.getMessage());
-                inner.printStackTrace();
-                throw inner;
+            if (idServiciosFacturar == null || idServiciosFacturar.isEmpty()) {
+
+                throw new IllegalArgumentException("Debe seleccionar al menos un servicio para facturar.");
+
             }
+            LogFacturacionMasiva registro = facturaServicio.emitirFacturaMasiva(
+                    idServiciosFacturar,
+                    periodo,
+                    fechaVencimiento
+            );
 
-            return "facturacion-masiva";
+            model.addAttribute("success",
+                    "Facturación masiva completada. Se generaron " +
+                            registro.getCantidadFacturas() + " facturas.");
+
         } catch (Exception e) {
-            return "facturacion-masiva";
+            // Si algo falla, envía un mensaje de error
+            model.addAttribute("error",
+                    "Error al procesar la facturación: " + e.getMessage());
         }
+
+        // Vuelve a cargar los servicios para la tabla
+        List<Servicio> servicios = servicioServicio.listarTodos();
+        model.addAttribute("servicios", servicios);
+
+        // Vuelve a mostrar la misma página
+        return "facturacion-masiva";
     }
 
 
