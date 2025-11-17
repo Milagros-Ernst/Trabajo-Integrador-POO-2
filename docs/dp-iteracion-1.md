@@ -39,8 +39,17 @@ Luego de esta tabla sigue el flujo normal de la pantalla, vemos la misma tabla d
 
 Esta pantalla permite la asignación de servicios a un cliente. En la parte superior izquierda de la pantalla observamos el botón de navegación **Atrás** que nos lleva a la pantalla anterior. Debajo observamos la información personal del cliente al cual vamos a asignar los servicios. Debajo Observamos dos tablas, primero la tabla de **Servicios contratados**, la cual muestra todos los servicios que el cliente tiene contrados. Observe que es la misma tabla que tenia en la pantalla de detalle anterior. Luego le sigue la tabla de **Servicios del sistema**, esta tabla lista todos los servicios que tiene el sistema y que el cliente no ha contratado aún. Esta tabla muestra el nombre, descripción, precio y % de iva del servicio. En la columna de acciones, tiene el botón **Asignar servicio** para asignarlo, y otro **Gestionar Servicio** que lo redirige a la pantalla de **Gestionar Servicios**
 
-### Pantalla de Gestión de Clientes - Detalle de Cliente
-![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-gestionClientes-detalle.jpg)
+### Pantalla de Gestión de Servicios
+![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-gestionServicios.jpg)
+
+La pantalla de **Gestión de Servicios** funciona de manera similar a la pantalla de Gestión de Clientes. Note que el flujo de trabajo es el mismo. En la primer sección se observan campos bloqueados, en la segunda una tabla con todos los servicios del sistema registrados y finalmente los botones de **Alta**, **Baja** y **Modificar**. Funcionan de manera similar, al presionar **Alta** Se habilitan los campos que permitirán ingresar los datos de un nuevo servicio. Para concluir con la operación, debe presionar el botón **Confirmar** que se encuentra a su derecha. Si quiere descartar los cambios, presione el boton **Cancelar**. 
+Al seleccionar un servicio de la tabla, se habilitan los botones **Baja** y **Modificar**. Al presionar **Baja** se dará de baja el servicio seleccionado. Al presionar **Modificar**, se habilitarán los campos de la primer sección con los datos del Servicio a modificar. De igual forma como en el **Alta**, presione **Confirmar** para confirmar los cambios o **Cancelar** para descartarlos.
+
+### Pantalla de Facturación Masiva
+![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-FacturacionMasiva.jpg)
+
+(inserte descripcion)
+
 
 # Backlog de iteraciones
 
@@ -53,4 +62,19 @@ Esta pantalla permite la asignación de servicios a un cliente. En la parte supe
 * HU 11 - Anulación de factura
 
 # Tareas
-lista de q hacer para completas las uc
+lista de tareas que cu hizo ¿
+
+###### **Roko María Guillermina**
+Las tareas que desarrollé para llevar a cabo mi responsabilidad del proyecto fueron las siguientes. 
+En una primera instancia, comencé haciendo los bocetos de las pantallas luego de que en equipo hayamos definido el diagrama de clases y las historias de usuario. 
+
+
+Desarrollé los wireframes en la aplicación Web [Pixso](https://pixso.net/). La utilicé ya que estaba familiarizada con su entorno. 
+
+
+A medida que desarrollaba las pantallas consultaba con algunos integrantes del equipo para recibir recomendaciones y *feedback*. 
+
+
+Al tener todos los bocetos finalizados, comencé con el código. Ya tenía una breve experiencia con el uso de `HTML` y `CSS`, aunque debí hacer una investigación exhaustiva y adquirir nuevos conocimientos para lograr lo que yo quería. 
+
+Una vez pasados los diseños a código, apliqué la lógica de `Thymeleaf` y cree el `HomeControlador` para poder controlar el flujo de las pantallas y el código. También se inforporó un poco de `JavaScript` gestionar la interactividad de las pantallas, más específicamente para habilitar/deshabilitar formularios, facilitar la capturación de datos y, además, que solicite al controlador la persistencia o modificación de los datos, permitiendo que se actualicen los datos de las tablas sin la recarga completa de la página.
