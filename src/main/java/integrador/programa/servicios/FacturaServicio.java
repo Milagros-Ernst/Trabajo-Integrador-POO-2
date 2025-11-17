@@ -20,7 +20,6 @@ import integrador.programa.modelo.enumeradores.TipoComprobante;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +79,7 @@ public class FacturaServicio {
     // alerta de mucho texto. función para el alta.
     public Factura emitirFacturaIndividual(
             Long idCliente,
-            Month periodo,
+            int periodo,
             LocalDate fechaVencimiento,
             Map<String, LocalDate> serviciosConFechaInicio 
     ) {
@@ -156,7 +155,7 @@ public class FacturaServicio {
 
 
     
-    private double calcularPrecioProporcional(double precioUnitario, LocalDate fechaInicio, Month periodo) {
+    private double calcularPrecioProporcional(double precioUnitario, LocalDate fechaInicio, int periodo) {
         LocalDate inicioMes = LocalDate.of(fechaInicio.getYear(), periodo, 1);
         
         if (fechaInicio.isBefore(inicioMes) || fechaInicio.isEqual(inicioMes)) {
@@ -171,10 +170,10 @@ public class FacturaServicio {
     }
 
 
-
+@Transactional
     public LogFacturacionMasiva emitirFacturaMasiva(
             List<String> idServiciosFacturar,
-            Month periodo,
+            int periodo,
             LocalDate fechaVencimiento
     ) {
         if (idServiciosFacturar == null || idServiciosFacturar.isEmpty()) {
@@ -197,6 +196,8 @@ public class FacturaServicio {
             LocalDate fechaInicio = LocalDate.of(LocalDate.now().getYear(), periodo, 1);
     
             Map<String, LocalDate> serviciosConFechaInicio = new HashMap<>();
+
+
             for (Servicio servicio : serviciosFacturar) {
                 serviciosConFechaInicio.put(servicio.getIdServicio(), fechaInicio); 
             }

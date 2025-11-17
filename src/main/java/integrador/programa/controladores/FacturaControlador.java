@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import integrador.programa.modelo.*;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +53,7 @@ public class FacturaControlador {
         try {
             Long idCliente = (long)requestBody.get("idCliente");
             
-            Month periodo = Month.valueOf((String) requestBody.get("periodo"));
+            int periodo = Integer.valueOf((String) requestBody.get("periodo"));
             LocalDate fechaVencimiento = LocalDate.parse((String) requestBody.get("fechaVencimiento"));
             
             @SuppressWarnings("unchecked") 
@@ -87,7 +86,7 @@ public class FacturaControlador {
         try {
             @SuppressWarnings("unchecked") 
             List<String> idServiciosFacturar = (List<String>) requestBody.get("idServicios");
-            Month periodo = Month.valueOf((String) requestBody.get("periodo"));
+            int periodo = Integer.valueOf((String) requestBody.get("periodo"));
             LocalDate fechaVencimiento = LocalDate.parse((String) requestBody.get("fechaVencimiento"));
 
             if (idServiciosFacturar == null || idServiciosFacturar.isEmpty()) {

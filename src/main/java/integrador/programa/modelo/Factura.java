@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.Month;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -58,7 +57,7 @@ public class Factura {
     private TipoComprobante tipo;
 
     @NotNull
-    private Month periodo;
+    private int periodo;
 
     @NotBlank
     @Size(min = 3, max = 100)

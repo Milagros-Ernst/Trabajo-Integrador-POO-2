@@ -46,8 +46,8 @@ public class LogFacturacionMasiva {
     @Column(name = "servicios_incluidos")
     private String serviciosIncluidos; 
 
-    public LogFacturacionMasiva(Month periodo, int cantidadFacturas, String serviciosIncluidos, String empleadoResponsable) {
-        this.periodo = periodo.getValue(); // 1=Enero, 3=Marzo, etc.
+    public LogFacturacionMasiva(int periodo, int cantidadFacturas, String serviciosIncluidos, String empleadoResponsable) {
+        this.periodo = periodo; // 1=Enero, 3=Marzo, etc.
         this.cantidadFacturas = cantidadFacturas;
         this.serviciosIncluidos = serviciosIncluidos;
         this.empleadoResponsable = empleadoResponsable;
