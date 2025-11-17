@@ -7,10 +7,16 @@ Para la planificación y ejecución de esta primera iteración, el equipo distri
 * Verón Juan Manuel: Desarrollo de las historias de usuario relacionadas con la gestión de Clientes
 
 # Diseño Orientado a Objetos
-diagrama de clases 
+Para el desarrollo del diagrama de clases trabajamos en la página Draw.io. El link del mismo está dentro de /diagramas/links.
+
+![Diagrama de clases](/diagramas/DiagramaDeClases-Integrador-POO-II.png)
+
+El mismo cuenta con las clases Cuenta, Cliente, Administrador, Factura, Detalle_Factura, Servicio, NotaCredito, DetalleNota y Pago.
+Además de enumeradores como, EstadoServicio, EstadoCuenta, CondicionIVA, EstadoFactura, MetodoPago, TipoDocumento, TipoComprobante
 
 # Wireframe y Casos de uso
-pantallas y casos de uso (real)
+Los diseños se utilizan de la siguiente manera:
+![Pantalla de inicio](wireframes y pantallas/pantallas/Pantalla-Inicio.jpg)
 
 # Backlog de iteraciones
 
