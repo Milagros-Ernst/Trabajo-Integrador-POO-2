@@ -36,6 +36,7 @@ public class HomeControlador extends Object {
 
     @Autowired
     private FacturaServicio facturaServicio;
+    
 
     @GetMapping("/")
     public String mostrarPaginaInicio(){
@@ -177,34 +178,34 @@ public class HomeControlador extends Object {
         }
     }
 
-    // ver si mato la carga de servicios acá.
+
     @GetMapping("/facturacion/individual")
     public String irAFacturacionIndividual(
             @RequestParam(value = "clienteId", required = false) Long clienteId,
-            Model model
-    ) {
+            Model model)
+    {
         try {
-            List<Servicio> misServicios = servicioServicio.listarTodos();
-            model.addAttribute("servicios", misServicios);
-
             if (clienteId != null) {
                 try {
                     Cliente clienteEncontrado = clienteServicio.buscarPorId(clienteId);
                     model.addAttribute("cliente", clienteEncontrado);
+
+                    List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
+                    model.addAttribute("serviciosAsignados", serviciosAsignados);
+
                 } catch (Exception eCliente) {
                     model.addAttribute("errorCliente", "Cliente no encontrado con ID: " + clienteId);
                 }
-            } 
+            }
             return "facturacion-individual";
 
         } catch (Exception eGeneral) {
             System.err.println("Error grave al cargar facturación individual: " + eGeneral.getMessage());
-            eGeneral.printStackTrace(); 
+            eGeneral.printStackTrace();
             model.addAttribute("errorGeneral", "Error al cargar la lista de servicios. Contacte al administrador.");
             return "facturacion-individual";
         }
     }
-
 
     @PostMapping("/facturacion/individual")
     public String procesarFacturacionIndividualFormulario(
@@ -213,28 +214,25 @@ public class HomeControlador extends Object {
             @RequestParam("mes") String mes,
             Model model
     ) {
-        List<Servicio> misServicios = servicioServicio.listarTodos();
-        model.addAttribute("servicios", misServicios);
         Cliente clienteEncontrado = null;
         try {
              clienteEncontrado = clienteServicio.buscarPorId(clienteId);
              model.addAttribute("cliente", clienteEncontrado);
+             List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
+             model.addAttribute("serviciosAsignados", serviciosAsignados);
+             
         } catch (Exception e) {
              model.addAttribute("errorCliente", "Error al recuperar el cliente.");
              return "facturacion-individual"; // Vuelve con error
         }
         
-        // Validar que se seleccionó al menos un servicio
+        // Valida que se seleccionó al menos un servicio
         if (serviciosIds == null || serviciosIds.isEmpty()) {
             model.addAttribute("error", "Debe seleccionar al menos un servicio para facturar.");
             return "facturacion-individual";
         }
 
         try {
-            // ... (Aquí iría para llamar a facturaServicio.emitirFacturaINDIVIDUAL(...)) ...
-            // ... Esta lógica necesita ser creada en tu FacturaServicio ...
-
-            // Simulación de éxito
             int mesInt = Integer.parseInt(mes);
             model.addAttribute("success", "Factura generada exitosamente para el cliente " + clienteEncontrado.getNombre() + " para el mes " + mesInt);
             return "facturacion-individual";

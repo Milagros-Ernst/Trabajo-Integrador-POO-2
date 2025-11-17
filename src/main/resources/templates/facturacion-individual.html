@@ -86,7 +86,7 @@
             </div>
 
             <div class="table-container">
-                <h2 class="table-title">Servicios del sistema</h2>
+                <h2 class="table-title">Servicios Asignados al Cliente</h2>
                 <div class="table-wrapper">
                     <table>
                         <thead>
@@ -99,17 +99,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="serv : ${servicios}">
-                                <td th:text="${serv.nombre}"></td>
-                                <td th:text="${serv.descripcion}"></td>
-                                <td th:text="${serv.precioUnitario}"></td>
-                                <td th:text="${serv.tipoIva}"></td>
+                            <tr th:each="clienteServ : ${serviciosAsignados}">
+                                <td th:text="${clienteServ.servicio.nombre}"></td>
+                                <td th:text="${clienteServ.servicio.descripcion}"></td>
+                                <td th:text="${clienteServ.servicio.precioUnitario}"></td>
+                                <td th:text="${clienteServ.servicio.tipoIva}"></td>
                                 <td>
-                                    <input type="checkbox" name="serviciosIds" th:value="${serv.idServicio}" class="checkbox-servicio" />
+                                    <input type="checkbox" name="serviciosIds" th:value="${clienteServ.servicio.idServicio}" class="checkbox-servicio" />
                                 </td>
                             </tr>
-                            <tr th:if="${servicios.isEmpty()}" class="empty-row">
-                                <td colspan="5">No hay servicios registrados en el sistema.</td>
+                            
+                            <tr th:if="${serviciosAsignados == null or serviciosAsignados.isEmpty()}" class="empty-row">
+                                <td colspan="5">No hay servicios asignados a este cliente.</td>
                             </tr>
                         </tbody>
                     </table>
