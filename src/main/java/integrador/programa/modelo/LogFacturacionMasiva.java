@@ -33,7 +33,8 @@ public class LogFacturacionMasiva {
     private LocalDate fechaEjecucion = LocalDate.now();
 
     @NotNull(message = "El período facturado es obligatorio")
-    private Month periodo;
+    @Column(name = "periodo", nullable = false)
+    private int periodo; // Guardar el mes como número (1=Enero, 12=Diciembre)
 
     @NotNull(message = "La cantidad de facturas generadas es obligatoria")
     @Min(value = 0, message = "La cantidad debe ser positiva")
@@ -46,7 +47,7 @@ public class LogFacturacionMasiva {
     private String serviciosIncluidos; 
 
     public LogFacturacionMasiva(Month periodo, int cantidadFacturas, String serviciosIncluidos, String empleadoResponsable) {
-        this.periodo = periodo;
+        this.periodo = periodo.getValue(); // 1=Enero, 3=Marzo, etc.
         this.cantidadFacturas = cantidadFacturas;
         this.serviciosIncluidos = serviciosIncluidos;
         this.empleadoResponsable = empleadoResponsable;

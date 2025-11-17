@@ -118,15 +118,14 @@ public class HomeControlador extends Object {
         List<Servicio> misServicios = servicioServicio.listarTodos();
         model.addAttribute("servicios", misServicios);
 
-        if (serviciosIds == null || serviciosIds.isEmpty()) {
+        /*if (serviciosIds == null || serviciosIds.isEmpty()) {
             model.addAttribute("error", "Debe seleccionar al menos un servicio para la facturación masiva.");
             return "facturacion-masiva";
-        }
+        }*/
 
         try {
             int mesInt = Integer.parseInt(mes);
             int anioInt = LocalDate.now().getYear();
-            //int anioInt = Integer.parseInt();
             java.time.YearMonth ym = java.time.YearMonth.of(anioInt, mesInt);
             java.time.Month periodo = java.time.Month.of(mesInt);
             java.time.LocalDate fechaVencimiento = ym.atEndOfMonth();
@@ -143,9 +142,6 @@ public class HomeControlador extends Object {
 
             return "facturacion-masiva";
         } catch (Exception e) {
-            System.err.println("[ERROR] procesarFacturacionMasivaFormulario failed: " + e.getMessage());
-            e.printStackTrace();
-            model.addAttribute("error", "Error al procesar la facturación masiva: " + e.getMessage());
             return "facturacion-masiva";
         }
     }

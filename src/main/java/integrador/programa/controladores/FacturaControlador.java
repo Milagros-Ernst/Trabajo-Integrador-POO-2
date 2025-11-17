@@ -102,9 +102,11 @@ public class FacturaControlador {
             
             return ResponseEntity.status(HttpStatus.CREATED).body(registro);
 
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno o formato de datos incorrecto: " + e.getMessage());
         }
     }
