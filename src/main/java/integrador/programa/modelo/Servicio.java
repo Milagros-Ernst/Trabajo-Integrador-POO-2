@@ -7,9 +7,11 @@ import integrador.programa.modelo.enumeradores.TipoIVA;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Getter @Setter
 @Table(name = "Servicio")
 public class Servicio {
 
@@ -63,61 +65,4 @@ public class Servicio {
         this.estadoServicio = estadoServicio;
     }
 
-    //Getters y Setters requeridos por ServicioServicio
-
-    public String getIdServicio() {
-        return idServicio;
-    }
-
-    public String getNombre() {                
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDescripcion() {           
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public Double getPrecioUnitario() {        
-        return precioUnitario;
-    }
-
-    public void setPrecioUnitario(Double precioUnitario) {
-        this.precioUnitario = precioUnitario;
-    }
-
-    public TipoIVA getTipoIva() {              
-        return tipoIva;
-    }
-
-    public void setTipoIva(TipoIVA tipoIva) {
-        this.tipoIva = tipoIva;
-    }
-
-    public EstadoServicio getEstadoServicio() { 
-        return estadoServicio;
-    }
-
-    public void setEstadoServicio(EstadoServicio estadoServicio) { 
-        this.estadoServicio = estadoServicio;
-    }
-
-    @Override
-    public String toString() {
-        return "Servicio{" +
-                "idServicio=" + idServicio +
-                ", nombre='" + nombre + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", precioUnitario=" + precioUnitario +
-                ", tipoIva=" + tipoIva +
-                ", estadoServicio=" + estadoServicio +
-                '}';
-    }
 }
