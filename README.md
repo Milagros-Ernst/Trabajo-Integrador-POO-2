@@ -3,7 +3,6 @@ El siguiente es el proyecto integrador para la materia de Programación Orientad
 
 ## Equipo de Desarrollo
 - Ernst Milagros Shaiel
-- Maidana Julio Alberto
 - Menacho Natalia Agustina
 - Roko María Guillermina
 - Verón Juan Manuel
