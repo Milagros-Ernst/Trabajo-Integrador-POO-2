@@ -71,7 +71,6 @@ En una primera instancia, comencé haciendo los bocetos de las pantallas luego d
 
 Desarrollé los wireframes en la aplicación Web [Pixso](https://pixso.net/). La utilicé ya que estaba familiarizada con su entorno. 
 
-
 A medida que desarrollaba las pantallas consultaba con algunos integrantes del equipo para recibir recomendaciones y *feedback*. 
 
 
