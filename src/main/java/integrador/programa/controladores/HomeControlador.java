@@ -134,23 +134,26 @@ public class HomeControlador extends Object {
             @RequestParam(value = "clienteId", required = false) Long clienteId,
             Model model
     ) {
-        // 1. Cargar servicios siempre (similar a facturación masiva)
-        List<Servicio> misServicios = servicioServicio.listarTodos();
-        model.addAttribute("servicios", misServicios);
+        try {
+            List<Servicio> misServicios = servicioServicio.listarTodos();
+            model.addAttribute("servicios", misServicios);
 
-        // 2. Si se pasó un ID, buscar al cliente
-        if (clienteId != null) {
-            try {
-                Cliente clienteEncontrado = clienteServicio.buscarPorId(clienteId);
-                model.addAttribute("cliente", clienteEncontrado);
-            } catch (Exception e) {
-                // Si no se encuentra, agregar un error para mostrar en la vista
-                model.addAttribute("errorCliente", "Cliente no encontrado con ID: " + clienteId);
-            }
+            if (clienteId != null) {
+                try {
+                    Cliente clienteEncontrado = clienteServicio.buscarPorId(clienteId);
+                    model.addAttribute("cliente", clienteEncontrado);
+                } catch (Exception eCliente) {
+                    model.addAttribute("errorCliente", "Cliente no encontrado con ID: " + clienteId);
+                }
+            } 
+            return "facturacion-individual";
+
+        } catch (Exception eGeneral) {
+            System.err.println("Error grave al cargar facturación individual: " + eGeneral.getMessage());
+            eGeneral.printStackTrace(); 
+            model.addAttribute("errorGeneral", "Error al cargar la lista de servicios. Contacte al administrador.");
+            return "facturacion-individual";
         }
-        
-        // 3. Retornar la nueva plantilla
-        return "facturacion-individual";
     }
 
 
