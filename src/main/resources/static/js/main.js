@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error: No se pudo determinar el ID del cliente desde la URL.');
                 return;
             }
-            
+
             const nombreEl = document.getElementById('nombre');
             const apellidoEl = document.getElementById('apellido');
             const telefonoEl = document.getElementById('telefono');
@@ -226,13 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const condIVAEl = document.getElementById('condIVA');
             const tipoDocumentoEl = document.getElementById('tipoDocumento');
             const numeroDocumentoEl = document.getElementById('numeroDocumento');
-
-            if (!direccionFiscalEl) {
-                console.error('No se encontró el elemento direccionFiscal');
-                console.log('Intentando buscar por name...');
-                const altDireccionFiscal = document.querySelector('[name="direccionFiscal"]');
-                console.log('Encontrado por name:', altDireccionFiscal);
-            }
 
             const clienteData = {
                 nombre: nombreEl?.value || '',
@@ -245,9 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 tipoDocumento: tipoDocumentoEl?.value || '',
                 numeroDocumento: numeroDocumentoEl?.value || ''
             };
-
-            console.log('Datos a enviar:', clienteData);
-            console.log('URL:', `/api/clientes/${clienteId}`);
 
             fetch(`/api/clientes/${clienteId}`, {
                 method: 'PUT',
@@ -264,11 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 })
                 .then(data => {
-                    console.log('Cliente actualizado:', data);
                     location.reload();
                 })
                 .catch(error => {
-                    console.error('Error:', error);
                     alert('Error al modificar el cliente: ' + error.message);
                 });
         });
