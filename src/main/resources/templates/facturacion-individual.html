@@ -37,10 +37,15 @@
                 </div>
             </fieldset>
         </form>
-    </div> <div class="form-container" th:if="${cliente}">
+
+        <div th:if="${errorCliente}" class="alert alert-error" th:text="${errorCliente}"></div>
+        </div> <div class="form-container" th:if="${cliente}">
         
         <form id="facturacion-form-group" th:action="@{/facturacion/individual}" th:method="post">
             
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
             <fieldset id="cliente-fieldset">
             <div class="form-section-titles">
                     <h3>Cliente a facturar</h3>
@@ -80,6 +85,11 @@
                     </div>
                 </div>
             </fieldset>
+
+            <div class="form-group">
+                        <label for="fechaVencimiento">Fecha de Vencimiento:</label>
+                        <input type="date" id="fechaVencimiento" name="fechaVencimiento"/>
+            </div>
 
             <div>
                 <h4>Seleccione los servicios a facturar para este cliente</h4>

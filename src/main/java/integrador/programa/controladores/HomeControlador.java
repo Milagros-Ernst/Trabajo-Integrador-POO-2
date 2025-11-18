@@ -233,16 +233,14 @@ public class HomeControlador extends Object {
         }
 
         try {
-            int mesInt = Integer.parseInt(mes);
-            int anioInt = java.time.LocalDate.now().getYear();
-            java.time.YearMonth ym = java.time.YearMonth.of(anioInt, mesInt);
-            java.time.LocalDate fechaVencimiento = ym.atEndOfMonth();
+            int mesInt = Integer.parseInt(mes); 
 
+            java.time.LocalDate fechaVencimiento = java.time.LocalDate.now().plusDays(10);
             Factura facturaGenerada = facturaServicio.emitirFacturaIndividual(
                 clienteEncontrado, 
                 serviciosIds, 
-                mesInt,
-                fechaVencimiento
+                mesInt, 
+                fechaVencimiento 
             );
 
             model.addAttribute("success", "Factura N°" + facturaGenerada.getIdFactura() + " generada exitosamente para " + clienteEncontrado.getNombre());
@@ -252,7 +250,7 @@ public class HomeControlador extends Object {
 
         } catch (Exception e) {
             model.addAttribute("error", "Error al generar la factura: " + e.getMessage());
-            e.printStackTrace(); // Para ver el error en consola
+            e.printStackTrace(); 
             return "facturacion-individual";
         }
     }

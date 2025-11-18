@@ -53,8 +53,6 @@ public class FacturaControlador {
     @PostMapping("/alta") 
     public ResponseEntity<?> emitirFactura(@RequestBody Map<String, Object> requestBody) {         
         try {
-            // 1. Obtenemos los datos del JSON
-            // Usamos ((Number) ...).longValue() para evitar errores de casteo
             Long idCliente = ((Number)requestBody.get("idCliente")).longValue(); 
             
             int periodo = Integer.valueOf((String) requestBody.get("periodo"));
@@ -66,25 +64,17 @@ public class FacturaControlador {
             if (serviciosConFechaInicio == null || serviciosConFechaInicio.isEmpty()) {
                 return ResponseEntity.badRequest().body("Debe incluir al menos un servicio para facturar.");
             }
-            
-            // --- INICIO DE LA CORRECCIÓN ---
 
-            // 2. Buscamos el Cliente (Arregla el Arg 1: Long -> Cliente)
             Cliente clienteAFacturar = clienteServicio.buscarPorId(idCliente);
-            
-            // 3. Extraemos los IDs de los servicios (Arregla el Arg 4 -> Arg 2)
-            // Las llaves (keys) de tu Map son los IDs de los servicios
             List<String> serviciosIds = new ArrayList<>(serviciosConFechaInicio.keySet());
 
-            // 4. Llamamos al servicio con los tipos y el orden CORRECTO
             Factura nuevaFactura = facturaServicio.emitirFacturaIndividual(
-                clienteAFacturar,   // Argumento 1: Cliente
-                serviciosIds,       // Argumento 2: List<String>
-                periodo,            // Argumento 3: int
-                fechaVencimiento    // Argumento 4: LocalDate
+                clienteAFacturar,   
+                serviciosIds,       
+                periodo,            
+                fechaVencimiento    
             );
             
-            // --- FIN DE LA CORRECCIÓN ---
             
             // si funciona
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevaFactura);
