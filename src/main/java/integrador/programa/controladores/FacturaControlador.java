@@ -12,8 +12,10 @@ import jakarta.validation.Valid;
 import integrador.programa.modelo.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/facturacion")
@@ -49,9 +51,9 @@ public class FacturaControlador {
     }
 
     @PostMapping("/alta") 
-    public ResponseEntity<?> emitirFactura(@RequestBody Map<String, Object> requestBody) {        
+    public ResponseEntity<?> emitirFactura(@RequestBody Map<String, Object> requestBody) {         
         try {
-            Long idCliente = (long)requestBody.get("idCliente");
+            Long idCliente = ((Number)requestBody.get("idCliente")).longValue(); 
             
             int periodo = Integer.valueOf((String) requestBody.get("periodo"));
             LocalDate fechaVencimiento = LocalDate.parse((String) requestBody.get("fechaVencimiento"));
@@ -62,17 +64,23 @@ public class FacturaControlador {
             if (serviciosConFechaInicio == null || serviciosConFechaInicio.isEmpty()) {
                 return ResponseEntity.badRequest().body("Debe incluir al menos un servicio para facturar.");
             }
-            
+
+            Cliente clienteAFacturar = clienteServicio.buscarPorId(idCliente);
+            List<String> serviciosIds = new ArrayList<>(serviciosConFechaInicio.keySet());
+
             Factura nuevaFactura = facturaServicio.emitirFacturaIndividual(
-                idCliente, 
-                periodo, 
-                fechaVencimiento, 
-                serviciosConFechaInicio
+                clienteAFacturar,   
+                serviciosIds,       
+                periodo,            
+                fechaVencimiento    
             );
+            
             
             // si funciona
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevaFactura);
 
+        } catch (NoSuchElementException e) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado con ID: " + requestBody.get("idCliente"));
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
             
