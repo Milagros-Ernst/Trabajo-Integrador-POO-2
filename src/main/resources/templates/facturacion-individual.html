@@ -1,10 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlorecillaService - Facturación Individual</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
+
 <body>
 
+<header>
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
+    <h1><span class="logo-text">FlorecillaService</span> / Facturación / Individual</h1>
+</header>
+
+
+<main>
+
+    <a th:href="@{/facturacion}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
+        Atrás
+    </a>
+
+    <div class="form-container">
+        <form th:action="@{/facturacion/individual}" method="GET" class="form-grid-servicios">
+            <fieldset id="form-fieldset">
+                <div class="form-section-titles">
+                    <h3>Buscar cliente por ID:</h3>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="clienteId" name="clienteId" placeholder="Ingrese ID de Cliente" th:value="${param.clienteId}" required class="form-control">
+                    <div class="abm-actions">
+                    <button type="submit" class="btn btn-primary">Buscar Cliente</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div> <div class="form-container" th:if="${cliente}">
+        
+        <form id="facturacion-form-group" th:action="@{/facturacion/individual}" th:method="post">
+            
+            <fieldset id="cliente-fieldset">
+            <div class="form-section-titles">
+                    <h3>Cliente a facturar</h3>
+                </div>
+                <div class="form-grid-servicios">
+                <p><strong>ID Cliente:</strong> <span th:text="${cliente.idCuenta}"></span></p>
+                <p><strong>Nombre:</strong> <span th:text="${cliente.nombre}"></span></p>
+                <p><strong>Documento:</strong> 
+                    <span th:text="${cliente.tipoDocumento}"></span>: 
+                    <span th:text="${cliente.numeroDocumento}"></span>
+                </p>
+                </div>
+            <input type="hidden" name="clienteIdForm" th:value="${cliente.idCuenta}" />
+            </fieldset> <fieldset id="form-fieldset">
+                <div class="form-section-titles">
+                    <h3>Información para facturación</h3>
+                </div>
+
+                <div class="form-grid-servicios">
+                    <div class="form-group">
+                        <label for="mes">Periodo a procesar:</label>
+                        <select id="mes" name="mes" required>
+                            <option value="" disabled selected>Seleccionar mes</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div>
+                <h4>Seleccione los servicios a facturar para este cliente</h4>
+            </div>
+
+            <div class="table-container">
+                <h2 class="table-title">Servicios Asignados al Cliente</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre de Servicio</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>% de IVA</th>
+                                <th>Seleccionar todo<input type="checkbox" id="seleccionar-todo"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="clienteServ : ${serviciosAsignados}">
+                                <td th:text="${clienteServ.servicio.nombre}"></td>
+                                <td th:text="${clienteServ.servicio.descripcion}"></td>
+                                <td th:text="${clienteServ.servicio.precioUnitario}"></td>
+                                <td th:text="${clienteServ.servicio.tipoIva}"></td>
+                                <td>
+                                    <input type="checkbox" name="serviciosIds" th:value="${clienteServ.servicio.idServicio}" class="checkbox-servicio" />
+                                </td>
+                            </tr>
+                            
+                            <tr th:if="${serviciosAsignados == null or serviciosAsignados.isEmpty()}" class="empty-row">
+                                <td colspan="5">No hay servicios asignados a este cliente.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="abm-actions" id="abm-bottom-actions">
+                <button type="submit" class="btn btn-warning btn-facturar">
+                    Facturar Servicios
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</main>
+    <script th:src="@{/js/main.js}"></script>
 </body>
 </html>
