@@ -64,7 +64,6 @@ public class FacturaServicio {
         Factura factura = facturaRepositorio.findById(idFactura)
             .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + idFactura));
 
-        // CORRECCIÓN: Tu enum es VIGENTE, no PENDIENTE
         if (!factura.getEstado().equals(EstadoFactura.VIGENTE)) {
             throw new IllegalStateException("La factura no está VIGENTE y no puede ser anulada. Estado actual: " + factura.getEstado());
         }
@@ -94,24 +93,22 @@ public class FacturaServicio {
         factura.setPeriodo(periodo);
         factura.setFecha(java.time.LocalDate.now());
         factura.setVencimiento(fechaVencimiento);
-        factura.setEstado(EstadoFactura.VIGENTE); // El estado PENDIENTE no existe en tu enum
-        factura.setEmpleadoResponsable(RESPONSABLE); // Usamos la constante
+        factura.setEstado(EstadoFactura.VIGENTE); 
+        factura.setEmpleadoResponsable(RESPONSABLE); 
         factura.setNroSerie("F-001"); // Hardcodeado
         
-        // --- INICIO DE CORRECCIÓN (Enums) ---
         switch (cliente.getCondIVA()) {
             case RESPONSABLE_INSCRIPTO:
-                factura.setTipo(TipoComprobante.A); // Era 'A'
+                factura.setTipo(TipoComprobante.A); 
                 break;
             case MONOTRIBUTO:
             case CONSUMIDOR_FINAL:
             case EXENTO:
-                factura.setTipo(TipoComprobante.B); // Era 'B'
+                factura.setTipo(TipoComprobante.B); 
                 break;
             default:
-                factura.setTipo(TipoComprobante.C); // Era 'C'
+                factura.setTipo(TipoComprobante.C); 
         }
-        // --- FIN DE CORRECCIÓN ---
 
         List<DetalleFactura> detalles = new ArrayList<>();
         for (String servicioId : serviciosIds) {
@@ -122,14 +119,13 @@ public class FacturaServicio {
             detalle.setFactura(factura);
             detalle.setServicio(servicioAFacturar);
             detalle.setDescripcion(servicioAFacturar.getDescripcion());
-            // Tu modelo DetalleFactura espera un 'int' para precio
             detalle.setPrecio(servicioAFacturar.getPrecioUnitario().intValue());
             
             detalles.add(detalle);
         }
 
         factura.setDetalles(detalles);
-        factura.calcularTotal(); // Esto usa la lógica que corregimos en Factura.java
+        factura.calcularTotal(); 
         
         return facturaRepositorio.save(factura);
     }
@@ -160,12 +156,8 @@ public class FacturaServicio {
 
         for (Cliente cliente : clientesActivos) {
             
-            // Reutilizamos la lista de IDs de servicios que recibimos
-            // (La lógica anterior de crear un Map era innecesaria)
             List<String> idsParaEsteCliente = new ArrayList<>(idServiciosFacturar);
 
-            // Filtramos servicios a los que el cliente SÍ está suscripto
-            // (Esta es la lógica que faltaba)
             try {
                 List<integrador.programa.modelo.ClienteServicio> serviciosDelCliente = 
                     clienteServicioServicio.listarServiciosActivosDeCliente(cliente.getIdCuenta());
@@ -174,7 +166,6 @@ public class FacturaServicio {
                     .map(cs -> cs.getServicio().getIdServicio())
                     .collect(Collectors.toList());
                 
-                // Dejamos en la lista solo los servicios que estén EN AMBAS listas
                 idsParaEsteCliente.retainAll(idsServiciosDelCliente);
                 
             } catch (Exception e) {
@@ -184,15 +175,13 @@ public class FacturaServicio {
 
             if (!idsParaEsteCliente.isEmpty()) {
                 try {
-                    // --- INICIO DE CORRECCIÓN (Llamada al método) ---
-                    // Armamos los argumentos que el método SÍ espera
+
                     emitirFacturaIndividual(
-                        cliente,             // Arg 1: El objeto Cliente
-                        idsParaEsteCliente,  // Arg 2: La List<String> de IDs
-                        periodo,             // Arg 3: El int del periodo
-                        fechaVencimiento     // Arg 4: El LocalDate de vencimiento
+                        cliente,             
+                        idsParaEsteCliente,  
+                        periodo,             
+                        fechaVencimiento     
                     );
-                    // --- FIN DE CORRECCIÓN ---
                     
                     facturasGeneradas++;
                 } catch (Exception e) {

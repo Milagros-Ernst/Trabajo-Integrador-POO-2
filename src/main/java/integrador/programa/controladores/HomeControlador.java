@@ -213,20 +213,22 @@ public class HomeControlador extends Object {
             @RequestParam(value = "serviciosIds", required = false) List<String> serviciosIds,
             @RequestParam("clienteIdForm") Long clienteId,
             @RequestParam("mes") String mes,
+            @RequestParam("fechaVencimiento") LocalDate fechaVencimiento, 
+            
             Model model
     ) {
         Cliente clienteEncontrado = null;
         List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = null;
         try {
-             clienteEncontrado = clienteServicio.buscarPorId(clienteId);
-             model.addAttribute("cliente", clienteEncontrado);
-             serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
-             model.addAttribute("serviciosAsignados", serviciosAsignados);
+            clienteEncontrado = clienteServicio.buscarPorId(clienteId);
+            model.addAttribute("cliente", clienteEncontrado);
+            serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
+            model.addAttribute("serviciosAsignados", serviciosAsignados);
         } catch (Exception e) {
-             model.addAttribute("errorCliente", "Error al recuperar el cliente.");
-             return "facturacion-individual";
+            model.addAttribute("errorCliente", "Error al recuperar el cliente.");
+            return "facturacion-individual";
         }
-        
+
         if (serviciosIds == null || serviciosIds.isEmpty()) {
             model.addAttribute("error", "Debe seleccionar al menos un servicio para facturar.");
             return "facturacion-individual";
@@ -234,13 +236,11 @@ public class HomeControlador extends Object {
 
         try {
             int mesInt = Integer.parseInt(mes); 
-
-            java.time.LocalDate fechaVencimiento = java.time.LocalDate.now().plusDays(10);
             Factura facturaGenerada = facturaServicio.emitirFacturaIndividual(
                 clienteEncontrado, 
                 serviciosIds, 
                 mesInt, 
-                fechaVencimiento 
+                fechaVencimiento
             );
 
             model.addAttribute("success", "Factura N°" + facturaGenerada.getIdFactura() + " generada exitosamente para " + clienteEncontrado.getNombre());

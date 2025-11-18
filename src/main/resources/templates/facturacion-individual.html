@@ -43,8 +43,6 @@
         
         <form id="facturacion-form-group" th:action="@{/facturacion/individual}" th:method="post">
             
-            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
 
             <fieldset id="cliente-fieldset">
             <div class="form-section-titles">
@@ -88,7 +86,7 @@
 
             <div class="form-group">
                         <label for="fechaVencimiento">Fecha de Vencimiento:</label>
-                        <input type="date" id="fechaVencimiento" name="fechaVencimiento"/>
+                        <input type="date" id="fechaVencimiento" name="fechaVencimiento" required/>
             </div>
 
             <div>
