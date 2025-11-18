@@ -15,12 +15,13 @@ import integrador.programa.modelo.NotaCredito;
 import integrador.programa.modelo.Servicio;
 import integrador.programa.modelo.enumeradores.EstadoCuenta;
 import integrador.programa.modelo.enumeradores.EstadoFactura;
-import integrador.programa.modelo.enumeradores.TipoComprobante;
+import integrador.programa.modelo.enumeradores.TipoComprobante; // Asegúrate que esté importado
 
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,10 +39,14 @@ public class FacturaServicio {
     @Autowired
     private ClienteRepositorio clienteRepositorio; 
     @Autowired
+    private ClienteServicioServicio clienteServicioServicio; 
+    @Autowired
+    private ServicioServicio servicioServicio; 
+    @Autowired
     private ServicioRepositorio servicioRepositorio;
     @Autowired
     private LogFacturacionMasRepositorio factMasivaRepositorio;
-     
+    
     public Factura agregarFactura(Factura factura) {
         return facturaRepositorio.save(factura);
     }
@@ -56,121 +61,77 @@ public class FacturaServicio {
 
     @Transactional
     public NotaCredito bajaFactura(String idFactura, String motivoAnulacion) {
-    Factura factura = facturaRepositorio.findById(idFactura)
-        .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + idFactura));
+        Factura factura = facturaRepositorio.findById(idFactura)
+            .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + idFactura));
 
-    if (!factura.getEstado().equals(EstadoFactura.VIGENTE)) {
-        throw new IllegalStateException("La factura no está VIGENTE y no puede ser anulada. Estado actual: " + factura.getEstado());
-    }
+        if (!factura.getEstado().equals(EstadoFactura.VIGENTE)) {
+            throw new IllegalStateException("La factura no está VIGENTE y no puede ser anulada. Estado actual: " + factura.getEstado());
+        }
     
-    if (motivoAnulacion == null || motivoAnulacion.trim().isEmpty()) {
-        throw new IllegalArgumentException("Debe proporcionar un motivo para la anulación.");
+        if (motivoAnulacion == null || motivoAnulacion.trim().isEmpty()) {
+            throw new IllegalArgumentException("Debe proporcionar un motivo para la anulación.");
+        }
+        
+        NotaCredito nota = notaServicio.altaNotaPorFactura(factura, motivoAnulacion);
+        factura.setEstado(EstadoFactura.ANULADA);
+        factura.setNotaCredito(nota); 
+        facturaRepositorio.save(factura);
+        return nota;
     }
-    
-    NotaCredito nota = notaServicio.altaNotaPorFactura(factura, motivoAnulacion);
-    factura.setEstado(EstadoFactura.ANULADA);
-    factura.setNotaCredito(nota); 
-    facturaRepositorio.save(factura);
-    return nota;
-}
 
 
-
-    // alerta de mucho texto. función para el alta.
+    @Transactional
     public Factura emitirFacturaIndividual(
-            Long idCliente,
+            Cliente cliente,
+            List<String> serviciosIds,
             int periodo,
-            LocalDate fechaVencimiento,
-            Map<String, LocalDate> serviciosConFechaInicio 
-    ) {
+            java.time.LocalDate fechaVencimiento
+    ) throws Exception {
+
+        Factura factura = new Factura();
+        factura.setCliente(cliente);
+        factura.setPeriodo(periodo);
+        factura.setFecha(java.time.LocalDate.now());
+        factura.setVencimiento(fechaVencimiento);
+        factura.setEstado(EstadoFactura.VIGENTE); 
+        factura.setEmpleadoResponsable(RESPONSABLE); 
+        factura.setNroSerie("F-001"); // Hardcodeado
         
-        Cliente cliente = clienteRepositorio.findById(idCliente)
-            .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado."));
-        
-        if (cliente.getEstadoCuenta() == null || !cliente.getEstadoCuenta().equals(EstadoCuenta.ACTIVA)) { 
-            throw new IllegalStateException("Solo se puede facturar a cuentas Activas.");
+        switch (cliente.getCondIVA()) {
+            case RESPONSABLE_INSCRIPTO:
+                factura.setTipo(TipoComprobante.A); 
+                break;
+            case MONOTRIBUTO:
+            case CONSUMIDOR_FINAL:
+            case EXENTO:
+                factura.setTipo(TipoComprobante.B); 
+                break;
+            default:
+                factura.setTipo(TipoComprobante.C); 
         }
 
-        Factura nuevaFactura = new Factura();
-        nuevaFactura.setCliente(cliente);
-        nuevaFactura.setFecha(LocalDate.now()); 
-        nuevaFactura.setVencimiento(fechaVencimiento);
-        nuevaFactura.setEmpleadoResponsable(RESPONSABLE);
-        nuevaFactura.setEstado(EstadoFactura.VIGENTE);
-        nuevaFactura.setPeriodo(periodo);
-        nuevaFactura.setTipo(TipoComprobante.A); // por defecto. lo cambiaría para recibir por pantalla
-        
-        nuevaFactura.setNroSerie(generarProximoNroSerie(TipoComprobante.A)); 
-
-        for (Map.Entry<String, LocalDate> entry : serviciosConFechaInicio.entrySet()) {
-            String idServicio = entry.getKey();
-            LocalDate fechaInicio = entry.getValue();
-
-            Servicio servicioModel = servicioRepositorio.findById(idServicio)
-                .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado: " + idServicio));
+        List<DetalleFactura> detalles = new ArrayList<>();
+        for (String servicioId : serviciosIds) {
+            Servicio servicioAFacturar = servicioServicio.buscarPorId(servicioId);
             
-            double precioFinal = calcularPrecioProporcional(
-                servicioModel.getPrecioUnitario(), 
-                fechaInicio, 
-                periodo
-            );
-
-            DetalleFactura detalle = new DetalleFactura();
+            DetalleFactura detalle = new DetalleFactura(); 
             
-            detalle.setDescripcion(servicioModel.getNombre());
-            detalle.setPrecio((int)precioFinal);
+            detalle.setFactura(factura);
+            detalle.setServicio(servicioAFacturar);
+            detalle.setDescripcion(servicioAFacturar.getDescripcion());
+            detalle.setPrecio(servicioAFacturar.getPrecioUnitario().intValue());
             
-            nuevaFactura.agregarDetalle(detalle);
+            detalles.add(detalle);
         }
 
-        nuevaFactura.calcularTotal(); 
-        return facturaRepositorio.save(nuevaFactura);
-    }
-    
-        private String generarProximoNroSerie(TipoComprobante tipo) {
-        final int ACTUAL = 1; // 
-        final int LONGITUD_SERIE = 8; 
-
-        String ultimoNroSerie = facturaRepositorio.findMaxNroSerieByTipo(tipo);
-        long numeroActual = 0;
-        if (ultimoNroSerie != null) {
-            try {
-                String[] partes = ultimoNroSerie.split("-");
-                if (partes.length == 2) {
-                    // separamos en dos y pasamos a numero (ej: "00000001" es 1)
-                    numeroActual = Long.parseLong(partes[1]);
-                }
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                System.err.println("Advertencia: Error al parsear el número de serie. Iniciando desde 0. Error: " + e.getMessage());
-                numeroActual = 0;
-            }
-        }
-
-        long proximoNumero = numeroActual + 1;
-        String puntoActual = String.format("%04d", ACTUAL); //  1 -> "0001"
+        factura.setDetalles(detalles);
+        factura.calcularTotal(); 
         
-        String numeroSerieStr = String.format("%0" + LONGITUD_SERIE + "d", proximoNumero);
-        return puntoActual + "-" + numeroSerieStr;
+        return facturaRepositorio.save(factura);
     }
 
 
-    
-    private double calcularPrecioProporcional(double precioUnitario, LocalDate fechaInicio, int periodo) {
-        LocalDate inicioMes = LocalDate.of(fechaInicio.getYear(), periodo, 1);
-        
-        if (fechaInicio.isBefore(inicioMes) || fechaInicio.isEqual(inicioMes)) {
-            return precioUnitario;
-        }
-        LocalDate finMes = inicioMes.plusMonths(1).minusDays(1);
-        long diasDelMes = ChronoUnit.DAYS.between(inicioMes, finMes) + 1;
-        long diasFacturar = ChronoUnit.DAYS.between(fechaInicio, finMes) + 1;
-
-        double precioPorDia = precioUnitario / diasDelMes;
-        return precioPorDia * diasFacturar;
-    }
-
-
-@Transactional
+    @Transactional
     public LogFacturacionMasiva emitirFacturaMasiva(
             List<String> idServiciosFacturar,
             int periodo,
@@ -180,12 +141,13 @@ public class FacturaServicio {
             throw new IllegalArgumentException("Debe seleccionar al menos un servicio para la facturación masiva.");
         }
         
+        // Esta lógica está bien, trae los objetos Servicio
         List<Servicio> serviciosFacturar = idServiciosFacturar.stream()
                 .map(id -> servicioRepositorio.findById(id).orElse(null))
                 .filter(s -> s != null)
                 .collect(Collectors.toList());
 
-
+        // Trae clientes activos
         List<Cliente> clientesActivos = clienteRepositorio.findAll().stream()
                 .filter(c -> c.getEstadoCuenta().equals(EstadoCuenta.ACTIVA))
                 .collect(Collectors.toList());
@@ -193,24 +155,34 @@ public class FacturaServicio {
         int facturasGeneradas = 0;
 
         for (Cliente cliente : clientesActivos) {
-            LocalDate fechaInicio = LocalDate.of(LocalDate.now().getYear(), periodo, 1);
-    
-            Map<String, LocalDate> serviciosConFechaInicio = new HashMap<>();
+            
+            List<String> idsParaEsteCliente = new ArrayList<>(idServiciosFacturar);
 
-
-            for (Servicio servicio : serviciosFacturar) {
-                serviciosConFechaInicio.put(servicio.getIdServicio(), fechaInicio); 
+            try {
+                List<integrador.programa.modelo.ClienteServicio> serviciosDelCliente = 
+                    clienteServicioServicio.listarServiciosActivosDeCliente(cliente.getIdCuenta());
+                
+                List<String> idsServiciosDelCliente = serviciosDelCliente.stream()
+                    .map(cs -> cs.getServicio().getIdServicio())
+                    .collect(Collectors.toList());
+                
+                idsParaEsteCliente.retainAll(idsServiciosDelCliente);
+                
+            } catch (Exception e) {
+                System.err.println("Error obteniendo servicios para cliente " + cliente.getIdCuenta() + ": " + e.getMessage());
+                idsParaEsteCliente.clear(); // No facturar si no podemos verificar
             }
 
-            if (!serviciosConFechaInicio.isEmpty()) {
-                
+            if (!idsParaEsteCliente.isEmpty()) {
                 try {
+
                     emitirFacturaIndividual(
-                        cliente.getIdCuenta(), 
-                        periodo, 
-                        fechaVencimiento, 
-                        serviciosConFechaInicio
+                        cliente,             
+                        idsParaEsteCliente,  
+                        periodo,             
+                        fechaVencimiento     
                     );
+                    
                     facturasGeneradas++;
                 } catch (Exception e) {
                     System.err.println("Error al facturar cliente " + cliente.getIdCuenta() + ": " + e.getMessage());
