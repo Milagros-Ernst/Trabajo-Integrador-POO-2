@@ -62,7 +62,6 @@ Al seleccionar un servicio de la tabla, se habilitan los botones **Baja** y **Mo
 * HU 11 - Anulación de factura
 
 # Tareas
-lista de tareas que cu hizo ¿
 
 ###### **Roko María Guillermina**
 Las tareas que desarrollé para llevar a cabo mi responsabilidad del proyecto fueron las siguientes. 
