@@ -77,3 +77,22 @@ A medida que desarrollaba las pantallas consultaba con algunos integrantes del e
 Al tener todos los bocetos finalizados, comencé con el código. Ya tenía una breve experiencia con el uso de `HTML` y `CSS`, aunque debí hacer una investigación exhaustiva y adquirir nuevos conocimientos para lograr lo que yo quería. 
 
 Una vez pasados los diseños a código, apliqué la lógica de `Thymeleaf` y cree el `HomeControlador` para poder controlar el flujo de las pantallas y el código. También se inforporó un poco de `JavaScript` gestionar la interactividad de las pantallas, más específicamente para habilitar/deshabilitar formularios, facilitar la capturación de datos y, además, que solicite al controlador la persistencia o modificación de los datos, permitiendo que se actualicen los datos de las tablas sin la recarga completa de la página.
+
+###### **Ernst Milagros Shaiel**
+
+Desarrollé las funcionalidades correspondientes a la **HU 03 – Asignar servicios a cliente** y **HU 04 – Alta de servicio**, implementando el modelo, repositorio, servicio y controlador necesarios para cada una.
+
+Para la **HU 03**, construí toda la lógica relacionada con la gestión del vínculo *Cliente–Servicio*, incluyendo la creación del modelo con estado y fechas, consultas específicas en el repositorio y las reglas de negocio para alta, baja y reactivación. Esto permite listar servicios contratados y disponibles, excluir servicios dados de baja de la facturación y manejar altas a mitad de mes para calcular facturación proporcional. Además, investigué sobre manejo de excepciones y buenas prácticas REST para asegurar respuestas claras desde la API.
+
+Para la **HU 04**, desarrollé el módulo completo de creación de servicios, aplicando validaciones con anotaciones como `@NotBlank`, `@NotNull` y `@PositiveOrZero`, e implementando un controlador con `@Valid` y manejo de errores mediante `BindingResult`. Esto garantiza que el formulario solo permita datos válidos y que los mensajes de error se muestren correctamente en la interfaz. Tambien un enum el cual corresponde al tipo de IVA de cada servicio.
+
+###### **Verón Juan Manuel**
+Luego de definir el diagrama de clases en conjunto con el equipo, comencé creando los dos enumeradores fundamentales para el modelado del dominio: `EstadoCuenta` y `TipoDocumento`. Estos enumeradores fueron la base para avanzar con las clases principales.
+
+Posteriormente me centré en desarrollar las dos clases esenciales para el alta de cliente. Inicié con la clase `Cuenta`, definiendo sus atributos, métodos y comportamientos como clase base abstracta del modelo. Luego continué con la clase `Cliente`, que extiende a Cuenta y en la cual repliqué la misma estructura de definición.
+
+Con estas clases implementadas, avancé con la creación del `ClienteServicio`, incorporando la lógica necesaria para gestionar las operaciones principales, como el alta y la modificación de clientes, la validación de datos y el manejo del identificador de la cuenta asociada.
+
+Más adelante implementé el `ClienteRepositorio`, donde definí los métodos encargados del acceso y persistencia de datos, permitiendo almacenar, consultar y actualizar información del cliente, aprovechando también las capacidades provistas por **JpaRepository**.
+
+Por último, desarrollé el `ClienteControlador`, encargado de exponer los **endpoints** necesarios para la interacción mediante peticiones HTTP. En el mismo integré los servicios con la capa de presentación, habilitando operaciones como registrar un nuevo cliente, obtener un cliente o realizar búsquedas por su id.
