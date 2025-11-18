@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlorecillaService - Facturación Masiva</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+
 </head>
 
 <body>
@@ -59,12 +60,16 @@
 
                     <div class="form-group">
                         <label for="fechaVencimiento">Fecha de Vencimiento:</label>
-                        <input type="date" id="fechaVencimiento" name="fechaVencimiento"/>
+                        <input type="date" id="fechaVencimiento" name="fechaVencimiento" placeholder="dd / mm / aaaa"/>
+
+                    </div>
+
+                    <div class="form-group">
                         <label for="tipoFac">Tipo de facturación:</label>
                         <select id="tipoFac" name="tipoFac">
-                            <option value="" disabled selected>Servicio</option>
-                        </select>
-                    </div>
+                        <option value="" disabled selected>Servicio</option>
+                    </select>
+                </div>
                 </div>
             </fieldset>
 

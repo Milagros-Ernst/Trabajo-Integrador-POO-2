@@ -109,13 +109,14 @@ main {
 }
 
 .form-group input[type="text"],
+.form-group input[type="date"],
 .form-group select {
     padding: 10px 12px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
     box-sizing: border-box;
-    width: 100%;
+    width: 30%;
 }
 
 .form-group input[readonly],
@@ -415,13 +416,12 @@ tr.empty-row td {
 }
 
 
-/* Estilo para el fieldset cuando está deshabilitado */
 fieldset[disabled] {
     opacity: 0.7;
     pointer-events: none;
 }
 
-/* Estilo para los botones de abajo (puedes ignorar si ya lo tienes) */
+
 .abm-actions {
     text-align: center;
     padding: 24px 0;
@@ -512,10 +512,6 @@ body.pagina-inicio {
     object-fit: contain;
 }
 
-
-
-
-
 /* Estilos de facturación inicio */
 
 
@@ -553,10 +549,6 @@ body.pagina-inicio {
     text-decoration: none;
 }
 
-.form-grid-servicios {
-
-
-}
 
 /* Estilos de facturacionMAsiva FEA */
 
