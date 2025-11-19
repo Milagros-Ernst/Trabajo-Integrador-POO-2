@@ -1,5 +1,6 @@
 package integrador.programa.controladores;
 import integrador.programa.modelo.Cliente;
+import integrador.programa.modelo.Factura;
 import integrador.programa.modelo.LogFacturacionMasiva;
 import integrador.programa.modelo.Servicio;
 import integrador.programa.servicios.ClienteServicio;
@@ -210,35 +211,46 @@ public class HomeControlador extends Object {
     @PostMapping("/facturacion/individual")
     public String procesarFacturacionIndividualFormulario(
             @RequestParam(value = "serviciosIds", required = false) List<String> serviciosIds,
-            @RequestParam("clienteIdForm") Long clienteId, // ID del cliente que viene del input oculto
+            @RequestParam("clienteIdForm") Long clienteId,
             @RequestParam("mes") String mes,
+            @RequestParam("fechaVencimiento") LocalDate fechaVencimiento, 
+            
             Model model
     ) {
         Cliente clienteEncontrado = null;
+        List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = null;
         try {
-             clienteEncontrado = clienteServicio.buscarPorId(clienteId);
-             model.addAttribute("cliente", clienteEncontrado);
-             List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
-             model.addAttribute("serviciosAsignados", serviciosAsignados);
-             
+            clienteEncontrado = clienteServicio.buscarPorId(clienteId);
+            model.addAttribute("cliente", clienteEncontrado);
+            serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
+            model.addAttribute("serviciosAsignados", serviciosAsignados);
         } catch (Exception e) {
-             model.addAttribute("errorCliente", "Error al recuperar el cliente.");
-             return "facturacion-individual"; // Vuelve con error
+            model.addAttribute("errorCliente", "Error al recuperar el cliente.");
+            return "facturacion-individual";
         }
-        
-        // Valida que se seleccionó al menos un servicio
+
         if (serviciosIds == null || serviciosIds.isEmpty()) {
             model.addAttribute("error", "Debe seleccionar al menos un servicio para facturar.");
             return "facturacion-individual";
         }
 
         try {
-            int mesInt = Integer.parseInt(mes);
-            model.addAttribute("success", "Factura generada exitosamente para el cliente " + clienteEncontrado.getNombre() + " para el mes " + mesInt);
+            int mesInt = Integer.parseInt(mes); 
+            Factura facturaGenerada = facturaServicio.emitirFacturaIndividual(
+                clienteEncontrado, 
+                serviciosIds, 
+                mesInt, 
+                fechaVencimiento
+            );
+
+            model.addAttribute("success", "Factura N°" + facturaGenerada.getIdFactura() + " generada exitosamente para " + clienteEncontrado.getNombre());
+            model.addAttribute("serviciosAsignados", clienteServicioServicio.listarServiciosActivosDeCliente(clienteId));
+
             return "facturacion-individual";
 
         } catch (Exception e) {
             model.addAttribute("error", "Error al generar la factura: " + e.getMessage());
+            e.printStackTrace(); 
             return "facturacion-individual";
         }
     }

@@ -47,9 +47,16 @@ Al seleccionar un servicio de la tabla, se habilitan los botones **Baja** y **Mo
 
 ### Pantalla de Facturación Masiva
 ![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-FacturacionMasiva.jpg)
+La pantalla de **Facturación Masiva** permite facturar a todos los clientes que tengan un cierto servicio seleccionado asociado. En la primer sección se observan campos para elegir el periodo que abarcarán y la fecha de vencimiento que tendrán las facturas a emitir. Luego encontramos el botón **Facturar Servicios**. Este botón tomará los datos cargados en pantalla para enviar facturas del o los servicios elegidos a todos aquellos que los hayan contratado, dejando también un registro en un log único de facturación masiva.
+Los campos Periodo y Fecha de Vencimiento son obligatorios y debe seleccionarse al menos un servicio de la lista.
 
-(inserte descripcion)
-
+### Pantalla de Facturación Individual
+![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-FacturacionIndividual.jpg)
+La pantalla de **Facturación Individual** permite facturar a un cliente uno o más servicios. Es similar a la facturación masiva, y de hecho, la facturación masiva hace uso de la individual para su funcionamiento. 
+En la primer sección se observa un campo para buscar a un cliente a través de su ID. Al presionar la lupa se nos habilitará la visibilidad de las siguientes secciones.
+La segunda sección nos despliega los datos del cliente a facturar.
+La última sección nos presenta campos para elegir el periodo que abarcarán y la fecha de vencimiento que tendrán las facturas a emitir. Luego encontramos el botón **Facturar Servicios**. Este botón tomará los datos cargados en pantalla para enviar una o más facturas al cliente según el o los servicios seleccionados.
+Los campos ID Cliente, Periodo y Fecha de Vencimiento son obligatorios y debe seleccionarse al menos un servicio de la lista.
 
 # Backlog de iteraciones
 
@@ -62,7 +69,6 @@ Al seleccionar un servicio de la tabla, se habilitan los botones **Baja** y **Mo
 * HU 11 - Anulación de factura
 
 # Tareas
-lista de tareas que cu hizo ¿
 
 ###### **Roko María Guillermina**
 Las tareas que desarrollé para llevar a cabo mi responsabilidad del proyecto fueron las siguientes. 
@@ -96,3 +102,14 @@ Con estas clases implementadas, avancé con la creación del `ClienteServicio`, 
 Más adelante implementé el `ClienteRepositorio`, donde definí los métodos encargados del acceso y persistencia de datos, permitiendo almacenar, consultar y actualizar información del cliente, aprovechando también las capacidades provistas por **JpaRepository**.
 
 Por último, desarrollé el `ClienteControlador`, encargado de exponer los **endpoints** necesarios para la interacción mediante peticiones HTTP. En el mismo integré los servicios con la capa de presentación, habilitando operaciones como registrar un nuevo cliente, obtener un cliente o realizar búsquedas por su id.
+
+###### **Menacho Natalia Agustina**
+Mis aportes en este proyecto fueron los siguientes.
+
+Me enfoqué en el desarrollo de las **HU 07 - Facturacion masiva manual** y **HU 08 - Facturacion individual**, y a último momento trabajé en desarrollar la **HU 11 - Anulación de factura**, aunque hablaré mejor sobre ella en un rato.
+
+Tuve la tarea de desarrollar la función de facturación, tanto la individual como la masiva. Ayudé también a Roko a llevar los diseños de estas dos pantallas a código y vincularlas con las funcionalidades. Definí las clases, servicios, controladores y repositorios relacionados a la facturación, y armé el log de la facturación masiva. Es decir, me encargué en primera instancia del desarrollo de: `Factura`, `DetalleFactura`, `LogFacturacionMasiva`, `EstadoFactura`, `FacturaControlador`, `FacturaServicio`, `FacturaRepositorio`, `DetalleFacturaRepositorio` y `LogFacturacionMasRepositorio`. Utilizé las funciones de `setters` y `getters` provistos por Lombok para mayor comodidad y un código más corto y ordenado, además de que implementé distintas validaciones en los atributos.
+
+Durante la segunda semana de la primera iteración, uno de nuestros integrantes se retiró y decidí desarrollar las funcionalidades de la historia de usuario que le correspondía: **HU 11 - Anulación de factura**. 
+
+Actualmente las funciones y clases relacionadas a la misma se encuentran en el código del proyecto, pero no es posible anular una factura a través de la interfaz del programa todavía. Se trabajará sobre ello en la siguiente iteración. Lo que sí se posee en este momento es el desarrollo de `NotaCredito`, `DetalleNota`, `NotaControlador`, `NotaRepositorio`, `DetalleNotaRepositorio` y `NotaServicio`.

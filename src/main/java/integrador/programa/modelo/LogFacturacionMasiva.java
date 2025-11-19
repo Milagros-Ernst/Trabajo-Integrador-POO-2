@@ -1,5 +1,3 @@
-// Nuevo Archivo: integrador.programa.modelo.FacturacionMasiva.java
-
 package integrador.programa.modelo;
 
 import java.time.LocalDate;
