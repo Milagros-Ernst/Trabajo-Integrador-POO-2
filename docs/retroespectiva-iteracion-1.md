@@ -1,4 +1,4 @@
-# 📝 Retrospectiva – Iteración 1
+# Retrospectiva – Iteración 1
 
 Durante esta primera iteración trabajamos en varias historias de usuario importantes para el funcionamiento del sistema, entre ellas el alta de clientes, la asignación de servicios, la creación de nuevos servicios, la facturación masiva e individual, la modificación de clientes y la anulación de facturas. En general pudimos completar casi todas las tareas planificadas, y en algunos casos incluso avanzamos más de lo previsto, como ocurrió con la historia de usuario 09 que originalmente estaba pensada para la segunda iteración.
 
