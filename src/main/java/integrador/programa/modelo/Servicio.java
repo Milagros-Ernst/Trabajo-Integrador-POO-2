@@ -19,7 +19,7 @@ public class Servicio {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id_servicio", columnDefinition = "VARCHAR(36)")
-    @Setter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE) // evita que Lombok genere setter (si lo usás a nivel de clase)
     private String idServicio;
 
     @NotBlank(message = "El nombre del servicio es obligatorio")
@@ -37,6 +37,7 @@ public class Servicio {
     @Column(name = "precio_unitario", nullable = false)
     private Double precioUnitario;
 
+
     @NotNull(message = "El tipo de IVA es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_iva", nullable = false, length = 20)
@@ -47,15 +48,9 @@ public class Servicio {
     @Column(name = "estado_servicio", nullable = false, length = 20)
     private EstadoServicio estadoServicio; // ALTA o BAJA
 
-    //baja lógica 
-    @NotNull(message = "El estado activo es obligatorio")
-    @Column(name = "activo", nullable = false)
-    private Boolean activo = true;
-
-    // se inicia por defecto con estado ALTA y activo = true
+    // se inicia por defecto con estado ALTA
     public Servicio() {
-        this.estadoServicio = EstadoServicio.ALTA;
-        this.activo = true;
+         this.estadoServicio = EstadoServicio.ALTA;
     }
 
     public Servicio(String nombre,
@@ -68,6 +63,6 @@ public class Servicio {
         this.precioUnitario = precioUnitario;
         this.tipoIva = tipoIva;
         this.estadoServicio = estadoServicio;
-        this.activo = true; // por defecto los nuevos servicios están activos
     }
+
 }

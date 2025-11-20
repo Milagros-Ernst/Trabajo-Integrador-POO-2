@@ -25,12 +25,12 @@ public class ServicioControlador {
     public ServicioControlador(ServicioServicio servicioServicio) {
         this.servicioServicio = servicioServicio;
     }
-
-    // Listar todos los servicios
+    
+    // Listar todos los servicios con estado ALTA
     @GetMapping
     public ResponseEntity<List<Servicio>> listarTodos() {
-        List<Servicio> servicios = servicioServicio.listarTodos();  // Llama al servicio para obtener todos los registros
-        return ResponseEntity.ok(servicios);    // Devuelve 200 OK con la lista de servicios en el body
+        List<Servicio> servicios = servicioServicio.listarTodos(); // Llama al servicio para obtener todos los registros
+        return ResponseEntity.ok(servicios);  // Devuelve 200 OK con la lista de servicios en el body
     }
 
     // Obtener un servicio por ID
@@ -95,16 +95,15 @@ public class ServicioControlador {
 
     // Eliminar un servicio por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable String id) {
-
+    public ResponseEntity<?> desactivar(@PathVariable String id) {
         try {
-            servicioServicio.eliminarServicio(id);  // Intenta eliminar el servicio
-            return ResponseEntity.noContent().build();  // Si se elimina correctamente, 204 sin contenido
+            servicioServicio.eliminarServicio(id);
+            return ResponseEntity.noContent().build();  // 204 sin contenido
+
         } catch (IllegalArgumentException e) {
-            // Si el servicio no existe, se informa de forma clara
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error); // 404 No se encontro
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 }
