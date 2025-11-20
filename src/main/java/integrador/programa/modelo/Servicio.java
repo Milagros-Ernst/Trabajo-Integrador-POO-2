@@ -46,7 +46,7 @@ public class Servicio {
     @NotNull(message = "El estado del servicio es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_servicio", nullable = false, length = 20)
-    private EstadoServicio estadoServicio; // ALTA o BAJ
+    private EstadoServicio estadoServicio; // ALTA o BAJA
 
     // se inicia por defecto con estado ALTA
     public Servicio() {

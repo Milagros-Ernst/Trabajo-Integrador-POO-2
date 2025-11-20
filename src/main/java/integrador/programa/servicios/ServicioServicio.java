@@ -5,6 +5,7 @@ import integrador.programa.modelo.enumeradores.EstadoServicio;
 import integrador.programa.repositorios.ServicioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ public class ServicioServicio {
         this.servicioRepositorio = servicioRepositorio;
     }
 
-    // LISTAR TODOS
+    // LISTAR TODOS LOS SERVICIOS CON ESTADO ALTA
     public List<Servicio> listarTodos() {
-        return servicioRepositorio.findAll();
+        return servicioRepositorio.findByEstadoServicio(EstadoServicio.ALTA);
     }
 
     // BUSCAR POR ID
@@ -31,8 +32,9 @@ public class ServicioServicio {
     }
 
     // ALTA (crear nuevo)
+    @Transactional
     public Servicio agregarServicio(Servicio servicio) {
-        // Si quisieras forzar un estado por defecto:
+        // Estado por defecto ALTA si viene nulo
         if (servicio.getEstadoServicio() == null) {
             servicio.setEstadoServicio(EstadoServicio.ALTA);
         }
@@ -40,6 +42,7 @@ public class ServicioServicio {
     }
 
     // MODIFICAR
+    @Transactional
     public Servicio actualizarServicio(String id, Servicio datosNuevos) {
 
         Servicio existente = buscarPorId(id);
@@ -53,25 +56,19 @@ public class ServicioServicio {
         return servicioRepositorio.save(existente);
     }
 
-    // CAMBIAR ESTADO → BAJA
-    public Servicio darDeBaja(String id) {
-        Servicio servicio = buscarPorId(id);
-        servicio.setEstadoServicio(EstadoServicio.BAJA);
-        return servicioRepositorio.save(servicio);
-    }
-
     // CAMBIAR ESTADO → ALTA
+    @Transactional
     public Servicio darDeAlta(String id) {
         Servicio servicio = buscarPorId(id);
         servicio.setEstadoServicio(EstadoServicio.ALTA);
         return servicioRepositorio.save(servicio);
     }
 
-    // ELIMINAR
+    // "ELIMINAR" = BAJA LÓGICA
+    @Transactional
     public void eliminarServicio(String id) {
-        if (!servicioRepositorio.existsById(id)) {
-            throw new IllegalArgumentException("No se puede eliminar. Servicio no encontrado con id: " + id);
-        }
-        servicioRepositorio.deleteById(id);
+        Servicio servicio = buscarPorId(id);
+        servicio.setEstadoServicio(EstadoServicio.BAJA);
+        servicioRepositorio.save(servicio);
     }
 }
