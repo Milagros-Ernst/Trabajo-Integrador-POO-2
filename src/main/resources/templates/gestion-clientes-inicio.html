@@ -96,6 +96,7 @@
             <table>
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Tipo Documento</th>
                     <th>Nro. Documento</th>
                     <th>Apellido</th>
@@ -106,6 +107,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="cli : ${clientes}">
+                    <td th:text="${cli.idCuenta}"></td>
                     <td th:text="${cli.tipoDocumento}"></td>
                     <td th:text="${cli.numeroDocumento}"></td>
                     <td th:text="${cli.apellido}"></td>

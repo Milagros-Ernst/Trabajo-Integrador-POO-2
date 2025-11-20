@@ -30,15 +30,15 @@
             <div class="form-grid" id="form-inputs-container">
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" th:field="*{nombre}" readonly>
+                    <input type="text" id="nombre" th:field="*{nombre}" readonly>
                 </div>
                 <div class="form-group">
                     <label for="telefono">Nro. Teléfono</label>
-                    <input type="text" th:field="*{telefono}" readonly>
+                    <input type="text" id="telefono" th:field="*{telefono}" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="condicion-fiscal">Condición fiscal</label>
-                    <select th:field="*{condIVA}" disabled>
+                    <label for="condIVA">Condición fiscal</label>
+                    <select id="condIVA" th:field="*{condIVA}" disabled>
                         <option value="">Seleccione uno</option>
                         <option value="MONOTRIBUTO">Monotributo</option>
                         <option value="RESPONSABLE_INSCRIPTO">Responsable Inscrito</option>
@@ -48,31 +48,31 @@
                 </div>
                 <div class="form-group">
                     <label for="apellido">Apellido</label>
-                    <input type="text" th:field="*{apellido}" readonly>
+                    <input type="text" id="apellido" th:field="*{apellido}" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" th:field="*{mail}" readonly>
+                    <label for="mail">Email</label>
+                    <input type="text" id="mail" th:field="*{mail}" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="direccion-fiscal">Dirección fiscal</label>
-                    <input type="text" th:field="*{direccionFiscal}" readonly>
+                    <label for="direccionFiscal">Dirección fiscal</label>
+                    <input type="text" id="direccionFiscal" th:field="*{direccionFiscal}" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="tipo-doc">Tipo de documento</label>
+                    <label for="tipoDocumento">Tipo de documento</label>
                     <div style="display: flex; gap: 8px;">
-                        <select th:field="*{tipoDocumento}" style="flex: 1;" disabled>
+                        <select id="tipoDocumento" th:field="*{tipoDocumento}" style="flex: 1;" disabled>
                             <option value="">Seleccione uno</option>
                             <option value="DNI">DNI</option>
                             <option value="CUIT">CUIT</option>
                             <option value="CUIL">CUIL</option>
                         </select>
-                        <input type="text" th:field="*{numeroDocumento}" placeholder="Nro. doc" style="flex: 2;" readonly>
+                        <input type="text" id="numeroDocumento" th:field="*{numeroDocumento}" placeholder="Nro. doc" style="flex: 2;" readonly>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="direccion">Dirección</label>
-                    <input type="text" th:field="*{direccion}" readonly>
+                    <input type="text" id="direccion" th:field="*{direccion}" readonly>
                 </div>
             </div>
         </form>

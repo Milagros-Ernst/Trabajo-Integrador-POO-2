@@ -27,67 +27,59 @@
             <div class="form-section-titles">
                 <h3>Información personal</h3>
             </div>
-
             <div class="form-grid" id="form-inputs-container">
-
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" th:field="*{nombre}" readonly>
+                    <input type="text" id="nombre" th:field="*{nombre}" readonly>
                 </div>
-
                 <div class="form-group">
                     <label for="telefono">Nro. Teléfono</label>
-                    <input type="text" th:field="*{telefono}" readonly>
+                    <input type="text" id="telefono" th:field="*{telefono}" readonly>
                 </div>
-
                 <div class="form-group">
-                    <label for="condicion-fiscal">Condición fiscal</label>
-
-                    <select th:field="*{condIVA}" disabled>
+                    <label for="condIVA">Condición fiscal</label>
+                    <select id="condIVA" th:field="*{condIVA}" disabled>
                         <option value="">Seleccione uno</option>
                         <option value="MONOTRIBUTO">Monotributo</option>
-                        <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
+                        <option value="RESPONSABLE_INSCRIPTO">Responsable Inscrito</option>
                         <option value="CONSUMIDOR_FINAL">Consumidor final</option>
                         <option value="EXENTO">Exento</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label for="apellido">Apellido</label>
-                    <input type="text" th:field="*{apellido}" readonly>
+                    <input type="text" id="apellido" th:field="*{apellido}" readonly>
                 </div>
-
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="text" th:field="*{mail}" readonly>
+                    <label for="mail">Email</label>
+                    <input type="text" id="mail" th:field="*{mail}" readonly>
                 </div>
-
                 <div class="form-group">
-                    <label for="direccion-fiscal">Dirección fiscal</label>
-                    <input type="text" th:field="*{direccionFiscal}" readonly>
+                    <label for="direccionFiscal">Dirección fiscal</label>
+                    <input type="text" id="direccionFiscal" th:field="*{direccionFiscal}" readonly>
                 </div>
-
                 <div class="form-group">
-                    <label for="tipo-doc">Tipo de documento</label>
+                    <label for="tipoDocumento">Tipo de documento</label>
                     <div style="display: flex; gap: 8px;">
-                        <select th:field="*{tipoDocumento}" style="flex: 1;" disabled>
+                        <select id="tipoDocumento" th:field="*{tipoDocumento}" style="flex: 1;" disabled>
                             <option value="">Seleccione uno</option>
                             <option value="DNI">DNI</option>
                             <option value="CUIT">CUIT</option>
                             <option value="CUIL">CUIL</option>
                         </select>
-
-                        <input type="text" th:field="*{numeroDocumento}" placeholder="Nro. doc" style="flex: 2;" readonly>
+                        <input type="text" id="numeroDocumento" th:field="*{numeroDocumento}" placeholder="Nro. doc" style="flex: 2;" readonly>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="direccion">Dirección</label>
-                    <input type="text" th:field="*{direccion}" readonly>
+                    <input type="text" id="direccion" th:field="*{direccion}" readonly>
                 </div>
             </div>
+        </form>
+    </div>
 
-            <div class="form-actions-top" id="form-top-actions">
+
+    <div class="form-actions-top" id="form-top-actions">
                 <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
                 <button type="submit" class="btn btn-primary">Confirmar</button>
             </div>
@@ -107,16 +99,24 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:if="${!servicios.isEmpty()}" th:each="servicio : ${servicios}">
-                    <td th:text="${servicio.nombre}"></td>
-                    <td th:text="${servicio.descripcion}"></td>
-                    <td th:text="${servicio.estado}"></td>
+
+                <tr th:if="${!serviciosContratados.isEmpty()}" th:each="asig : ${serviciosContratados}">
+
+                    <td th:text="${asig.servicio.nombre}"></td>
+                    <td th:text="${asig.servicio.descripcion}"></td>
+
+
+                    <td th:text="${asig.estadoServicio}"></td>
+
                     <td>
-                        <a href="#" class="action-link">Ver facturas</a>
-                        <a href="#" class="action-link-danger">Baja servicio</a>
-                        </td>
+                        <a th:href="@{/clientes/facturas(asigId=${asig.idClienteServicio})}" class="action-link">Ver facturas</a>
+                        <form th:action="@{/clientes/{clienteId}/asignaciones/{asigId}/eliminar(clienteId=${cliente.idCuenta}, asigId=${asig.idClienteServicio})}" method="post" style="display: inline;">
+                            <button type="submit" class="action-link-danger action-link-button">Baja servicio</button>
+                        </form>
+                    </td>
                 </tr>
-                <tr th:if="${servicios.isEmpty()}" class="empty-row">
+
+                <tr th:if="${serviciosContratados.isEmpty()}" class="empty-row">
                     <td colspan="4">No hay servicios contratados.</td>
                 </tr>
                 </tbody>
@@ -136,6 +136,7 @@
             <table>
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Tipo Documento</th>
                     <th>Nro. Documento</th>
                     <th>Apellido</th>
@@ -145,7 +146,9 @@
                 </tr>
                 </thead>
                 <tbody>
+
                 <tr th:if="${!subClientes.isEmpty()}" th:each="cli : ${subClientes}">
+                    <td th:text="${cli.idCuenta}"></td>
                     <td th:text="${cli.tipoDocumento}"></td>
                     <td th:text="${cli.numeroDocumento}"></td>
                     <td th:text="${cli.apellido}"></td>
