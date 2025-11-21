@@ -74,6 +74,11 @@
                     <label for="direccion">Dirección</label>
                     <input type="text" id="direccion" th:field="*{direccion}" readonly>
                 </div>
+                <div class="btn-wrapper-right">
+                    <a th:href="@{/clientes/{id}/facturas(id=${cliente.idCuenta})}" class="btn-verfacturas">
+                        Ver historial de facturación
+                    </a>
+                </div>
             </div>
         </form>
     </div>
@@ -103,7 +108,6 @@
                     <td th:text="${asig.estadoServicio}"></td>
 
                     <td>
-                        <a th:href="@{/clientes/facturas(asigId=${asig.idClienteServicio})}" class="action-link">Ver facturas</a>
                         <form th:action="@{/clientes/{clienteId}/asignaciones/{asigId}/eliminar(clienteId=${cliente.idCuenta}, asigId=${asig.idClienteServicio})}" method="post" style="display: inline;">
                             <button type="submit" class="action-link-danger action-link-button">Baja servicio</button>
                         </form>

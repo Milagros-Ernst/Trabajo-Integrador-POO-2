@@ -222,6 +222,23 @@ main {
 
 }
 
+/*Botón ver historial facturas, tiene muchas cosas pq le saque la clase btn al html x problemitas*/
+.btn-verfacturas {
+    color: #2D76E6;
+    background-color: transparent;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    width: auto;
+    padding: 8px 16px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
 /* Botón Alta  */
 .btn-alta {
     background-color: #9CCC65;
@@ -251,7 +268,6 @@ main {
     position: relative;
 }
 
-/* Contenedor para botón a la derecha (ÚNICO DEL ARCHIVO 2) */
 .btn-wrapper-right {
     text-align: right;
     margin-top: 24px;
