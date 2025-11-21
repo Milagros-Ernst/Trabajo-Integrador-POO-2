@@ -20,11 +20,10 @@ import lombok.AccessLevel;
 public class LogFacturacionMasiva {
     
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_facturacion_masiva", columnDefinition = "VARCHAR(36)")
     @Setter(AccessLevel.NONE)
-    private String id;
+    private Long id;
     
     @NotNull(message = "La fecha de ejecución es obligatoria")
     @Column(name = "fecha_ejecucion", nullable = false)

@@ -55,13 +55,13 @@ public class FacturaServicio {
         return facturaRepositorio.findAll();
     }
 
-    public Optional<Factura> buscarPorId(String id) {
+    public Optional<Factura> buscarPorId(Long id) {
         return facturaRepositorio.findById(id);
     }
 
     @Transactional
     public NotaCredito bajaFactura(Long idFactura, String motivoAnulacion) {
-        Factura factura = facturaRepositorio.findById(idFactura.toString(0))
+        Factura factura = facturaRepositorio.findById(idFactura)
             .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + idFactura));
 
         if (!factura.getEstado().equals(EstadoFactura.VIGENTE)) {

@@ -3,13 +3,16 @@ package integrador.programa.modelo;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.generator.EventType;
 
 import integrador.programa.modelo.enumeradores.TipoComprobante;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -29,18 +32,17 @@ import lombok.Setter;
 @Table(name = "NotaCredito")
 public class NotaCredito {
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idNota", columnDefinition = "VARCHAR(36)")
     @Setter(AccessLevel.NONE)
-    private String nroNota;
+    private Long nroNota;
 
     // me gustaría despues cambiar en el diagrama nroNota por idNota
     // para que sea cohesivo con factura
 
-    @NotNull
-    @Size(min = 4, max = 8)
-    private String nroSerie;
+    @Column(name = "nro_serie", columnDefinition = "SERIAL", insertable = false, updatable = false)
+    @Generated(event = EventType.INSERT)
+    private Long nroSerie;
 
     @NotBlank
     private double precioTotal;

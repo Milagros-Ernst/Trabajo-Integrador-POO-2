@@ -5,8 +5,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.generator.EventType;
+import org.hibernate.annotations.Generated; 
 
 import integrador.programa.modelo.enumeradores.EstadoFactura;
 import integrador.programa.modelo.enumeradores.TipoComprobante;
@@ -33,8 +36,8 @@ public class Factura {
     @Setter(AccessLevel.NONE)
     private Long idFactura;
     
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "nro_serie", columnDefinition = "SERIAL", insertable = false, updatable = false)
+    @Generated(event = EventType.INSERT)
     private Long nroSerie;
 
     @NotNull(message = "El precio total es obligatorio")

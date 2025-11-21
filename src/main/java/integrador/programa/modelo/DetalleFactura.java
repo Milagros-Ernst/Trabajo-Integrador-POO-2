@@ -25,10 +25,9 @@ import lombok.ToString;
 public class DetalleFactura {
     
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private String idDetalle;
+    private Long idDetalle;
 
     @NotBlank(message = "La descripción no puede estar vacía.")
     @Size(min = 1, max = 250, message = "La descripción debe tener entre 1 y 250 caracteres.")

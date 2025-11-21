@@ -20,11 +20,10 @@ import lombok.ToString;
 public class DetalleNota {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_detalle_nota", columnDefinition = "VARCHAR(36)")
     @Setter(AccessLevel.NONE)
-    private String idDetalleNota;
+    private Long idDetalleNota;
 
     @NotNull(message = "La descripción no puede ser nula")
     @Column(name = "descripcion", nullable = false)
