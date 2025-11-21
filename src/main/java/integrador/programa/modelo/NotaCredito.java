@@ -33,7 +33,7 @@ import lombok.Setter;
 public class NotaCredito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idNota", columnDefinition = "VARCHAR(36)")
+    @Column(name = "idNota")
     @Setter(AccessLevel.NONE)
     private Long nroNota;
 

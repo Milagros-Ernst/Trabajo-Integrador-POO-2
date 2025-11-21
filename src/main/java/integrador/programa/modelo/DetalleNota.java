@@ -21,7 +21,7 @@ public class DetalleNota {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_detalle_nota", columnDefinition = "VARCHAR(36)")
+    @Column(name = "id_detalle_nota")
     @Setter(AccessLevel.NONE)
     private Long idDetalleNota;
 

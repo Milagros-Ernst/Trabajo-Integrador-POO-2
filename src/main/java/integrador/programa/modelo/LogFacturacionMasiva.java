@@ -21,7 +21,7 @@ public class LogFacturacionMasiva {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_facturacion_masiva", columnDefinition = "VARCHAR(36)")
+    @Column(name = "id_facturacion_masiva")
     @Setter(AccessLevel.NONE)
     private Long id;
     

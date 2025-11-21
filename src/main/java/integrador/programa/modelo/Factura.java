@@ -32,7 +32,7 @@ public class Factura {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_factura", columnDefinition = "VARCHAR(36)")
+    @Column(name = "id_factura")
     @Setter(AccessLevel.NONE)
     private Long idFactura;
     
