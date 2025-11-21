@@ -114,7 +114,7 @@ public class Factura {
             subtotalAcumulado += detalle.getPrecio(); 
             Servicio servicio = detalle.getServicio();
             if (servicio != null) {
-                double ivaDeEsteDetalle = detalle.getPrecio() * servicio.getTipoIva().getValor();
+                double ivaDeEsteDetalle = detalle.getPrecio() * (servicio.getTipoIva().getValor()/100);
                 ivaAcumulado += ivaDeEsteDetalle;
             }
         }
