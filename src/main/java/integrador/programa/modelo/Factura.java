@@ -28,15 +28,14 @@ import lombok.AccessLevel;
 public class Factura {
     
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_factura", columnDefinition = "VARCHAR(36)")
     @Setter(AccessLevel.NONE)
-    private String idFactura;
+    private Long idFactura;
     
-    @NotBlank
-    @Size(min = 4, max = 8)
-    private String nroSerie;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
+    private Long nroSerie;
 
     @NotNull(message = "El precio total es obligatorio")
     private double precioTotal;
