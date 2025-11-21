@@ -64,17 +64,19 @@
             
             <div class="form-grid" id="form-inputs-container">
                 <div class="form-group">
-                    <label for="id">ID Cliente</label>
-                    <input type="text" th:value="${cliente.idCuenta}" readonly class="form-control">
+                    <label for="idCuentaImput">ID Cliente</label>
+                    <input type="text" id="IdCuentaImput" th:value="${cliente.idCuenta}" readonly class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="Nombre">Nombre</label>
-                    <input type="text" th:value="${cliente.nombre}" readonly class="form-control">
+                    <label for="nombreImput">Nombre</label>
+                    <input type="text" id="nombreImput" th:value="${cliente.nombre}" readonly class="form-control">
                 </div> 
                 <div class="form-group">
-                    <label for="doc">Documento</label>
-                    <input type="text" th:value="${cliente.tipoDocumento}" readonly class="form-control">
-                    <input type="text" th:value="${cliente.numeroDocumento}" readonly class="form-control">
+                    <label for="tipoDocImput">Tipo Documento</label>
+                    <input type="text" id="tipoDocImput" th:value="${cliente.tipoDocumento}" readonly class="form-control">
+
+                    <label for="numDocImput">Nro Documento</label>
+                    <input type="text" id="numDocImput" th:value="${cliente.numeroDocumento}" readonly class="form-control">
                 </div> 
             </div>
         </fieldset>
@@ -86,7 +88,7 @@
         <form id="facturacion-form-group" th:action="@{/facturacion/individual}" th:method="post">
             <input type="hidden" name="clienteIdForm" th:value="${cliente.idCuenta}" />
 
-            <fieldset id="form-fieldset">
+            <fieldset id="facturacion-info-fieldset">
                 <div class="form-section-titles">
                     <h3>Información para facturación</h3>
                 </div>

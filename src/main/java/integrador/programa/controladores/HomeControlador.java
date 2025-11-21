@@ -78,7 +78,8 @@ public class HomeControlador extends Object {
             subClientes.removeIf(c -> c.getIdCuenta().equals(id));
             model.addAttribute("subClientes", subClientes);
 
-            model.addAttribute("servicios", Collections.emptyList());
+            List<integrador.programa.modelo.ClienteServicio> contratados = clienteServicioServicio.listarServiciosActivosDeCliente(id);
+            model.addAttribute("serviciosContratados", contratados);
 
             return "gestion-clientes-detalle";
 
