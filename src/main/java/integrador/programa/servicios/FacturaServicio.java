@@ -55,12 +55,12 @@ public class FacturaServicio {
         return facturaRepositorio.findAll();
     }
 
-    public Optional<Factura> buscarPorId(String id) {
+    public Optional<Factura> buscarPorId(Long id) {
         return facturaRepositorio.findById(id);
     }
 
     @Transactional
-    public NotaCredito bajaFactura(String idFactura, String motivoAnulacion) {
+    public NotaCredito bajaFactura(Long idFactura, String motivoAnulacion) {
         Factura factura = facturaRepositorio.findById(idFactura)
             .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + idFactura));
 
@@ -95,7 +95,6 @@ public class FacturaServicio {
         factura.setVencimiento(fechaVencimiento);
         factura.setEstado(EstadoFactura.VIGENTE); 
         factura.setEmpleadoResponsable(RESPONSABLE); 
-        factura.setNroSerie("F-001"); // Hardcodeado
         
         switch (cliente.getCondIVA()) {
             case RESPONSABLE_INSCRIPTO:
@@ -141,13 +140,11 @@ public class FacturaServicio {
             throw new IllegalArgumentException("Debe seleccionar al menos un servicio para la facturación masiva.");
         }
         
-        // Esta lógica está bien, trae los objetos Servicio
         List<Servicio> serviciosFacturar = idServiciosFacturar.stream()
                 .map(id -> servicioRepositorio.findById(id).orElse(null))
                 .filter(s -> s != null)
                 .collect(Collectors.toList());
 
-        // Trae clientes activos
         List<Cliente> clientesActivos = clienteRepositorio.findAll().stream()
                 .filter(c -> c.getEstadoCuenta().equals(EstadoCuenta.ACTIVA))
                 .collect(Collectors.toList());

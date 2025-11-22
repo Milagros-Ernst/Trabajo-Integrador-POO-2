@@ -8,8 +8,8 @@ import java.util.List;
 
 
 @Repository
-public interface DetalleFacturaRepositorio extends JpaRepository<DetalleFactura, String> {
+public interface DetalleFacturaRepositorio extends JpaRepository<DetalleFactura, Long> {
     
     // dato de color, spring boot pide que se use "findBy" al inicio del método o sino explota porque le pinta esa
-    List<DetalleFactura> findByFacturaIdFactura(String idFactura);
+    List<DetalleFactura> findByFacturaIdFactura(Long idFactura);
 }

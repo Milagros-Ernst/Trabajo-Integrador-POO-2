@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import integrador.programa.modelo.DetalleNota;
 
 @Repository
-public interface DetalleNotaRepositorio extends JpaRepository<DetalleNota, String> {
+public interface DetalleNotaRepositorio extends JpaRepository<DetalleNota, Long> {
     
 }
