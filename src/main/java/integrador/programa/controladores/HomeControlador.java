@@ -145,7 +145,7 @@ public class HomeControlador extends Object {
     @PutMapping("/clientes/{id}")
     public ResponseEntity<?> modificarCliente(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
         try {
-            clienteServicio.actualizarCliente(id, clienteActualizado);
+            clienteServicio.modificarCliente(id, clienteActualizado);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al actualizar: " + e.getMessage());
