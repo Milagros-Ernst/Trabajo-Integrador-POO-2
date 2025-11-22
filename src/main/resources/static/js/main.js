@@ -388,18 +388,14 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then(response => {
                     if (response.ok) {
-                        return response.json();
+                        alert('Cliente modificado con éxito');
+                        location.reload();
                     } else {
-                        return response.text().then(text => {
-                            throw new Error(text || 'Error al modificar el cliente');
-                        });
+                        throw new Error('Error al modificar el cliente');
                     }
                 })
-                .then(data => {
-                    location.reload();
-                })
                 .catch(error => {
-                    alert('Error al modificar el cliente: ' + error.message);
+                    alert(error.message);
                 });
         });
 
