@@ -257,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formClienteDetalle = document.getElementById('form-cliente');
     const btnModificar = document.getElementById('btn-modificar-form');
     const btnAltaDetalle = document.getElementById('btn-alta-form');
+    const btnBaja = document.getElementById('btn-baja-form');
 
     if (formClienteDetalle && btnModificar && !btnAltaDetalle) {
 

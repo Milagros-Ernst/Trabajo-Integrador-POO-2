@@ -45,7 +45,7 @@ public class HomeControlador extends Object {
 
     @GetMapping("/clientes")
     public String irAClientes(Model model) {
-        List<Cliente> misClientes = clienteServicio.listarTodos();
+        List<Cliente> misClientes = clienteServicio.listarClientesActivos();
 
         model.addAttribute("clientes", misClientes);
         return "gestion-clientes-inicio";
@@ -128,7 +128,7 @@ public class HomeControlador extends Object {
             Cliente cliente = clienteServicio.buscarPorId(id);
             model.addAttribute("cliente", cliente);
 
-            List<Cliente> subClientes = clienteServicio.listarTodos();
+            List<Cliente> subClientes = clienteServicio.listarClientesActivos();
             subClientes.removeIf(c -> c.getIdCuenta().equals(id));
             model.addAttribute("subClientes", subClientes);
 
@@ -330,5 +330,13 @@ public class HomeControlador extends Object {
         }
     }
 
-
+    @PostMapping("/clientes/{id}/dar-de-baja")
+    public String darDeBajaCliente(@PathVariable Long id) {
+        try {
+            clienteServicio.BajaCliente(id);
+            return "redirect:/clientes";
+        } catch (Exception e) {
+            return "redirect:/clientes";
+        }
+    }
 }
