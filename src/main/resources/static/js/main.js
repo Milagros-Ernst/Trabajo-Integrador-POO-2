@@ -4,6 +4,7 @@
   - gestion-clientes-inicio.html
   - gestion-clientes-detalle.html
   - gestion-servicio-abm.html
+  - facturacion-*.html
 
  */
 document.addEventListener('DOMContentLoaded', () => {
@@ -81,45 +82,129 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
-    //LÓGICA PARA: gestion-servicio-abm.html
-
+// Lógica para el ABM de servicio y selección de filas
     const formServicios = document.getElementById('form-servicios');
 
     if (formServicios) {
 
-        const btnAlta = document.getElementById('btn-alta-form');
+        const btnAlta = document.getElementById('btn-alta-servicio');
+        const btnModificar = document.getElementById('btn-modificar-servicio');
         const btnCancelar = document.getElementById('btn-cancelar');
         const formFieldset = document.getElementById('form-fieldset');
         const topActions = document.getElementById('form-top-actions');
         const bottomActions = document.getElementById('abm-bottom-actions');
 
+        // Variables de estado
+        let servicioSeleccionadoId = null;
+        let modoEdicion = false;
 
+        // 1. Lógica de Selección de Tabla
+        const filas = document.querySelectorAll('.fila-tabla');
+        console.log("Filas encontradas:", filas.length);
+
+        filas.forEach(fila => {
+            fila.addEventListener('click', () => {
+                filas.forEach(f => f.classList.remove('fila-seleccionada'));
+                fila.classList.add('fila-seleccionada');
+                servicioSeleccionadoId = fila.getAttribute('data-id');
+                console.log("Fila seleccionada ID:", servicioSeleccionadoId);
+            });
+        });
+
+        // Funciones de habilitar/deshabilitar
         function habilitarFormularioServicio() {
-            formFieldset.disabled = false;
-            topActions.style.display = 'flex';
-            bottomActions.style.display = 'none';
-            formServicios.reset();
-            const firstInput = formFieldset.querySelector('input');
-            if (firstInput) {
-                firstInput.focus();
-            }
+            if (formFieldset) formFieldset.disabled = false;
+            if (topActions) topActions.style.display = 'flex';
+            if (bottomActions) bottomActions.style.display = 'none';
+            const firstInput = formFieldset?.querySelector('input');
+            if (firstInput) firstInput.focus();
         }
 
         function deshabilitarFormularioServicio() {
-            formFieldset.disabled = true;
-            topActions.style.display = 'none';
-            bottomActions.style.display = 'block';
+            if (formFieldset) formFieldset.disabled = true;
+            if (topActions) topActions.style.display = 'none';
+            if (bottomActions) bottomActions.style.display = 'block';
             formServicios.reset();
+            modoEdicion = false;
+            servicioSeleccionadoId = null;
+            filas.forEach(f => f.classList.remove('fila-seleccionada'));
         }
 
-        btnAlta.addEventListener('click', habilitarFormularioServicio);
+        // Evento Alta
+        if (btnAlta) {
+            btnAlta.addEventListener('click', () => {
+                modoEdicion = false;
+                formServicios.reset();
+                habilitarFormularioServicio();
+            });
+        }
 
-        btnCancelar.addEventListener('click', (e) => {
-            e.preventDefault();
-            deshabilitarFormularioServicio();
-        });
+        // Evento Modificar
+        if (btnModificar) {
+            btnModificar.addEventListener('click', () => {
+                if (!servicioSeleccionadoId) {
+                    alert("Por favor, selecciona un servicio de la tabla primero.");
+                    return;
+                }
 
+                const filaActiva = document.querySelector(`.fila-tabla[data-id="${servicioSeleccionadoId}"]`);
+
+                if (filaActiva) {
+                    document.getElementById('nombre').value = filaActiva.getAttribute('data-nombre');
+                    document.getElementById('descripcion').value = filaActiva.getAttribute('data-descripcion');
+                    document.getElementById('precio-base').value = filaActiva.getAttribute('data-precio');
+                    document.getElementById('iva').value = filaActiva.getAttribute('data-iva');
+
+                    modoEdicion = true;
+                    habilitarFormularioServicio();
+                }
+            });
+        }
+
+        // Evento Baja
+        const btnBaja = document.getElementById('btn-baja');
+
+        if (btnBaja) {
+            btnBaja.addEventListener('click', () => {
+                if (!servicioSeleccionadoId) {
+                    alert("Por favor, selecciona un servicio de la tabla primero.");
+                    return;
+                }
+
+                const confirmar = confirm("¿Estás seguro de que deseas dar de baja este servicio?");
+
+                if (confirmar) {
+                    fetch(`/api/servicios/${servicioSeleccionadoId}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('Servicio dado de baja con éxito');
+                                location.reload();
+                            } else {
+                                return response.json().then(data => {
+                                    throw new Error(data.error || 'Error al dar de baja el servicio');
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error: ' + error.message);
+                        });
+                }
+            });
+        }
+
+        // Evento Cancelar
+        if (btnCancelar) {
+            btnCancelar.addEventListener('click', (e) => {
+                e.preventDefault();
+                deshabilitarFormularioServicio();
+            });
+        }
+
+        // Evento Submit/confirmar
         formServicios.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -131,24 +216,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 estadoServicio: 'ALTA'
             };
 
-            fetch('/api/servicios', {
-                method: 'POST',
+            let url = '/api/servicios';
+            let method = 'POST';
+
+            if (modoEdicion && servicioSeleccionadoId) {
+                url = `/api/servicios/${servicioSeleccionadoId}`;
+                method = 'PUT';
+            }
+
+            fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(servicioData),
             })
                 .then(response => {
                     if (response.ok) {
+                        alert(modoEdicion ? 'Servicio modificado con éxito' : 'Servicio creado con éxito');
                         location.reload();
                     } else {
-                        alert('Error al crear el servicio. Verifique los datos.');
+                        alert('Error al procesar la solicitud. Verifique los datos.');
                     }
                 })
                 .catch(error => {
                     console.error('Error en el fetch:', error);
-                    alert('Error de red. No se pudo conectar con el servidor.');
+                    alert('Error de red.');
                 });
         });
     }
+
 
     // LÓGICA PARA: gestion-clientes-detalle.html
 
@@ -270,35 +365,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // lógica facturación que le agregué para mas felicidad
 
     const selectAllCheckbox = document.getElementById('seleccionar-todo');
-    
-    if (selectAllCheckbox) { 
-        
-        const serviceCheckboxes = document.querySelectorAll('.checkbox-servicio');
-        const facturacionForm = document.getElementById('facturacion-form-group');
 
-        selectAllCheckbox.addEventListener('click', function() {
-            serviceCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-        });
+    if (selectAllCheckbox) {
+        const serviceCheckboxes = document.querySelectorAll('.checkbox-servicio');
+        const facturacionForm = document.getElementById('facturacion-form-group');
 
-        serviceCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('click', function() {
-                const allChecked = Array.from(serviceCheckboxes).every(cb => cb.checked);
-                selectAllCheckbox.checked = allChecked;
-            });
-        });
+        selectAllCheckbox.addEventListener('click', function() {
+            serviceCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
 
-        if (facturacionForm) {
-            facturacionForm.addEventListener('submit', function(e) {
-                const checkedCount = document.querySelectorAll('.checkbox-servicio:checked').length;
-                
-                if (checkedCount === 0) {
-                    e.preventDefault(); 
-                    alert('Debe seleccionar al menos un servicio para facturar.');
-                }
-            });
-        }
-    }
+        serviceCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                const allChecked = Array.from(serviceCheckboxes).every(cb => cb.checked);
+                selectAllCheckbox.checked = allChecked;
+            });
+        });
+
+        if (facturacionForm) {
+            facturacionForm.addEventListener('submit', function(e) {
+                const checkedCount = document.querySelectorAll('.checkbox-servicio:checked').length;
+
+                if (checkedCount === 0) {
+                    e.preventDefault();
+                    alert('Debe seleccionar al menos un servicio para facturar.');
+                }
+            });
+        }
+    }
 });
+
+
+
 

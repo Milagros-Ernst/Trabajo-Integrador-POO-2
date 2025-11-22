@@ -625,4 +625,19 @@ body:not(.pagina-inicio) {
     font-weight: 700;
 }
 
+/* ESTILOS PARA EL ABM DE SERVICIOS */
 
+tr.fila-seleccionada td {
+    background-color: rgba(219, 153, 241, 0.43) !important;
+    font-weight: 500;
+    color: #000;
+}
+
+.fila-tabla {
+    cursor: pointer;
+}
+
+.fila-tabla:hover td {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
