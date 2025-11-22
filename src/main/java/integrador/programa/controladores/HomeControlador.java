@@ -3,6 +3,7 @@ import integrador.programa.modelo.Cliente;
 import integrador.programa.modelo.Factura;
 import integrador.programa.modelo.LogFacturacionMasiva;
 import integrador.programa.modelo.Servicio;
+import integrador.programa.modelo.enumeradores.EstadoCuenta;
 import integrador.programa.modelo.enumeradores.EstadoServicio;
 import integrador.programa.servicios.ClienteServicio;
 import integrador.programa.servicios.ClienteServicioServicio;
@@ -48,6 +49,25 @@ public class HomeControlador extends Object {
 
         model.addAttribute("clientes", misClientes);
         return "gestion-clientes-inicio";
+    }
+
+    @PostMapping("/clientes")
+    public ResponseEntity<?> crearCliente(@RequestBody Cliente nuevoCliente) {
+        try {
+            nuevoCliente.setEstadoCuenta(EstadoCuenta.ACTIVA);
+            Cliente clienteGuardado = clienteServicio.crearCliente(nuevoCliente);
+            return ResponseEntity.status(HttpStatus.CREATED).body(clienteGuardado);
+
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Error al dar de alta: " + e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 
     @GetMapping("/servicios")
@@ -122,15 +142,24 @@ public class HomeControlador extends Object {
         }
     }
 
+    @PutMapping("/clientes/{id}")
+    public ResponseEntity<?> modificarCliente(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
+        try {
+
+            clienteServicio.actualizarCliente(id, clienteActualizado);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al actualizar: " + e.getMessage());
+        }
+    }
+
     @DeleteMapping("/clientes/{id}")
     public ResponseEntity<?> bajaCliente(@PathVariable Long id) {
         try {
             clienteServicio.eliminarCliente(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            return ResponseEntity.badRequest().body("Error al dar de baja: " + e.getMessage());
         }
     }
 

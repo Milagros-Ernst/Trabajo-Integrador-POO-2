@@ -41,7 +41,7 @@
                     <select id="condIVA" th:field="*{condIVA}" disabled>
                         <option value="">Seleccione uno</option>
                         <option value="MONOTRIBUTO">Monotributo</option>
-                        <option value="RESPONSABLE_INSCRIPTO">Responsable Inscrito</option>
+                        <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
                         <option value="CONSUMIDOR_FINAL">Consumidor final</option>
                         <option value="EXENTO">Exento</option>
                     </select>
@@ -80,14 +80,10 @@
                     </a>
                 </div>
             </div>
-        </form>
-    </div>
-
-
-    <div class="form-actions-top" id="form-top-actions">
-                <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Confirmar</button>
-            </div>
+                <div class="form-actions-top" id="form-top-actions" style="display: none;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                </div>
         </form>
     </div>
 
@@ -172,7 +168,7 @@
 
     <div class="abm-actions" id="abm-bottom-actions">
         <button type="button" class="btn btn-alta">Alta</button>
-        <button type="button" class="btn btn-baja">Baja</button>
+        <button type="button" class="btn btn-baja" id="btn-baja-cliente">Baja</button>
         <button type="button" class="btn btn-secondary" id="btn-modificar-form">Modificar</button>
     </div>
 

@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 estadoCuenta: 'ACTIVA'
             };
 
-            fetch('/api/clientes', {
+            fetch('/clientes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(clienteData),
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const confirmar = confirm("¿Estás seguro de que deseas dar de baja este servicio?");
 
                 if (confirmar) {
-                    fetch(`/api/servicios/${servicioSeleccionadoId}`, {
+                    fetch(`/servicios/${servicioSeleccionadoId}`, {
                         method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' }
                     })
@@ -302,7 +302,46 @@ document.addEventListener('DOMContentLoaded', () => {
             bottomActions.style.display = 'block';
         }
 
+        // Evento Modificar Cliente
         btnModificar.addEventListener('click', habilitarFormularioModif);
+
+        // Evento Baja Cliente
+        const btnBajaCliente = document.getElementById('btn-baja-cliente');
+
+        if (btnBajaCliente) {
+            btnBajaCliente.addEventListener('click', () => {
+                const urlParts = window.location.pathname.split('/');
+                const clienteId = urlParts[urlParts.length - 1];
+
+                if (!clienteId) {
+                    alert('Error: No se pudo determinar el ID del cliente.');
+                    return;
+                }
+
+                const confirmar = confirm("¿Estás seguro de que deseas dar de baja este cliente?");
+
+                if (confirmar) {
+                    fetch(`/clientes/${clienteId}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('Cliente dado de baja con éxito');
+                                window.location.href = '/clientes';  // Redirige a la lista
+                            } else {
+                                return response.text().then(text => {
+                                    throw new Error(text || 'Error al dar de baja');
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error: ' + error.message);
+                        });
+                }
+            });
+        }
 
         btnCancelar.addEventListener('click', (e) => {
             e.preventDefault();
@@ -342,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 numeroDocumento: numeroDocumentoEl?.value || ''
             };
 
-            fetch(`/api/clientes/${clienteId}`, {
+            fetch(`/clientes/${clienteId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(clienteData),
