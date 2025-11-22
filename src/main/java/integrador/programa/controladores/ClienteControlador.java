@@ -1,15 +1,11 @@
 package integrador.programa.controladores;
 
 import integrador.programa.modelo.Cliente;
-import integrador.programa.modelo.enumeradores.TipoDocumento;
 import integrador.programa.servicios.ClienteServicio;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -19,34 +15,6 @@ public class ClienteControlador {
 
     public ClienteControlador(ClienteServicio clienteServicio) {
         this.clienteServicio = clienteServicio;
-    }
-
-    // obtener todos los clientes
-    @GetMapping
-    public ResponseEntity<List<Cliente>> listarTodos() {
-        List<Cliente> clientes = clienteServicio.listarTodos();
-        return ResponseEntity.ok(clientes);
-    }
-
-    // obtener un cliente por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Cliente> obtenerPorId(@PathVariable Long id) {
-        try {
-            Cliente cliente = clienteServicio.buscarPorId(id);
-            return ResponseEntity.ok(cliente);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // buscar cliente por tipo y numero de documento
-    @GetMapping("/buscar")
-    public ResponseEntity<Cliente> buscarPorDocumento(
-            @RequestParam TipoDocumento tipoDocumento,
-            @RequestParam String numeroDocumento) {
-        Optional<Cliente> cliente = clienteServicio.buscarPorDocumento(tipoDocumento, numeroDocumento);
-        return cliente.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
     }
 
     // crear un nuevo cliente
@@ -60,15 +28,15 @@ public class ClienteControlador {
         }
     }
 
-    // actualizar cliente
+    // modificar cliente
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> actualizar(
+    public ResponseEntity<Cliente> modificar(
             @PathVariable Long id,
             @Valid @RequestBody Cliente cliente) {
         try {
             // El servicio ahora maneja la validación y asignación del ID
-            Cliente clienteActualizado = clienteServicio.actualizarCliente(id, cliente);
-            return ResponseEntity.ok(clienteActualizado);
+            Cliente clienteModificado = clienteServicio.modificarCliente(id, cliente);
+            return ResponseEntity.ok(clienteModificado);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
@@ -76,14 +44,29 @@ public class ClienteControlador {
         }
     }
 
-    // eliminar cliente
-    // @DeleteMapping("/{id}")
-    // public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-    //     try {
-    //         clienteServicio.eliminarCliente(id);
-    //         return ResponseEntity.noContent().build();
-    //     } catch (Exception e) {
-    //         return ResponseEntity.notFound().build();
-    //     }
-    // }
+    // baja lógica de cliente
+    @PutMapping("/{id}/dar-de-baja")
+    public ResponseEntity<Cliente> darDeBaja(@PathVariable Long id) {
+        try {
+            Cliente clienteDeBaja = clienteServicio.BajaCliente(id);
+            return ResponseEntity.ok(clienteDeBaja);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    // reactivar cliente
+    @PutMapping("/{id}/reactivar")
+    public ResponseEntity<Cliente> reactivar(@PathVariable Long id) {
+        try {
+            Cliente clienteReactivado = clienteServicio.reactivarCliente(id);
+            return ResponseEntity.ok(clienteReactivado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

@@ -15,8 +15,6 @@ public interface ClienteRepositorio extends JpaRepository<Cliente, Long> {
     
     boolean existsByTipoDocumentoAndNumeroDocumento(TipoDocumento tipoDocumento, String numeroDocumento);
     
-    List<Cliente> findByApellidoContainingIgnoreCase(String apellido);
-    List<Cliente> findByNombreContainingIgnoreCase(String nombre);
-    
-    Optional<Cliente> findByMail(String mail);
+    // Métodos para consultas de clientes activos
+    List<Cliente> findByEstadoCuenta(integrador.programa.modelo.enumeradores.EstadoCuenta estadoCuenta);
 }
