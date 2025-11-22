@@ -57,4 +57,23 @@ public class DetalleFactura {
     // Relación con DetalleNota 
     @OneToOne(mappedBy = "detalleFactura", fetch = FetchType.LAZY)
     private DetalleNota detalleNota;
+
+    // métodos para el iva que no se guardan en la bd
+    public double getMontoIvaCalculado() {
+        if (this.servicio != null && this.servicio.getTipoIva() != null) {
+            return this.precio * (this.servicio.getTipoIva().getValor() / 100.0);
+        }
+        return 0.0;
+    }
+
+    public double getPrecioConIvaCalculado() {
+        return this.precio + getMontoIvaCalculado();
+    }
+    
+    public String getAlicuotaIva() {
+        if (this.servicio != null && this.servicio.getTipoIva() != null) {
+            return this.servicio.getTipoIva().getTexto();
+        }
+        return "0%";
+    }
 }

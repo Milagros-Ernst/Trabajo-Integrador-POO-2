@@ -102,8 +102,7 @@ public class Factura {
     }
 
     public void calcularTotal() {
-        double subtotalAcumulado = 0.0;
-        double ivaAcumulado = 0.0;
+        double totalAcumulado = 0.0;
         
         if (this.detalles == null) {
             this.precioTotal = 0.0;
@@ -111,15 +110,10 @@ public class Factura {
         }
 
         for (DetalleFactura detalle : this.detalles) {
-            subtotalAcumulado += detalle.getPrecio(); 
-            Servicio servicio = detalle.getServicio();
-            if (servicio != null) {
-                double ivaDeEsteDetalle = detalle.getPrecio() * (servicio.getTipoIva().getValor()/100);
-                ivaAcumulado += ivaDeEsteDetalle;
-            }
+            totalAcumulado += detalle.getPrecioConIvaCalculado();
         }
         
-        this.precioTotal = subtotalAcumulado + ivaAcumulado;
+        this.precioTotal = totalAcumulado;
     }
 
    
