@@ -80,10 +80,12 @@
                     </a>
                 </div>
             </div>
-                <div class="form-actions-top" id="form-top-actions" style="display: none;">
-                    <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Confirmar</button>
-                </div>
+
+
+    <div class="form-actions-top" id="form-top-actions">
+                <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Confirmar</button>
+            </div>
         </form>
     </div>
 
@@ -168,7 +170,9 @@
 
     <div class="abm-actions" id="abm-bottom-actions">
         <button type="button" class="btn btn-alta">Alta</button>
-        <button type="button" class="btn btn-baja" id="btn-baja-cliente">Baja</button>
+        <form id="btn-baja-form" th:action="@{/clientes/{id}/dar-de-baja(id=${cliente.idCuenta})}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-baja">Baja</button>
+        </form>
         <button type="button" class="btn btn-secondary" id="btn-modificar-form">Modificar</button>
     </div>
 

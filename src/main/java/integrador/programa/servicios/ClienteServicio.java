@@ -57,11 +57,7 @@ public class ClienteServicio {
         return clienteRepositorio.save(clienteActualizado);
     }
 
-    public void eliminarCliente(Long id) {
-        clienteRepositorio.deleteById(id);
-    }
-
-    public Cliente BajaCliente(Long id) {
+    public Cliente bajaCliente(Long id) {
         Cliente cliente = buscarPorId(id);
         cliente.desactivar();
         return clienteRepositorio.save(cliente);

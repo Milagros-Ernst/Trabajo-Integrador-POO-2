@@ -46,9 +46,9 @@ public class ClienteControlador {
 
     // baja lógica de cliente
     @PutMapping("/{id}/dar-de-baja")
-    public ResponseEntity<Cliente> darDeBaja(@PathVariable Long id) {
+    public ResponseEntity<Cliente> baja(@PathVariable Long id) {
         try {
-            Cliente clienteDeBaja = clienteServicio.BajaCliente(id);
+            Cliente clienteDeBaja = clienteServicio.bajaCliente(id);
             return ResponseEntity.ok(clienteDeBaja);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
