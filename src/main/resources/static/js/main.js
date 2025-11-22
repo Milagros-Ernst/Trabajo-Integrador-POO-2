@@ -18,9 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (formClienteInicio && btnAltaCliente) {
 
         const btnCancelar = document.getElementById('btn-cancelar-edicion');
+        const btnBajaCliente = document.getElementById('btn-baja-form');
+        const btnModificarCliente = document.getElementById('btn-modificar-form');
         const formFieldset = document.getElementById('form-fieldset');
         const topActions = document.getElementById('form-top-actions');
         const bottomActions = document.getElementById('abm-bottom-actions');
+
+        // Deshabilitar botones Baja y Modificar (no se usan en esta vista)
+        if (btnBajaCliente) btnBajaCliente.disabled = true;
+        if (btnModificarCliente) btnModificarCliente.disabled = true;
 
         function habilitarFormularioAlta() {
             formFieldset.disabled = false;
@@ -39,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bottomActions.style.display = 'block';
             formClienteInicio.reset();
         }
+
 
         btnAltaCliente.addEventListener('click', habilitarFormularioAlta);
 

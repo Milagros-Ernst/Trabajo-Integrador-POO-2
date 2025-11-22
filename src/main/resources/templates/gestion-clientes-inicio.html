@@ -114,7 +114,8 @@
                     <td th:text="${cli.nombre}"></td>
                     <td th:text="${cli.condIVA}"></td>
                     <td>
-                        <a th:href="@{/clientes/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>                    </td>
+                        <a th:href="@{/clientes/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>
+                    </td>
                 </tr>
 
                 <tr th:if="${clientes.isEmpty()}" class="empty-row">
