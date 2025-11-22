@@ -223,11 +223,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 estadoServicio: 'ALTA'
             };
 
-            let url = '/api/servicios';
+            let url = '/servicios';
             let method = 'POST';
 
             if (modoEdicion && servicioSeleccionadoId) {
-                url = `/api/servicios/${servicioSeleccionadoId}`;
+                url = `/servicios/${servicioSeleccionadoId}`;
                 method = 'PUT';
             }
 

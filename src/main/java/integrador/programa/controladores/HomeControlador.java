@@ -3,10 +3,12 @@ import integrador.programa.modelo.Cliente;
 import integrador.programa.modelo.Factura;
 import integrador.programa.modelo.LogFacturacionMasiva;
 import integrador.programa.modelo.Servicio;
+import integrador.programa.modelo.enumeradores.EstadoServicio;
 import integrador.programa.servicios.ClienteServicio;
 import integrador.programa.servicios.ClienteServicioServicio;
 import integrador.programa.servicios.ServicioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import integrador.programa.servicios.FacturaServicio;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Set;
 
 @Controller
 public class HomeControlador extends Object {
@@ -60,6 +60,18 @@ public class HomeControlador extends Object {
         return "gestion-servicio-abm";
     }
 
+    @PostMapping("/servicios")
+    public ResponseEntity<?> crearServicio(@RequestBody Servicio nuevoServicio) {
+        try {
+            nuevoServicio.setEstadoServicio(EstadoServicio.ALTA);
+            Servicio servicioGuardado = servicioServicio.agregarServicio(nuevoServicio);
+            return ResponseEntity.status(HttpStatus.CREATED).body(servicioGuardado);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
     @PutMapping("/servicios/{id}")
     public ResponseEntity<?> modificarServicio(@PathVariable String id, @RequestBody Servicio servicioActualizado) {
         try {
@@ -69,6 +81,18 @@ public class HomeControlador extends Object {
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al actualizar: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/servicios/{id}")
+    public ResponseEntity<?> bajaServicio(@PathVariable String id) {
+        try {
+            servicioServicio.eliminarServicio(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 
@@ -95,6 +119,18 @@ public class HomeControlador extends Object {
 
         } catch (Exception e) {
             return "redirect:/clientes";
+        }
+    }
+
+    @DeleteMapping("/clientes/{id}")
+    public ResponseEntity<?> bajaCliente(@PathVariable Long id) {
+        try {
+            clienteServicio.eliminarCliente(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 
