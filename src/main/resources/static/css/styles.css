@@ -222,6 +222,23 @@ main {
 
 }
 
+/*Botón ver historial facturas, tiene muchas cosas pq le saque la clase btn al html x problemitas*/
+.btn-verfacturas {
+    color: #2D76E6;
+    background-color: transparent;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    width: auto;
+    padding: 8px 16px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
 /* Botón Alta  */
 .btn-alta {
     background-color: #9CCC65;
@@ -251,7 +268,6 @@ main {
     position: relative;
 }
 
-/* Contenedor para botón a la derecha (ÚNICO DEL ARCHIVO 2) */
 .btn-wrapper-right {
     text-align: right;
     margin-top: 24px;
@@ -609,4 +625,37 @@ body:not(.pagina-inicio) {
     font-weight: 700;
 }
 
+/* ESTILOS PARA EL ABM DE SERVICIOS */
 
+tr.fila-seleccionada td {
+    background-color: rgba(219, 153, 241, 0.43) !important;
+    font-weight: 500;
+    color: #000;
+}
+
+.fila-tabla {
+    cursor: pointer;
+}
+
+.fila-tabla:hover td {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+/*botones deshabilidatos*/
+   .btn:disabled {
+       opacity: 0.5;
+       cursor: not-allowed;
+       pointer-events: none;
+   }
+
+.btn-baja:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+}
+
+.btn-secondary:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    border-color: #ccc;
+}

@@ -85,9 +85,16 @@
                     <th>Estado</th>
                 </tr>
                 </thead>
-                <tbody>
 
-                <tr th:each="serv : ${servicios}">
+                <tbody>
+                <tr th:each="serv : ${servicios}"
+                    class="fila-tabla"
+                    th:data-id="${serv.idServicio}"
+                    th:data-nombre="${serv.nombre}"
+                    th:data-descripcion="${serv.descripcion}"
+                    th:data-precio="${serv.precioUnitario}"
+                    th:data-iva="${serv.tipoIva}">
+
                     <td th:text="${serv.nombre}"></td>
                     <td th:text="${serv.descripcion}"></td>
                     <td th:text="${serv.precioUnitario}"></td>
@@ -98,19 +105,18 @@
                 <tr th:if="${servicios.isEmpty()}" class="empty-row">
                     <td colspan="5">No hay servicios registrados en el sistema.</td>
                 </tr>
-
                 </tbody>
             </table>
         </div>
     </div>
 
     <div class="abm-actions" id="abm-bottom-actions">
-        <button type="button" class="btn btn-alta" id="btn-alta-form">Alta</button>
-        <button type="button" class="btn btn-baja">Baja</button>
-        <button type="button" class="btn btn-secondary">Modificar</button>
+        <button type="button" class="btn btn-alta" id="btn-alta-servicio">Alta</button>
+        <button type="button" class="btn btn-baja" id="btn-baja">Baja</button>
+        <button type="button" class="btn btn-secondary" id="btn-modificar-servicio">Modificar</button>
     </div>
 
-</main>
+</main>f
 
 </body>
 </html>
