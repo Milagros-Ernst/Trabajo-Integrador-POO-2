@@ -25,10 +25,9 @@ import lombok.ToString;
 public class DetalleFactura {
     
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private String idDetalle;
+    private Long idDetalle;
 
     @NotBlank(message = "La descripción no puede estar vacía.")
     @Size(min = 1, max = 250, message = "La descripción debe tener entre 1 y 250 caracteres.")
@@ -58,4 +57,23 @@ public class DetalleFactura {
     // Relación con DetalleNota 
     @OneToOne(mappedBy = "detalleFactura", fetch = FetchType.LAZY)
     private DetalleNota detalleNota;
+
+    // métodos para el iva que no se guardan en la bd
+    public double getMontoIvaCalculado() {
+        if (this.servicio != null && this.servicio.getTipoIva() != null) {
+            return this.precio * (this.servicio.getTipoIva().getValor() / 100.0);
+        }
+        return 0.0;
+    }
+
+    public double getPrecioConIvaCalculado() {
+        return this.precio + getMontoIvaCalculado();
+    }
+    
+    public String getAlicuotaIva() {
+        if (this.servicio != null && this.servicio.getTipoIva() != null) {
+            return this.servicio.getTipoIva().getTexto();
+        }
+        return "0%";
+    }
 }

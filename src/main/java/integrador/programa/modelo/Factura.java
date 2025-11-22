@@ -5,8 +5,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.generator.EventType;
+import org.hibernate.annotations.Generated; 
 
 import integrador.programa.modelo.enumeradores.EstadoFactura;
 import integrador.programa.modelo.enumeradores.TipoComprobante;
@@ -28,15 +31,14 @@ import lombok.AccessLevel;
 public class Factura {
     
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id_factura", columnDefinition = "VARCHAR(36)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_factura")
     @Setter(AccessLevel.NONE)
-    private String idFactura;
+    private Long idFactura;
     
-    @NotBlank
-    @Size(min = 4, max = 8)
-    private String nroSerie;
+    @Column(name = "nro_serie", columnDefinition = "SERIAL", insertable = false, updatable = false)
+    @Generated(event = EventType.INSERT)
+    private Long nroSerie;
 
     @NotNull(message = "El precio total es obligatorio")
     private double precioTotal;
@@ -100,8 +102,7 @@ public class Factura {
     }
 
     public void calcularTotal() {
-        double subtotalAcumulado = 0.0;
-        double ivaAcumulado = 0.0;
+        double totalAcumulado = 0.0;
         
         if (this.detalles == null) {
             this.precioTotal = 0.0;
@@ -109,15 +110,10 @@ public class Factura {
         }
 
         for (DetalleFactura detalle : this.detalles) {
-            subtotalAcumulado += detalle.getPrecio(); 
-            Servicio servicio = detalle.getServicio();
-            if (servicio != null) {
-                double ivaDeEsteDetalle = detalle.getPrecio() * servicio.getTipoIva().getValor();
-                ivaAcumulado += ivaDeEsteDetalle;
-            }
+            totalAcumulado += detalle.getPrecioConIvaCalculado();
         }
         
-        this.precioTotal = subtotalAcumulado + ivaAcumulado;
+        this.precioTotal = totalAcumulado;
     }
 
    

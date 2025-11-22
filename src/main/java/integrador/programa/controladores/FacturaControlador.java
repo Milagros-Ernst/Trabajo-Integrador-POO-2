@@ -38,7 +38,7 @@ public class FacturaControlador {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Factura> obtener(@PathVariable String id) {
+    public ResponseEntity<Factura> obtener(@PathVariable Long id) {
     return facturaServicio.buscarPorId(id)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
@@ -119,7 +119,7 @@ public class FacturaControlador {
     }
 
     @PostMapping("/anular/{id}") 
-    public ResponseEntity<?> anularFactura(@PathVariable String id, 
+    public ResponseEntity<?> anularFactura(@PathVariable Long id, 
                                             @RequestBody Map<String, String> requestBody) {
     
     try {

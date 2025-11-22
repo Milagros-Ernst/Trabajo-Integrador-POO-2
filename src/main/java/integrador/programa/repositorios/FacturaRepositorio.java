@@ -14,10 +14,10 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface FacturaRepositorio extends JpaRepository<Factura, String> {
+public interface FacturaRepositorio extends JpaRepository<Factura, Long> {
     List<Factura> findByEstado(EstadoFactura estado);
     List<Factura> findByTipo(TipoComprobante tipo);
-    Optional<Factura> findByNroSerie(String nroSerie);
+    Optional<Factura> findByNroSerie(Long nroSerie);
 
     @Query(value = "SELECT f.nroSerie FROM Factura f WHERE f.tipo = :tipo ORDER BY f.nroSerie DESC LIMIT 1")
     String findMaxNroSerieByTipo(@Param("tipo") TipoComprobante tipo);
