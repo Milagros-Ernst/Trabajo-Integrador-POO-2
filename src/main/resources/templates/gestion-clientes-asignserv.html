@@ -152,7 +152,9 @@
                                 <input type="hidden" name="servicioId" th:value="${serv.idServicio}" />
                                 <button type="submit" class="action-link-success action-link-button">Asignar servicio</button>
                             </form>
-                            <a th:href="@{/servicios/{id}(id=${serv.idServicio})}" class="action-link-info">Gestionar servicio</a>
+                            <a th:href="@{/servicios(idEditar=${serv.idServicio})}" class="action-link-info">
+                                Gestionar servicio
+                            </a>
                         </td>
                     </tr>
 

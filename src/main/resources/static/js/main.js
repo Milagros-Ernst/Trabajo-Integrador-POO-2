@@ -148,6 +148,26 @@ document.addEventListener('DOMContentLoaded', () => {
             servicioSeleccionadoId = null;
             filas.forEach(f => f.classList.remove('fila-seleccionada'));
         }
+        const urlParams = new URLSearchParams(window.location.search);
+        const idEditar = urlParams.get('idEditar');
+
+        if (idEditar) {
+            // Buscamos la fila que corresponde a ese ID
+            const filaAEditar = document.querySelector(`.fila-tabla[data-id="${idEditar}"]`);
+
+            if (filaAEditar) {
+                // 1. Simulamos clic en la fila para cargar los datos en los inputs
+                filaAEditar.click();
+
+                // 2. Simulamos clic en el botón Modificar para habilitar el formulario
+                if (btnModificar) {
+                    btnModificar.click();
+                }
+
+                // 3. (Opcional) Hacemos scroll suave hacia arriba para que el usuario vea el formulario
+                formServicios.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
 
         // Evento Alta
         if (btnAlta) {

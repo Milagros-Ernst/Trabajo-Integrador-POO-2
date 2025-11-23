@@ -208,6 +208,20 @@ public class HomeControlador extends Object {
         return "redirect:/clientes/" + id + "/asignar";
     }
 
+    // baja de servicio a cliente
+    @PostMapping("/clientes/{clienteId}/asignaciones/{asigId}/eliminar")
+    public String eliminarServicioDeCliente(@PathVariable Long clienteId,
+                                            @PathVariable String asigId) {
+        try {
+            clienteServicioServicio.darDeBajaServicioCliente(asigId);
+
+            return "redirect:/clientes/" + clienteId + "/asignar";
+
+        } catch (Exception e) {
+            System.err.println("Error al eliminar servicio: " + e.getMessage());
+            return "redirect:/clientes/" + clienteId + "/asignar?error=NoSePudoEliminar";
+        }
+    }
 
     @GetMapping("facturacion/masiva")
     public String irAFacturacionMasiva(Model model) {
