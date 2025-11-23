@@ -184,6 +184,10 @@ main {
     border: 2px solid transparent;
     transition: all 0.2s ease;
     box-sizing: border-box;
+
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
 /* Botón Sólido (Primario) */
@@ -659,3 +663,4 @@ tr.fila-seleccionada td {
     color: #999;
     border-color: #ccc;
 }
+

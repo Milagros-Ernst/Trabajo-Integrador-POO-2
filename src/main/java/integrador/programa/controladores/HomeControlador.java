@@ -104,6 +104,7 @@ public class HomeControlador extends Object {
         }
     }
 
+    // En el controlador dice q es una baja logica, no deberia ir PostMapping?
     @DeleteMapping("/servicios/{id}")
     public ResponseEntity<?> bajaServicio(@PathVariable String id) {
         try {
@@ -152,13 +153,13 @@ public class HomeControlador extends Object {
         }
     }
 
-    @DeleteMapping("/clientes/{id}")
-    public ResponseEntity<?> bajaCliente(@PathVariable Long id) {
+    @PostMapping("/clientes/{id}/dar-de-baja")
+    public String darDeBajaCliente(@PathVariable Long id) {
         try {
             clienteServicio.bajaCliente(id);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Error al dar de baja: " + e.getMessage());
+            return "redirect:/clientes";
+        } catch (Exception e) {
+            return "redirect:/clientes";
         }
     }
 
@@ -330,13 +331,5 @@ public class HomeControlador extends Object {
         }
     }
 
-    @PostMapping("/clientes/{id}/dar-de-baja")
-    public String darDeBajaCliente(@PathVariable Long id) {
-        try {
-            clienteServicio.bajaCliente(id);
-            return "redirect:/clientes";
-        } catch (Exception e) {
-            return "redirect:/clientes";
-        }
-    }
+
 }
