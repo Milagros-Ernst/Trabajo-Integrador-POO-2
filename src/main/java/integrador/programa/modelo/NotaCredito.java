@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
@@ -44,7 +45,7 @@ public class NotaCredito {
     @Generated(event = EventType.INSERT)
     private Long nroSerie;
 
-    @NotBlank
+    @Positive
     private double precioTotal;
 
     @NotNull

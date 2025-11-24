@@ -34,9 +34,6 @@ public class DetalleFactura {
     @Column(name = "descripción")
     private String descripcion;
 
-    // pensar en que descripcion sea de tipo servicio???
-    // en realidad debería tomar por ahi la de servicio pero no ser tipo
-
     @NotNull(message = "El precio no puede ser nulo")
     @Positive(message = "El precio debe ser positivo")
     @Column(name = "precio")
