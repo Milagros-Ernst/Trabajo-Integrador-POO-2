@@ -90,17 +90,6 @@ public class Factura {
         }
     }
 
-    public void removerDetalle(DetalleFactura detalle) {
-        if (detalle != null) {
-            this.detalles.remove(detalle);
-            // detalle.setFactura(null);
-        }
-    }
-
-    public void limpiarDetalles() {
-        this.detalles.clear();
-    }
-
     public void calcularTotal() {
         double totalAcumulado = 0.0;
         
