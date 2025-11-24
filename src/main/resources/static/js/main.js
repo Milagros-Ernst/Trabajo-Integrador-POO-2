@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bottomActions.style.display = 'block';
             formClienteInicio.reset();
         }
-
+        deshabilitarFormularioAlta();
 
         btnAltaCliente.addEventListener('click', habilitarFormularioAlta);
 
@@ -111,10 +111,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filas.forEach(fila => {
             fila.addEventListener('click', () => {
+                // A. Reseteo visual de selección
                 filas.forEach(f => f.classList.remove('fila-seleccionada'));
                 fila.classList.add('fila-seleccionada');
+
                 servicioSeleccionadoId = fila.getAttribute('data-id');
                 console.log("Fila seleccionada ID:", servicioSeleccionadoId);
+
+                document.getElementById('nombre').value = fila.getAttribute('data-nombre');
+                document.getElementById('descripcion').value = fila.getAttribute('data-descripcion');
+                document.getElementById('precio-base').value = fila.getAttribute('data-precio');
+
+                const ivaSelect = document.getElementById('iva');
+                const ivaValor = fila.getAttribute('data-iva');
+                if (ivaValor) {
+                    ivaSelect.value = ivaValor;
+                }
             });
         });
 
@@ -135,6 +147,26 @@ document.addEventListener('DOMContentLoaded', () => {
             modoEdicion = false;
             servicioSeleccionadoId = null;
             filas.forEach(f => f.classList.remove('fila-seleccionada'));
+        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const idEditar = urlParams.get('idEditar');
+
+        if (idEditar) {
+            // Buscamos la fila que corresponde a ese ID
+            const filaAEditar = document.querySelector(`.fila-tabla[data-id="${idEditar}"]`);
+
+            if (filaAEditar) {
+                // 1. Simulamos clic en la fila para cargar los datos en los inputs
+                filaAEditar.click();
+
+                // 2. Simulamos clic en el botón Modificar para habilitar el formulario
+                if (btnModificar) {
+                    btnModificar.click();
+                }
+
+                // 3. (Opcional) Hacemos scroll suave hacia arriba para que el usuario vea el formulario
+                formServicios.scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
         // Evento Alta
@@ -256,10 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formClienteDetalle = document.getElementById('form-cliente');
     const btnModificar = document.getElementById('btn-modificar-form');
-    const btnAltaDetalle = document.getElementById('btn-alta-form');
-    const btnBaja = document.getElementById('btn-baja-form');
 
-    if (formClienteDetalle && btnModificar && !btnAltaDetalle) {
+    if (formClienteDetalle && btnModificar) {
 
         const btnCancelar = document.getElementById('btn-cancelar-edicion');
         const topActions = document.getElementById('form-top-actions');
@@ -307,34 +337,34 @@ document.addEventListener('DOMContentLoaded', () => {
         btnModificar.addEventListener('click', habilitarFormularioModif);
 
         // evento baja Cliente
-        if (btnBaja) {
-            btnBaja.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const confirmar = confirm("¿Estás seguro que deseas dar de baja este cliente?");
-                
-                if (confirmar) {
-                    // Si confirma, enviar el formulario
-                    const urlParts = window.location.pathname.split('/');
-                    const clienteId = urlParts[urlParts.length - 1];
-
-                    fetch(`/clientes/${clienteId}/dar-de-baja`, {
-                        method: 'POST'
-                    })
-                        .then(response => {
-                            if (response.redirected || response.ok) {
-                                alert('Cliente dado de baja con éxito.');
-                                window.location.href = '/clientes';
-                            } else {
-                                throw new Error('Error al dar de baja');
-                            }
-                        })
-                        .catch(error => {
-                            alert('Error: ' + error.message);
-                        });
-                }
-            });
-        }
+        // if (btnBaja) {
+        //     btnBaja.addEventListener('submit', (e) => {
+        //         e.preventDefault();
+        //
+        //         const confirmar = confirm("¿Estás seguro que deseas dar de baja este cliente?");
+        //
+        //         if (confirmar) {
+        //             // Si confirma, enviar el formulario
+        //             const urlParts = window.location.pathname.split('/');
+        //             const clienteId = urlParts[urlParts.length - 1];
+        //
+        //             fetch(`/clientes/${clienteId}/dar-de-baja`, {
+        //                 method: 'POST'
+        //             })
+        //                 .then(response => {
+        //                     if (response.redirected || response.ok) {
+        //                         alert('Cliente dado de baja con éxito.');
+        //                         window.location.href = '/clientes';
+        //                     } else {
+        //                         throw new Error('Error al dar de baja');
+        //                     }
+        //                 })
+        //                 .catch(error => {
+        //                     alert('Error: ' + error.message);
+        //                 });
+        //         }
+        //     });
+        // }
 
         btnCancelar.addEventListener('click', (e) => {
             e.preventDefault();
