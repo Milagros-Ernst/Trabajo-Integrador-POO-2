@@ -59,27 +59,64 @@
 
 
     <div class="form-container" th:if="${cliente}">
-        <fieldset id="cliente-fieldset">
-            <h3>Cliente a facturar</h3>
-            
+        <form id="form-cliente" th:object="${cliente}">
+            <div class="form-section-titles">
+                <h3>Información personal</h3>
+            </div>
             <div class="form-grid" id="form-inputs-container">
                 <div class="form-group">
-                    <label for="idCuentaImput">ID Cliente</label>
-                    <input type="text" id="IdCuentaImput" th:value="${cliente.idCuenta}" readonly class="form-control">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="nombreImput">Nombre</label>
-                    <input type="text" id="nombreImput" th:value="${cliente.nombre}" readonly class="form-control">
-                </div> 
+                    <label for="telefono">Nro. Teléfono</label>
+                    <input type="text" id="telefono" th:field="*{telefono}" readonly>
+                </div>
                 <div class="form-group">
-                    <label for="tipoDocImput">Tipo Documento</label>
-                    <input type="text" id="tipoDocImput" th:value="${cliente.tipoDocumento}" readonly class="form-control">
-
-                    <label for="numDocImput">Nro Documento</label>
-                    <input type="text" id="numDocImput" th:value="${cliente.numeroDocumento}" readonly class="form-control">
-                </div> 
+                    <label for="condIVA">Condición fiscal</label>
+                    <select id="condIVA" th:field="*{condIVA}" disabled>
+                        <option value="">Seleccione uno</option>
+                        <option value="MONOTRIBUTO">Monotributo</option>
+                        <option value="RESPONSABLE_INSCRIPTO">Responsable Inscrito</option>
+                        <option value="CONSUMIDOR_FINAL">Consumidor final</option>
+                        <option value="EXENTO">Exento</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" th:field="*{apellido}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="mail">Email</label>
+                    <input type="text" id="mail" th:field="*{mail}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="direccionFiscal">Dirección fiscal</label>
+                    <input type="text" id="direccionFiscal" th:field="*{direccionFiscal}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="tipoDocumento">Tipo de documento</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select id="tipoDocumento" th:field="*{tipoDocumento}" style="flex: 1;" disabled>
+                            <option value="">Seleccione uno</option>
+                            <option value="DNI">DNI</option>
+                            <option value="CUIT">CUIT</option>
+                            <option value="CUIL">CUIL</option>
+                        </select>
+                        <input type="text" id="numeroDocumento" th:field="*{numeroDocumento}" placeholder="Nro. doc" style="flex: 2;" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" id="direccion" th:field="*{direccion}" readonly>
+                </div>
+                <div class="btn-wrapper-right">
+                    <a th:href="@{/clientes/{id}/facturas(id=${cliente.idCuenta})}" class="btn-verfacturas">
+                        Ver historial de facturación
+                    </a>
+                </div>
             </div>
-        </fieldset>
+        </form>
     </div> <br th:if="${cliente}">
 
 
@@ -163,7 +200,8 @@
             </div>
 
         </form>
-    </div> </main>
+    </div> <br th:if="${cliente}">
+    </main>
     <script th:src="@{/js/main.js}"></script>
 </body>
 </html>
