@@ -89,7 +89,7 @@ public class HomeControlador extends Object {
     }
 
     @PutMapping("/clientes/{id}")
-    public String modificarCliente(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
+    public String modificarCliente(@PathVariable Long id, @ModelAttribute Cliente clienteActualizado) {
         try {
             clienteServicio.modificarCliente(id, clienteActualizado);
             return "redirect:/clientes/" + id;
@@ -120,7 +120,7 @@ public class HomeControlador extends Object {
     }
 
     @PostMapping("/servicios")
-    public String crearServicio(@RequestBody Servicio nuevoServicio) {
+    public String crearServicio(@ModelAttribute Servicio nuevoServicio) {
         try {
             nuevoServicio.setEstadoServicio(EstadoServicio.ALTA);
             servicioServicio.agregarServicio(nuevoServicio);
@@ -131,8 +131,8 @@ public class HomeControlador extends Object {
             return "gestion-servicio-abm";
         }
     }
-    @PutMapping("/servicios/{id}")
-    public String modificarServicio(@PathVariable String id, @RequestBody Servicio servicioActualizado) {
+    @PostMapping("/servicios/editar/{id}")
+    public String modificarServicio(@PathVariable String id, @ModelAttribute Servicio servicioActualizado) {
         try {
 
             servicioServicio.actualizarServicio(id, servicioActualizado);
