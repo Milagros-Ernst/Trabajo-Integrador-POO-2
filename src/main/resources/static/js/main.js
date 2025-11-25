@@ -54,39 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
             deshabilitarFormularioAlta();
         });
 
-        formClienteInicio.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const clienteData = {
-                nombre: document.getElementById('nombre').value,
-                apellido: document.getElementById('apellido').value,
-                telefono: document.getElementById('telefono').value,
-                mail: document.getElementById('email').value,
-                direccion: document.getElementById('direccion').value,
-                direccionFiscal: document.getElementById('direccion-fiscal').value,
-                condIVA: document.getElementById('condicion-fiscal').value,
-                tipoDocumento: document.getElementById('tipo-doc').value,
-                numeroDocumento: document.getElementById('nro-doc').value,
-                estadoCuenta: 'ACTIVA'
-            };
-
-            fetch('/clientes', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(clienteData),
-            })
-                .then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        alert('Error al crear el cliente. Verifique los datos.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error en el fetch:', error);
-                    alert('Error de red. No se pudo conectar con el servidor.');
-                });
-        });
     }
 
 // Lógica para el ABM de servicio y selección de filas
@@ -249,92 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // evento modificar Cliente
         btnModificar.addEventListener('click', habilitarFormularioModif);
-
-        // evento baja Cliente
-        // if (btnBaja) {
-        //     btnBaja.addEventListener('submit', (e) => {
-        //         e.preventDefault();
-        //
-        //         const confirmar = confirm("¿Estás seguro que deseas dar de baja este cliente?");
-        //
-        //         if (confirmar) {
-        //             // Si confirma, enviar el formulario
-        //             const urlParts = window.location.pathname.split('/');
-        //             const clienteId = urlParts[urlParts.length - 1];
-        //
-        //             fetch(`/clientes/${clienteId}/dar-de-baja`, {
-        //                 method: 'POST'
-        //             })
-        //                 .then(response => {
-        //                     if (response.redirected || response.ok) {
-        //                         alert('Cliente dado de baja con éxito.');
-        //                         window.location.href = '/clientes';
-        //                     } else {
-        //                         throw new Error('Error al dar de baja');
-        //                     }
-        //                 })
-        //                 .catch(error => {
-        //                     alert('Error: ' + error.message);
-        //                 });
-        //         }
-        //     });
-        // }
-
         btnCancelar.addEventListener('click', (e) => {
             e.preventDefault();
             deshabilitarFormularioModif();
         });
 
-        formClienteDetalle.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const urlParts = window.location.pathname.split('/');
-            const clienteId = urlParts[urlParts.length - 1];
-
-            if (!clienteId) {
-                alert('Error: No se pudo determinar el ID del cliente desde la URL.');
-                return;
-            }
-
-            const nombreEl = document.getElementById('nombre');
-            const apellidoEl = document.getElementById('apellido');
-            const telefonoEl = document.getElementById('telefono');
-            const mailEl = document.getElementById('mail');
-            const direccionEl = document.getElementById('direccion');
-            const direccionFiscalEl = document.getElementById('direccionFiscal');
-            const condIVAEl = document.getElementById('condIVA');
-            const tipoDocumentoEl = document.getElementById('tipoDocumento');
-            const numeroDocumentoEl = document.getElementById('numeroDocumento');
-
-            const clienteData = {
-                nombre: nombreEl?.value || '',
-                apellido: apellidoEl?.value || '',
-                telefono: telefonoEl?.value || '',
-                mail: mailEl?.value || '',
-                direccion: direccionEl?.value || '',
-                direccionFiscal: direccionFiscalEl?.value || '',
-                condIVA: condIVAEl?.value || '',
-                tipoDocumento: tipoDocumentoEl?.value || '',
-                numeroDocumento: numeroDocumentoEl?.value || ''
-            };
-
-            fetch(`/clientes/${clienteId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(clienteData),
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Cliente modificado con éxito');
-                        location.reload();
-                    } else {
-                        throw new Error('Error al modificar el cliente');
-                    }
-                })
-                .catch(error => {
-                    alert(error.message);
-                });
-        });
 
         formContainer.querySelectorAll('select').forEach(select => {
             select.disabled = true;

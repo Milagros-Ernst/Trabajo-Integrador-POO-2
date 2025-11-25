@@ -24,7 +24,7 @@
     </a>
 
     <div class="form-container">
-        <form id="form-cliente">
+        <form id="form-cliente" th:action="@{/clientes}" method="post">
 
             <fieldset id="form-fieldset" disabled>
                 <div class="form-section-titles">
@@ -34,15 +34,15 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
-                        <input type="text" id="nombre">
+                        <input type="text" id="nombre" name="nombre" required>
                     </div>
                     <div class="form-group">
                         <label for="telefono">Nro. Teléfono</label>
-                        <input type="text" id="telefono">
+                        <input type="text" id="telefono" name="telefono">
                     </div>
                     <div class="form-group">
                         <label for="condicion-fiscal">Condición fiscal</label>
-                        <select id="condicion-fiscal">
+                        <select id="condicion-fiscal" name="condIVA" required>
                             <option value="">Seleccione uno</option>
                             <option value="MONOTRIBUTO">Monotributo</option>
                             <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
@@ -53,39 +53,39 @@
 
                     <div class="form-group">
                         <label for="apellido">Apellido</label>
-                        <input type="text" id="apellido">
+                        <input type="text" id="apellido" name="apellido" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="text" id="email">
+                        <input type="text" id="email" name="mail">
                     </div>
                     <div class="form-group">
                         <label for="direccion-fiscal">Dirección fiscal</label>
-                        <input type="text" id="direccion-fiscal">
+                        <input type="text" id="direccion-fiscal" name="direccionFiscal">
                     </div>
 
                     <div class="form-group">
                         <label for="tipo-doc">Tipo de documento</label>
                         <div style="display: flex; gap: 8px;">
-                            <select id="tipo-doc" style="flex: 1;">
+                            <select id="tipo-doc" name="tipoDocumento" style="flex: 1;" required>
                                 <option value="">Seleccione uno</option>
                                 <option value="DNI">DNI</option>
                                 <option value="CUIT">CUIT</option>
                                 <option value="CUIL">CUIL</option>
                             </select>
-                            <input type="text" id="nro-doc" placeholder="Nro. doc" style="flex: 2;">
+                            <input type="text" id="nro-doc" name="numeroDocumento" placeholder="Nro. doc" style="flex: 2;" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="direccion">Dirección</label>
-                        <input type="text" id="direccion">
+                        <input type="text" id="direccion" name="direccion">
                     </div>
                     <div></div>
                 </div>
             </fieldset>
             <div class="form-actions-top" id="form-top-actions" style="display: none;">
                 <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Confirmar</button>
+                <button type="submit" class="btn btn-primary">Confirmar Alta</button>
             </div>
         </form>
     </div>

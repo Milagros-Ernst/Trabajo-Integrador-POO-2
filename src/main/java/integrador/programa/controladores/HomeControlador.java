@@ -54,7 +54,7 @@ public class HomeControlador extends Object {
     }
 
     @PostMapping("/clientes")
-    public String crearCliente(@RequestBody Cliente nuevoCliente) {
+    public String crearCliente(@ModelAttribute Cliente nuevoCliente) {
         try {
             nuevoCliente.setEstadoCuenta(EstadoCuenta.ACTIVA);
             clienteServicio.crearCliente(nuevoCliente);
@@ -98,7 +98,7 @@ public class HomeControlador extends Object {
         }
     }
 
-
+// si es una baja lógica, seria un post?
     @PostMapping("/clientes/{id}/dar-de-baja")
     public String darDeBajaCliente(@PathVariable Long id) {
         try {
@@ -131,6 +131,7 @@ public class HomeControlador extends Object {
             return "gestion-servicio-abm";
         }
     }
+
     @PostMapping("/servicios/editar/{id}")
     public String modificarServicio(@PathVariable String id, @ModelAttribute Servicio servicioActualizado) {
         try {
