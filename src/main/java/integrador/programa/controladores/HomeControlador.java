@@ -36,6 +36,8 @@ public class HomeControlador extends Object {
 
     @Autowired
     private FacturaServicio facturaServicio;
+
+    private Model model;
     
 
     @GetMapping("/")
@@ -52,74 +54,17 @@ public class HomeControlador extends Object {
     }
 
     @PostMapping("/clientes")
-    public ResponseEntity<?> crearCliente(@RequestBody Cliente nuevoCliente) {
+    public String crearCliente(@RequestBody Cliente nuevoCliente) {
         try {
             nuevoCliente.setEstadoCuenta(EstadoCuenta.ACTIVA);
-            Cliente clienteGuardado = clienteServicio.crearCliente(nuevoCliente);
-            return ResponseEntity.status(HttpStatus.CREATED).body(clienteGuardado);
-
-        } catch (IllegalArgumentException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(error);
+            clienteServicio.crearCliente(nuevoCliente);
+            return "redirect:/clientes";
 
         } catch (Exception e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "Error al dar de alta: " + e.getMessage());
-            return ResponseEntity.badRequest().body(error);
+            model.addAttribute("error", "Error al crear cliente: " + e.getMessage());
+            model.addAttribute("clientes", clienteServicio.listarClientesActivos());
+            return "gestion-clientes-inicio";
         }
-    }
-
-    @GetMapping("/servicios")
-    public String irAServicios(Model model) {
-
-        List<Servicio> misServicios = servicioServicio.listarTodos();
-
-        model.addAttribute("servicios", misServicios);
-
-        return "gestion-servicio-abm";
-    }
-
-    @PostMapping("/servicios")
-    public ResponseEntity<?> crearServicio(@RequestBody Servicio nuevoServicio) {
-        try {
-            nuevoServicio.setEstadoServicio(EstadoServicio.ALTA);
-            Servicio servicioGuardado = servicioServicio.agregarServicio(nuevoServicio);
-            return ResponseEntity.status(HttpStatus.CREATED).body(servicioGuardado);
-        } catch (Exception e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(error);
-        }
-    }
-    @PutMapping("/servicios/{id}")
-    public ResponseEntity<?> modificarServicio(@PathVariable String id, @RequestBody Servicio servicioActualizado) {
-        try {
-
-            servicioServicio.actualizarServicio(id, servicioActualizado);
-
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al actualizar: " + e.getMessage());
-        }
-    }
-
-    // En el controlador dice q es una baja logica, no deberia ir PostMapping?
-    @DeleteMapping("/servicios/{id}")
-    public ResponseEntity<?> bajaServicio(@PathVariable String id) {
-        try {
-            servicioServicio.eliminarServicio(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-        }
-    }
-
-    @GetMapping("/facturacion")
-    public String irAFacturacion() {
-        return "facturacion-inicio";
     }
 
     @GetMapping("/clientes/{id}")
@@ -144,14 +89,15 @@ public class HomeControlador extends Object {
     }
 
     @PutMapping("/clientes/{id}")
-    public ResponseEntity<?> modificarCliente(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
+    public String modificarCliente(@PathVariable Long id, @RequestBody Cliente clienteActualizado) {
         try {
             clienteServicio.modificarCliente(id, clienteActualizado);
-            return ResponseEntity.ok().build();
+            return "redirect:/clientes/" + id;
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al actualizar: " + e.getMessage());
+            return "redirect:/clientes/" + id + "?error=" + e.getMessage();
         }
     }
+
 
     @PostMapping("/clientes/{id}/dar-de-baja")
     public String darDeBajaCliente(@PathVariable Long id) {
@@ -161,6 +107,56 @@ public class HomeControlador extends Object {
         } catch (Exception e) {
             return "redirect:/clientes";
         }
+    }
+
+    @GetMapping("/servicios")
+    public String irAServicios(Model model) {
+
+        List<Servicio> misServicios = servicioServicio.listarTodos();
+
+        model.addAttribute("servicios", misServicios);
+
+        return "gestion-servicio-abm";
+    }
+
+    @PostMapping("/servicios")
+    public String crearServicio(@RequestBody Servicio nuevoServicio) {
+        try {
+            nuevoServicio.setEstadoServicio(EstadoServicio.ALTA);
+            servicioServicio.agregarServicio(nuevoServicio);
+            return "redirect:/servicios";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al crear servicio: " + e.getMessage());
+            model.addAttribute("servicios", servicioServicio.listarTodos());
+            return "gestion-servicio-abm";
+        }
+    }
+    @PutMapping("/servicios/{id}")
+    public String modificarServicio(@PathVariable String id, @RequestBody Servicio servicioActualizado) {
+        try {
+
+            servicioServicio.actualizarServicio(id, servicioActualizado);
+
+            return "redirect:/servicios";
+        } catch (Exception e) {
+            return "redirect:/servicios?error=" + e.getMessage();
+        }
+
+    }
+
+    @PostMapping("/servicios/{id}")
+    public String bajaServicio(@PathVariable String id) {
+        try {
+            servicioServicio.eliminarServicio(id);
+            return "redirect:/servicios";
+        } catch (Exception e) {
+            return "redirect:/servicios?error=" + e.getMessage();
+        }
+    }
+
+    @GetMapping("/facturacion")
+    public String irAFacturacion() {
+        return "facturacion-inicio";
     }
 
 
