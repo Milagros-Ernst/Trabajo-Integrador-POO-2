@@ -109,8 +109,13 @@ public class PagoControlador {
                                 @RequestParam(required = false) String observaciones,
                                 RedirectAttributes redirectAttributes) {
         try {
-            // Llamamos a un servicio inteligente que distribuya el monto
-            pagoServicio.registrarPagoParcial(facturasIds, montoPagar, metodoPago, empleadoResponsable, observaciones);
+            pagoServicio.registrarPagoMasivo(
+                    facturasIds,
+                    montoPagar,
+                    metodoPago,
+                    empleadoResponsable,
+                    observaciones
+            );
 
             redirectAttributes.addAttribute("clienteId", clienteId);
             redirectAttributes.addFlashAttribute("success", "Pago registrado correctamente por $" + montoPagar);
@@ -145,7 +150,7 @@ public class PagoControlador {
         return ResponseEntity.ok(pagoServicio.listarPagosPorCliente(idCliente));
     }
 
-    // Registrar un pago total
+   /* // Registrar un pago total
     @PostMapping("/total")
     public ResponseEntity<?> registrarPagoTotal(@RequestBody Map<String, Object> requestBody) {
         try {
@@ -195,7 +200,7 @@ public class PagoControlador {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error al registrar el pago: " + e.getMessage()));
         }
-    }
+    } */
 
     // calcular total pagado por factura
     @GetMapping("/factura/{idFactura}/total")
