@@ -30,6 +30,7 @@ public class NotaServicio {
         nota.setFecha(LocalDate.now());
         nota.setEmpleadoResponsable(RESPONSABLE);
         nota.setMotivoAnulacion(motivoAnulacion); 
+        nota.setTipo(facturaAnulada.getTipo());
         
         nota.setPrecioTotal(facturaAnulada.getPrecioTotal()); 
         nota.setFacturaAnulada(facturaAnulada); 
