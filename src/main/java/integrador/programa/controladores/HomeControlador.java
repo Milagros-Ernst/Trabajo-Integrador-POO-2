@@ -44,54 +44,7 @@ public class HomeControlador extends Object {
         return "inicio";
     }
 
-    // metodos para la gestión de servicios
-    @GetMapping("/servicios")
-    public String irAServicios(Model model) {
 
-        List<Servicio> misServicios = servicioServicio.listarTodos();
-
-        model.addAttribute("servicios", misServicios);
-
-        return "gestion-servicio-abm";
-    }
-
-    @PostMapping("/servicios")
-    public String crearServicio(@ModelAttribute Servicio nuevoServicio) {
-        try {
-            nuevoServicio.setEstadoServicio(EstadoServicio.ALTA);
-            servicioServicio.agregarServicio(nuevoServicio);
-            return "redirect:/servicios";
-        } catch (Exception e) {
-            model.addAttribute("error", "Error al crear servicio: " + e.getMessage());
-            model.addAttribute("servicios", servicioServicio.listarTodos());
-            return "gestion-servicio-abm";
-        }
-    }
-
-    // usamos post porque en el html thymeleaf tiene como metodo post (x el alta y el html es alta) NO sabría como solucionar esto para que siga los lineamientos.
-// mientras lo dejo así
-    @PostMapping("/servicios/editar/{id}")
-    public String modificarServicio(@PathVariable String id, @ModelAttribute Servicio servicioActualizado) {
-        try {
-
-            servicioServicio.actualizarServicio(id, servicioActualizado);
-
-            return "redirect:/servicios";
-        } catch (Exception e) {
-            return "redirect:/servicios?error=" + e.getMessage();
-        }
-
-    }
-
-    @PostMapping("/servicios/{id}")
-    public String bajaServicio(@PathVariable String id) {
-        try {
-            servicioServicio.eliminarServicio(id);
-            return "redirect:/servicios";
-        } catch (Exception e) {
-            return "redirect:/servicios?error=" + e.getMessage();
-        }
-    }
 
     @GetMapping("/facturacion")
     public String irAFacturacion() {
