@@ -3,6 +3,7 @@ package integrador.programa.controladores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import integrador.programa.servicios.ClienteServicio;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-@RestController
+@Controller
 @RequestMapping("/api/facturacion")
 public class FacturaControlador {
 
@@ -118,26 +119,26 @@ public class FacturaControlador {
         }
     }
 
-    @PostMapping("/anular/{id}") 
-    public ResponseEntity<?> anularFactura(@PathVariable Long id, 
-                                            @RequestBody Map<String, String> requestBody) {
-    
-    try {
-        String motivo = requestBody.get("motivoAnulacion"); 
-        
-        if (motivo == null || motivo.trim().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El campo 'motivoAnulacion' es obligatorio.");
+    @PostMapping("/anular/{id}")
+    public String anularFactura(@PathVariable Long id, 
+                                @RequestParam("motivo") String motivo) {
+        Long idCliente = null;
+        try {
+            Factura factura = facturaServicio.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
+            
+            idCliente = factura.getCliente().getIdCuenta();
+
+            facturaServicio.bajaFactura(id, motivo);
+
+            return "redirect:/clientes/" + idCliente + "/facturacion";
+
+        } catch (Exception e) {
+            if (idCliente != null) {
+                return "redirect:/clientes/" + idCliente + "/facturacion?error=" + e.getMessage();
+            }
+            return "redirect:/clientes"; 
         }
-        
-        NotaCredito nota = facturaServicio.bajaFactura(id, motivo);
-        
-        return ResponseEntity.ok(nota);
-    } catch (IllegalArgumentException | IllegalStateException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno al anular la factura.");
     }
-}
 
 }

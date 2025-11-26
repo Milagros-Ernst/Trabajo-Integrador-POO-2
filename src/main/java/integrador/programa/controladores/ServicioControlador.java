@@ -6,7 +6,7 @@ import integrador.programa.servicios.ServicioServicio;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController                     // Indica que esta clase expone endpoints REST en formato JSON
+@Controller                   
 @RequestMapping("/api/servicios")
 public class ServicioControlador {
 

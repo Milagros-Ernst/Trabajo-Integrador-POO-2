@@ -5,9 +5,10 @@ import integrador.programa.servicios.ClienteServicio;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/api/clientes")
 public class ClienteControlador {
 

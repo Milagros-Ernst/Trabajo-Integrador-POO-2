@@ -117,23 +117,34 @@
           </td>
 
           <td>
-            <button type="button"
-                    class="action-link-success action-link-button"
-                    th:if="${factura.estado.name() == 'VIGENTE' or factura.estado.name() == 'VENCIDA'}"
-                    th:onclick="'pagarFactura(' + ${factura.idFactura} + ')'">
-              Pagar
-            </button>
+    <div style="display: flex; align-items: center; gap: 5px;">
+        
+        <button th:if="${factura.estado.name() == 'VIGENTE' or factura.estado.name() == 'VENCIDA'}"
+                type="button" class="action-link-success action-link-button"
+                th:onclick="'pagarFactura(' + ${factura.idFactura} + ')'">
+            Pagar
+        </button>
 
-            <button type="button"
-                    class="action-link-danger action-link-button"
-                    th:if="${factura.estado.name() == 'VIGENTE' or factura.estado.name() == 'VENCIDA'}"
-                    th:onclick="'anularFactura(' + ${factura.idFactura} + ')'">
-              Anular
+        <form th:if="${factura.estado.name() == 'VIGENTE'}" 
+              th:action="@{/api/facturacion/anular/{id}(id=${factura.idFactura})}" 
+              method="post" style="display: inline;">
+            
+            <input type="hidden" name="motivo" />
+            
+            <button type="button" class="action-link-danger action-link-button"
+                    onclick="var motivo = prompt('Ingrese el motivo de la anulación:'); 
+                             if (motivo != null && motivo.trim() !== '') { 
+                                 this.form.motivo.value = motivo; 
+                                 this.form.submit(); 
+                             }">
+                Anular
             </button>
+        </form>
 
-            <span th:if="${factura.estado.name() == 'ANULADA'}" style="color: #999; font-size: 12px;">(Anulada)</span>
-            <span th:if="${factura.estado.name() == 'PAGADA'}" style="color: #999; font-size: 12px;">(Finalizada)</span>
-          </td>
+        <span th:if="${factura.estado.name() == 'ANULADA'}" style="color: #999; font-size: 12px;">(Anulada)</span>
+        <span th:if="${factura.estado.name() == 'PAGADA'}" style="color: #999; font-size: 12px;">(Finalizada)</span>
+    </div>
+</td>
         </tr>
 
         <tr th:if="${facturas == null or facturas.isEmpty()}" class="empty-row">
