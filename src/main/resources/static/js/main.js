@@ -97,6 +97,27 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const idEditar = urlParams.get('idEditar');
+
+        if (idEditar) {
+            // Buscamos la fila que tiene ese ID
+            const filaAEditar = document.querySelector(`.fila-tabla[data-id="${idEditar}"]`);
+
+            if (filaAEditar) {
+                // 1. Simulamos clic en la fila para cargar los datos en los inputs
+                filaAEditar.click();
+
+                // 2. Simulamos clic en el botón Modificar para habilitar el formulario
+                if (btnModificar) {
+                    btnModificar.click();
+                }
+
+                // 3. Scroll suave hacia el formulario
+                formServicios.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
         // habilitar formulario
         function habilitarFormularioServicio() {
             formFieldset.disabled = false;
