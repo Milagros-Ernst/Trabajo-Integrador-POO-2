@@ -59,6 +59,10 @@ public class FacturaServicio {
         return facturaRepositorio.findById(id);
     }
 
+    public List<Factura> buscarFacturasPorCliente(Cliente cliente) {
+        return facturaRepositorio.findByCliente(cliente);
+    }
+
     @Transactional
     public NotaCredito bajaFactura(Long idFactura, String motivoAnulacion) {
         Factura factura = facturaRepositorio.findById(idFactura)
@@ -195,6 +199,7 @@ public class FacturaServicio {
             idsServiciosStr,
             RESPONSABLE
         );
+
         
         return factMasivaRepositorio.save(registro);
     }

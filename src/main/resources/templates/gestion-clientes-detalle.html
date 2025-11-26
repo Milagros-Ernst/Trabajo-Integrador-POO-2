@@ -23,7 +23,8 @@
     </a>
 
     <div class="form-container">
-        <form id="form-cliente" th:object="${cliente}">
+        <form id="form-cliente" th:object="${cliente}" th:action="@{/clientes/{id}(id=${cliente.idCuenta})}"
+              th:method="put">
             <div class="form-section-titles">
                 <h3>Información personal</h3>
             </div>
@@ -75,7 +76,7 @@
                     <input type="text" id="direccion" th:field="*{direccion}" readonly>
                 </div>
                 <div class="btn-wrapper-right">
-                    <a th:href="@{/clientes/{id}/facturas(id=${cliente.idCuenta})}" class="btn-verfacturas">
+                    <a th:href="@{/clientes/{id}/facturacion(id=${cliente.idCuenta})}" class="btn-verfacturas">
                         Ver historial de facturación
                     </a>
                 </div>
