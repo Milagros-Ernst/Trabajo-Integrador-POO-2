@@ -13,11 +13,11 @@ import java.util.Optional;
 
 @Service
 @Validated
-public class ClienteServicio {
+public class ClienteService {
 
     private final ClienteRepositorio clienteRepositorio;
 
-    public ClienteServicio(ClienteRepositorio clienteRepositorio) {
+    public ClienteService(ClienteRepositorio clienteRepositorio) {
         this.clienteRepositorio = clienteRepositorio;
     }
 

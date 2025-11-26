@@ -118,7 +118,7 @@
 
           <td>
     <div>
-        
+
         <button th:if="${factura.estado.name() == 'VIGENTE' or factura.estado.name() == 'VENCIDA'}"
                 type="button" class="action-link-success action-link-button"
                 th:onclick="'pagarFactura(' + ${factura.idFactura} + ')'">
@@ -141,8 +141,14 @@
             </button>
         </form>
 
-        <span th:if="${factura.estado.name() == 'ANULADA'}" style="color: #999; font-size: 12px;">(Anulada)</span>
-        <span th:if="${factura.estado.name() == 'PAGADA'}" style="color: #999; font-size: 12px;">(Finalizada)</span>
+        <!-- AGREGO ESTE BOTON PARA VER LAS FACTURASS. es piloto no hay nada implementado-->
+        <button type="button" class="action-link action-link-button"
+                th:onclick="'vistaFactura(' + ${factura.idFactura} + ')'">
+            Ver
+        </button>
+
+        <!--  <span th:if="${factura.estado.name() == 'ANULADA'}" style="color: #999; font-size: 12px;">(Anulada)</span>
+          <span th:if="${factura.estado.name() == 'PAGADA'}" style="color: #999; font-size: 12px;">(Finalizada)</span> -->
     </div>
 </td>
         </tr>

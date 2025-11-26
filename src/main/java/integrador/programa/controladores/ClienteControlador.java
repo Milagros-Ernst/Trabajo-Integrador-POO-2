@@ -2,7 +2,7 @@ package integrador.programa.controladores;
 
 import integrador.programa.modelo.Cliente;
 import integrador.programa.modelo.enumeradores.EstadoCuenta;
-import integrador.programa.servicios.ClienteServicio;
+import integrador.programa.servicios.ClienteService;
 import integrador.programa.servicios.ClienteServicioServicio;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,18 +16,18 @@ import java.util.List;
 @RequestMapping("/clientes")
 public class ClienteControlador {
 
-    private final ClienteServicio clienteServicio;
+    private final ClienteService clienteService;
     private final ClienteServicioServicio clienteServicioServicio;
 
-    public ClienteControlador(ClienteServicio clienteServicio,
+    public ClienteControlador(ClienteService clienteService,
                               ClienteServicioServicio clienteServicioServicio) {
-        this.clienteServicio = clienteServicio;
+        this.clienteService = clienteService;
         this.clienteServicioServicio = clienteServicioServicio;
     }
 // metodo para ir a la pantalla de gestion
     @GetMapping
     public String irAClientes(Model model) {
-        List<Cliente> misClientes = clienteServicio.listarClientesActivos();
+        List<Cliente> misClientes = clienteService.listarClientesActivos();
         model.addAttribute("clientes", misClientes);
         model.addAttribute("cliente", new Cliente());
         return "gestion-clientes-inicio";
@@ -38,12 +38,12 @@ public class ClienteControlador {
     public String crearCliente(@ModelAttribute Cliente nuevoCliente, Model model) {
         try {
             nuevoCliente.setEstadoCuenta(EstadoCuenta.ACTIVA);
-            clienteServicio.crearCliente(nuevoCliente);
+            clienteService.crearCliente(nuevoCliente);
             return "redirect:/clientes";
 
         } catch (Exception e) {
             model.addAttribute("error", "Error al crear cliente: " + e.getMessage());
-            model.addAttribute("clientes", clienteServicio.listarClientesActivos());
+            model.addAttribute("clientes", clienteService.listarClientesActivos());
             return "gestion-clientes-inicio";
         }
     }
@@ -52,10 +52,10 @@ public class ClienteControlador {
     public String irADetalleCliente(@PathVariable Long id, Model model) {
 
         try {
-            Cliente cliente = clienteServicio.buscarPorId(id);
+            Cliente cliente = clienteService.buscarPorId(id);
             model.addAttribute("cliente", cliente);
 
-            List<Cliente> subClientes = clienteServicio.listarClientesActivos();
+            List<Cliente> subClientes = clienteService.listarClientesActivos();
             subClientes.removeIf(c -> c.getIdCuenta().equals(id));
             model.addAttribute("subClientes", subClientes);
 
@@ -72,7 +72,7 @@ public class ClienteControlador {
     @PutMapping("/{id}")
     public String modificarCliente(@PathVariable Long id, @ModelAttribute Cliente clienteActualizado) {
         try {
-            clienteServicio.modificarCliente(id, clienteActualizado);
+            clienteService.modificarCliente(id, clienteActualizado);
             return "redirect:/clientes/" + id;
         } catch (Exception e) {
             return "redirect:/clientes/" + id + "?error=" + e.getMessage();
@@ -83,7 +83,7 @@ public class ClienteControlador {
     @PostMapping("/{id}")
     public String darDeBajaCliente(@PathVariable Long id) {
         try {
-            clienteServicio.bajaCliente(id);
+            clienteService.bajaCliente(id);
             return "redirect:/clientes";
         } catch (Exception e) {
             return "redirect:/clientes";
@@ -94,7 +94,7 @@ public class ClienteControlador {
     @PutMapping("/{id}/reactivar")
     public String reactivar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Cliente clienteReactivado = clienteServicio.reactivarCliente(id);
+            Cliente clienteReactivado = clienteService.reactivarCliente(id);
             return "redirect:/clientes/" + id;
         } catch (IllegalArgumentException e) {
             redirectAttributes.addAttribute("error", "No se pudo reactivar: " + e.getMessage());

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import integrador.programa.servicios.ClienteServicio;
+import integrador.programa.servicios.ClienteService;
 import integrador.programa.servicios.FacturaServicio;
 import integrador.programa.servicios.ServicioServicio;
 import jakarta.validation.Valid;
@@ -27,7 +27,7 @@ public class FacturaControlador {
     @Autowired
     private FacturaServicio facturaServicio;
     @Autowired 
-    private ClienteServicio clienteServicio; 
+    private ClienteService clienteService;
     @Autowired 
     private ServicioServicio servicioServicio;
     @Autowired
@@ -37,10 +37,10 @@ public class FacturaControlador {
         this.facturaServicio = facturaServicio;
     }
 
-    @GetMapping
+   /* @GetMapping
     public ResponseEntity<List<Factura>> listar() {
         return ResponseEntity.ok(facturaServicio.listarFacturas());
-    }
+    } */
 
     @GetMapping
     public String irAFacturacion() {
@@ -75,7 +75,7 @@ public class FacturaControlador {
                 return ResponseEntity.badRequest().body("Debe incluir al menos un servicio para facturar.");
             }
 
-            Cliente clienteAFacturar = clienteServicio.buscarPorId(idCliente);
+            Cliente clienteAFacturar = clienteService.buscarPorId(idCliente);
             List<String> serviciosIds = new ArrayList<>(serviciosConFechaInicio.keySet());
 
             Factura nuevaFactura = facturaServicio.emitirFacturaIndividual(
@@ -206,7 +206,7 @@ public class FacturaControlador {
         try {
             if (clienteId != null) {
                 try {
-                    Cliente clienteEncontrado = clienteServicio.buscarPorId(clienteId);
+                    Cliente clienteEncontrado = clienteService.buscarPorId(clienteId);
                     model.addAttribute("cliente", clienteEncontrado);
 
                     List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
@@ -238,7 +238,7 @@ public class FacturaControlador {
         Cliente clienteEncontrado = null;
         List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = null;
         try {
-            clienteEncontrado = clienteServicio.buscarPorId(clienteId);
+            clienteEncontrado = clienteService.buscarPorId(clienteId);
             model.addAttribute("cliente", clienteEncontrado);
             serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
             model.addAttribute("serviciosAsignados", serviciosAsignados);

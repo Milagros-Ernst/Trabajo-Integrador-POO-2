@@ -1,10 +1,8 @@
 package integrador.programa.controladores;
 import integrador.programa.modelo.Cliente;
 import integrador.programa.modelo.Factura;
-import integrador.programa.modelo.LogFacturacionMasiva;
-import integrador.programa.modelo.Servicio;
 import integrador.programa.modelo.enumeradores.EstadoFactura;
-import integrador.programa.servicios.ClienteServicio;
+import integrador.programa.servicios.ClienteService;
 import integrador.programa.servicios.ClienteServicioServicio;
 import integrador.programa.servicios.ServicioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import integrador.programa.servicios.FacturaServicio;
 
-import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 public class HomeControlador extends Object {
@@ -23,7 +19,7 @@ public class HomeControlador extends Object {
     // instancias de servicio
 
     @Autowired
-    private ClienteServicio clienteServicio;
+    private ClienteService clienteService;
 
     @Autowired
     private ClienteServicioServicio clienteServicioServicio;
@@ -43,66 +39,7 @@ public class HomeControlador extends Object {
     }
 
 
-    @GetMapping("/clientes/{id}/asignar")
-    public String irAAsignarServicios(@PathVariable Long id, Model model) {
-        try {
-            Cliente cliente = clienteServicio.buscarPorId(id);
-            model.addAttribute("cliente", cliente);
-
-            List<integrador.programa.modelo.ClienteServicio> contratados = clienteServicioServicio.listarServiciosActivosDeCliente(id);
-            model.addAttribute("serviciosContratados", contratados);
-
-            List<Servicio> todosLosServicios = servicioServicio.listarTodos();
-
-            Set<String> idsServiciosContratados = contratados.stream()
-                    .map(asignacion -> asignacion.getServicio().getIdServicio())
-                    .collect(Collectors.toSet());
-
-            List<Servicio> disponibles = todosLosServicios.stream()
-                    .filter(servicio -> !idsServiciosContratados.contains(servicio.getIdServicio()))
-                    .collect(Collectors.toList());
-
-            model.addAttribute("serviciosDisponibles", disponibles);
-
-            return "gestion-clientes-asignserv";
-
-        } catch (Exception e) {
-
-            System.err.println("Error en irAAsignarServicios: " + e.getMessage());
-            return "redirect:/clientes";
-        }
-    }
-
     // asignación de servicios a cliente
-
-    @PostMapping("/clientes/{id}/asignar")
-    public String asignarServicioACliente(@PathVariable Long id,
-                                          @RequestParam String servicioId) {
-
-        try {
-            clienteServicioServicio.asignarServicioACliente(id, servicioId);
-
-        } catch (Exception e) {
-            System.out.println("Error al asignar servicio: " + e.getMessage());
-        }
-
-        return "redirect:/clientes/" + id + "/asignar";
-    }
-
-    // baja de servicio a cliente
-    @PostMapping("/clientes/{clienteId}/asignaciones/{asigId}/eliminar")
-    public String eliminarServicioDeCliente(@PathVariable Long clienteId,
-                                            @PathVariable String asigId) {
-        try {
-            clienteServicioServicio.darDeBajaServicioCliente(asigId);
-
-            return "redirect:/clientes/" + clienteId + "/asignar";
-
-        } catch (Exception e) {
-            System.err.println("Error al eliminar servicio: " + e.getMessage());
-            return "redirect:/clientes/" + clienteId + "/asignar?error=NoSePudoEliminar";
-        }
-    }
 
 
 
@@ -111,7 +48,7 @@ public class HomeControlador extends Object {
     @GetMapping("/clientes/{clienteId}/facturacion")
     public String irHistorialFacturacion(@PathVariable Long clienteId, Model model) {
         try {
-            Cliente cliente = clienteServicio.buscarPorId(clienteId);
+            Cliente cliente = clienteService.buscarPorId(clienteId);
             model.addAttribute("cliente", cliente);
 
             List<Factura> facturas = facturaServicio.listarFacturas();
