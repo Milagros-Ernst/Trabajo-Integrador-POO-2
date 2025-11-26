@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Pagos - FlorecillaService</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/main.js}"></script>
+</head>
+
+<body>
+
+<header>
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
+    <h1><span class="logo-text">FlorecillaService</span> / Administrar Pagos</h1>
+</header>
+
+<main>
+
+    <a th:href="@{/}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
+        Volver al Inicio
+    </a>
+
+    <!-- 1. SELECCIÓN DE CLIENTE -->
+    <div class="form-container">
+        <div class="form-section-titles">
+            <h3>Selección de Cliente</h3>
+        </div>
+        <form th:action="@{/pagos/administrar}" method="get" id="form-seleccion-cliente">
+            <div class="form-group">
+                <label for="select-cliente-pago">Seleccione un cliente para ver su deuda:</label>
+                <select id="select-cliente-pago" name="clienteId" onchange="this.form.submit()" required>
+                    <option value="" disabled selected>-- Buscar Cliente --</option>
+                    <option th:each="cli : ${clientes}"
+                            th:value="${cli.idCuenta}"
+                            th:text="${cli.nombre} + ' ' + ${cli.apellido} + ' (DNI: ' + ${cli.numeroDocumento} + ')'"
+                            th:selected="${clienteSeleccionado != null and clienteSeleccionado.idCuenta == cli.idCuenta}">
+                    </option>
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <br>
+
+    <!-- MENSAJES DE ALERTA -->
+    <div th:if="${success}" class="alert alert-success"
+         style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger"
+         style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        <span th:text="${error}"></span>
+    </div>
+
+
+    <!-- datos del cliente -->
+    <div th:if="${clienteSeleccionado}">
+
+        <div class="form-container">
+            <div class="form-section-titles">
+                <h3>Datos del Cliente</h3>
+            </div>
+            <div class="form-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" th:value="${clienteSeleccionado.nombre} + ' ' + ${clienteSeleccionado.apellido}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Documento</label>
+                    <input type="text" th:value="${clienteSeleccionado.tipoDocumento} + ': ' + ${clienteSeleccionado.numeroDocumento}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Condición Fiscal</label>
+                    <input type="text" th:value="${clienteSeleccionado.condIVA}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" th:value="${clienteSeleccionado.mail}" readonly>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <!-- proceso de pago -->
+
+        <form th:action="@{/pagos/preparar}" method="post" id="form-procesar-pago">
+            <input type="hidden" name="clienteId" th:value="${clienteSeleccionado.idCuenta}">
+            <input type="hidden" name="empleadoResponsable" value="Administrador">
+
+            <div class="table-container">
+                <h2 class="table-title">Facturas Pendientes de Pago</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th style="width: 50px; text-align: center;">
+                                <input type="checkbox" id="check-todos-pagos">
+                            </th>
+                            <th>Nro. Factura</th>
+                            <th>Vencimiento</th>
+                            <th>Total Original</th>
+                            <th>Pagado</th>
+                            <th>Saldo Pendiente</th>
+                            <th>Estado</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="factura : ${facturasPendientes}">
+                            <td style="text-align: center;">
+
+                                <input type="checkbox"
+                                       name="facturasIds"
+                                       th:value="${factura.idFactura}"
+                                       class="check-factura"
+                                       th:data-saldo="${factura.calcularSaldoPendiente()}">
+                            </td>
+                            <td th:text="'#' + ${factura.idFactura}"></td>
+                            <td th:text="${factura.vencimiento}"></td>
+                            <td th:text="'$ ' + ${#numbers.formatDecimal(factura.precioTotal, 1, 2)}"></td>
+                            <td th:text="'$ ' + ${#numbers.formatDecimal(factura.calcularTotalPagado(), 1, 2)}"></td>
+
+                            <td style="font-weight: bold; color: #d32f2f;"
+                                th:text="'$ ' + ${#numbers.formatDecimal(factura.calcularSaldoPendiente(), 1, 2)}">
+                            </td>
+
+                            <td>
+                                <span th:if="${factura.estado.name() == 'VIGENTE'}" style="color: #ef6c00; background: #fff3e0; padding: 4px 8px; border-radius: 4px; font-size: 12px;">VIGENTE</span>
+                                <span th:if="${factura.estado.name() == 'VENCIDA'}" style="color: #c62828; background: #ffebee; padding: 4px 8px; border-radius: 4px; font-size: 12px;">VENCIDA</span>
+                                <span th:if="${factura.estado.name() == 'PARCIAL'}" style="color: #1565c0; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-size: 12px;">PARCIAL</span>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${facturasPendientes.isEmpty()}" class="empty-row">
+                            <td colspan="7">Este cliente no tiene deudas pendientes. ¡Todo al día!</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- totales y acciones -->
+            <div class="payment-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);">
+
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <label for="metodoPago" style="font-weight: 600;">Método de Pago:</label>
+                    <select id="metodoPago" name="metodoPago" required style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+                        <option value="EFECTIVO">Efectivo</option>
+                        <option value="TARJETA_CREDITO">Tarjeta Crédito</option>
+                        <option value="TARJETA_DEBITO">Tarjeta Débito</option>
+                        <option value="TRANSFERENCIA">Transferencia</option>
+                        <option value="MERCADO_PAGO">Mercado Pago</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <div style="text-align: right;">
+                        <span style="display: block; font-size: 12px; color: #666;">Total a Pagar:</span>
+                        <span id="total-seleccionado" style="font-size: 24px; font-weight: bold; color: #8D11B8;">$ 0.00</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="btn-proceder-pago" disabled>
+                        PROCEDER AL PAGO
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</main>
+
+</body>
+</html>

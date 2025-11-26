@@ -280,7 +280,72 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+    // administrar-pagos.html
 
+    const checkTodosPagos = document.getElementById('check-todos-pagos');
+    const checksFactura = document.querySelectorAll('.check-factura');
+    const displayTotal = document.getElementById('total-seleccionado');
+    const btnProceder = document.getElementById('btn-proceder-pago');
+
+    if (checkTodosPagos && checksFactura.length > 0) {
+
+        function calcularTotalPagos() {
+            let total = 0;
+            let haySeleccionados = false;
+
+            checksFactura.forEach(check => {
+                if (check.checked) {
+                    // Leemos el atributo data-saldo que pusimos en el HTML
+                    const saldo = parseFloat(check.getAttribute('data-saldo'));
+                    if (!isNaN(saldo)) {
+                        total += saldo;
+                    }
+                    haySeleccionados = true;
+                }
+            });
+
+            // Actualizamos el texto del total
+            if (displayTotal) {
+                displayTotal.textContent = total.toLocaleString('es-AR', {
+                    style: 'currency',
+                    currency: 'ARS'
+                });
+            }
+
+            // Habilitar/Deshabilitar botón
+            if (btnProceder) {
+                btnProceder.disabled = !haySeleccionados;
+                // Cambio visual opcional
+                btnProceder.style.opacity = haySeleccionados ? '1' : '0.6';
+            }
+        }
+
+        // Evento para el checkbox "Seleccionar Todos"
+        checkTodosPagos.addEventListener('change', function() {
+            const isChecked = this.checked;
+            checksFactura.forEach(check => {
+                check.checked = isChecked;
+            });
+            calcularTotalPagos();
+        });
+
+        // Eventos para cada checkbox individual
+        checksFactura.forEach(check => {
+            check.addEventListener('change', function() {
+                // Si desmarco uno, desmarco el "Todos"
+                if (!this.checked) {
+                    checkTodosPagos.checked = false;
+                }
+                // Si marco todos manualmente, marco el "Todos"
+                const allChecked = Array.from(checksFactura).every(c => c.checked);
+                if (allChecked) {
+                    checkTodosPagos.checked = true;
+                }
+
+                calcularTotalPagos();
+            });
+        });
+    }
 
 
 
