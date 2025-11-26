@@ -3,9 +3,7 @@ import integrador.programa.modelo.Cliente;
 import integrador.programa.modelo.Factura;
 import integrador.programa.modelo.LogFacturacionMasiva;
 import integrador.programa.modelo.Servicio;
-import integrador.programa.modelo.enumeradores.EstadoCuenta;
 import integrador.programa.modelo.enumeradores.EstadoFactura;
-import integrador.programa.modelo.enumeradores.EstadoServicio;
 import integrador.programa.servicios.ClienteServicio;
 import integrador.programa.servicios.ClienteServicioServicio;
 import integrador.programa.servicios.ServicioServicio;
@@ -42,13 +40,6 @@ public class HomeControlador extends Object {
     @GetMapping("/")
     public String mostrarPaginaInicio() {
         return "inicio";
-    }
-
-
-
-    @GetMapping("/facturacion")
-    public String irAFacturacion() {
-        return "facturacion-inicio";
     }
 
 
@@ -113,128 +104,7 @@ public class HomeControlador extends Object {
         }
     }
 
-    //métodos para la facturación
 
-    @GetMapping("facturacion/masiva")
-    public String irAFacturacionMasiva(Model model) {
-        // Añade la lista de servicios al modelo para que la plantilla los muestre
-        List<Servicio> misServicios = servicioServicio.listarTodos();
-        model.addAttribute("servicios", misServicios);
-        return "facturacion-masiva";
-    }
-
-    @PostMapping("/facturacion/masiva")
-    public String procesarFacturacionMasivaFormulario(
-            @RequestParam("periodo") int periodo,
-            @RequestParam("fechaVencimiento") LocalDate fechaVencimiento,
-            @RequestParam(name = "idServiciosFacturar", required = false) List<String> idServiciosFacturar,
-            Model model) {
-
-        try {
-
-            if (idServiciosFacturar == null || idServiciosFacturar.isEmpty()) {
-
-                throw new IllegalArgumentException("Debe seleccionar al menos un servicio para facturar.");
-
-            }
-            LogFacturacionMasiva registro = facturaServicio.emitirFacturaMasiva(
-                    idServiciosFacturar,
-                    periodo,
-                    fechaVencimiento
-            );
-
-            model.addAttribute("success",
-                    "Facturación masiva completada. Se generaron " +
-                            registro.getCantidadFacturas() + " facturas.");
-
-        } catch (Exception e) {
-            // Si algo falla, envía un mensaje de error
-            model.addAttribute("error",
-                    "Error al procesar la facturación: " + e.getMessage());
-        }
-
-        // Vuelve a cargar los servicios para la tabla
-        List<Servicio> servicios = servicioServicio.listarTodos();
-        model.addAttribute("servicios", servicios);
-
-        // Vuelve a mostrar la misma página
-        return "facturacion-masiva";
-    }
-
-
-    @GetMapping("/facturacion/individual")
-    public String irAFacturacionIndividual(
-            @RequestParam(value = "clienteId", required = false) Long clienteId,
-            Model model) {
-        try {
-            if (clienteId != null) {
-                try {
-                    Cliente clienteEncontrado = clienteServicio.buscarPorId(clienteId);
-                    model.addAttribute("cliente", clienteEncontrado);
-
-                    List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
-                    model.addAttribute("serviciosAsignados", serviciosAsignados);
-
-                } catch (Exception eCliente) {
-                    model.addAttribute("errorCliente", "Cliente no encontrado con ID: " + clienteId);
-                }
-            }
-            return "facturacion-individual";
-
-        } catch (Exception eGeneral) {
-            System.err.println("Error grave al cargar facturación individual: " + eGeneral.getMessage());
-            eGeneral.printStackTrace();
-            model.addAttribute("errorGeneral", "Error al cargar la lista de servicios. Contacte al administrador.");
-            return "facturacion-individual";
-        }
-    }
-
-    @PostMapping("/facturacion/individual")
-    public String procesarFacturacionIndividualFormulario(
-            @RequestParam(value = "serviciosIds", required = false) List<String> serviciosIds,
-            @RequestParam("clienteIdForm") Long clienteId,
-            @RequestParam("mes") String mes,
-            @RequestParam("fechaVencimiento") LocalDate fechaVencimiento,
-
-            Model model
-    ) {
-        Cliente clienteEncontrado = null;
-        List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = null;
-        try {
-            clienteEncontrado = clienteServicio.buscarPorId(clienteId);
-            model.addAttribute("cliente", clienteEncontrado);
-            serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
-            model.addAttribute("serviciosAsignados", serviciosAsignados);
-        } catch (Exception e) {
-            model.addAttribute("errorCliente", "Error al recuperar el cliente.");
-            return "facturacion-individual";
-        }
-
-        if (serviciosIds == null || serviciosIds.isEmpty()) {
-            model.addAttribute("error", "Debe seleccionar al menos un servicio para facturar.");
-            return "facturacion-individual";
-        }
-
-        try {
-            int mesInt = Integer.parseInt(mes);
-            Factura facturaGenerada = facturaServicio.emitirFacturaIndividual(
-                    clienteEncontrado,
-                    serviciosIds,
-                    mesInt,
-                    fechaVencimiento
-            );
-
-            model.addAttribute("success", "Factura N°" + facturaGenerada.getIdFactura() + " generada exitosamente para " + clienteEncontrado.getNombre());
-            model.addAttribute("serviciosAsignados", clienteServicioServicio.listarServiciosActivosDeCliente(clienteId));
-
-            return "facturacion-individual";
-
-        } catch (Exception e) {
-            model.addAttribute("error", "Error al generar la factura: " + e.getMessage());
-            e.printStackTrace();
-            return "facturacion-individual";
-        }
-    }
 
     // métodos para el historial de facturación de clientes
 
