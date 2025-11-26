@@ -4,13 +4,12 @@ import integrador.programa.modelo.Factura;
 import integrador.programa.modelo.LogFacturacionMasiva;
 import integrador.programa.modelo.Servicio;
 import integrador.programa.modelo.enumeradores.EstadoCuenta;
+import integrador.programa.modelo.enumeradores.EstadoFactura;
 import integrador.programa.modelo.enumeradores.EstadoServicio;
 import integrador.programa.servicios.ClienteServicio;
 import integrador.programa.servicios.ClienteServicioServicio;
 import integrador.programa.servicios.ServicioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,10 +37,10 @@ public class HomeControlador extends Object {
     private FacturaServicio facturaServicio;
 
     private Model model;
-    
+
 
     @GetMapping("/")
-    public String mostrarPaginaInicio(){
+    public String mostrarPaginaInicio() {
         return "inicio";
     }
 
@@ -53,6 +52,7 @@ public class HomeControlador extends Object {
         return "gestion-clientes-inicio";
     }
 
+    // metodos para la gestión de clientes
     @PostMapping("/clientes")
     public String crearCliente(@ModelAttribute Cliente nuevoCliente) {
         try {
@@ -98,7 +98,7 @@ public class HomeControlador extends Object {
         }
     }
 
-// si es una baja lógica, seria un post?
+    // si es una baja lógica, seria un post?
     @PostMapping("/clientes/{id}/dar-de-baja")
     public String darDeBajaCliente(@PathVariable Long id) {
         try {
@@ -109,6 +109,7 @@ public class HomeControlador extends Object {
         }
     }
 
+    // metodos para la gestión de servicios
     @GetMapping("/servicios")
     public String irAServicios(Model model) {
 
@@ -132,6 +133,8 @@ public class HomeControlador extends Object {
         }
     }
 
+    // usamos post porque en el html thymeleaf tiene como metodo post (x el alta y el html es alta) NO sabría como solucionar esto para que siga los lineamientos.
+// mientras lo dejo así
     @PostMapping("/servicios/editar/{id}")
     public String modificarServicio(@PathVariable String id, @ModelAttribute Servicio servicioActualizado) {
         try {
@@ -191,6 +194,8 @@ public class HomeControlador extends Object {
         }
     }
 
+    // asignación de servicios a cliente
+
     @PostMapping("/clientes/{id}/asignar")
     public String asignarServicioACliente(@PathVariable Long id,
                                           @RequestParam String servicioId) {
@@ -219,6 +224,8 @@ public class HomeControlador extends Object {
             return "redirect:/clientes/" + clienteId + "/asignar?error=NoSePudoEliminar";
         }
     }
+
+    //métodos para la facturación
 
     @GetMapping("facturacion/masiva")
     public String irAFacturacionMasiva(Model model) {
@@ -270,8 +277,7 @@ public class HomeControlador extends Object {
     @GetMapping("/facturacion/individual")
     public String irAFacturacionIndividual(
             @RequestParam(value = "clienteId", required = false) Long clienteId,
-            Model model)
-    {
+            Model model) {
         try {
             if (clienteId != null) {
                 try {
@@ -300,8 +306,8 @@ public class HomeControlador extends Object {
             @RequestParam(value = "serviciosIds", required = false) List<String> serviciosIds,
             @RequestParam("clienteIdForm") Long clienteId,
             @RequestParam("mes") String mes,
-            @RequestParam("fechaVencimiento") LocalDate fechaVencimiento, 
-            
+            @RequestParam("fechaVencimiento") LocalDate fechaVencimiento,
+
             Model model
     ) {
         Cliente clienteEncontrado = null;
@@ -322,12 +328,12 @@ public class HomeControlador extends Object {
         }
 
         try {
-            int mesInt = Integer.parseInt(mes); 
+            int mesInt = Integer.parseInt(mes);
             Factura facturaGenerada = facturaServicio.emitirFacturaIndividual(
-                clienteEncontrado, 
-                serviciosIds, 
-                mesInt, 
-                fechaVencimiento
+                    clienteEncontrado,
+                    serviciosIds,
+                    mesInt,
+                    fechaVencimiento
             );
 
             model.addAttribute("success", "Factura N°" + facturaGenerada.getIdFactura() + " generada exitosamente para " + clienteEncontrado.getNombre());
@@ -337,8 +343,55 @@ public class HomeControlador extends Object {
 
         } catch (Exception e) {
             model.addAttribute("error", "Error al generar la factura: " + e.getMessage());
-            e.printStackTrace(); 
+            e.printStackTrace();
             return "facturacion-individual";
+        }
+    }
+
+    // métodos para el historial de facturación de clientes
+
+    @GetMapping("/clientes/{clienteId}/facturacion")
+    public String irHistorialFacturacion(@PathVariable Long clienteId, Model model) {
+        try {
+            Cliente cliente = clienteServicio.buscarPorId(clienteId);
+            model.addAttribute("cliente", cliente);
+
+            List<Factura> facturas = facturaServicio.listarFacturas();
+
+            // ordenamiento para determinar la prioridad (para q en la tabla aparezcan las q tienen mas prioridad primerp)
+
+            facturas.sort((f1, f2) -> {
+                int prioridad1 = getPrioridadEstado(f1.getEstado());
+                int prioridad2 = getPrioridadEstado(f2.getEstado());
+
+                // se compara
+                int resultado = Integer.compare(prioridad1, prioridad2);
+
+                // si tienen la misma prioridad, la que tiene fecha de vencimiento mas vieja va arriba
+                if (resultado == 0) {
+                    return f1.getVencimiento().compareTo(f2.getVencimiento());
+                }
+
+                return resultado;
+            });
+
+            model.addAttribute("facturas", facturas);
+            return "cliente-facturas"; // Nombre de tu nueva vista HTML
+
+        } catch (Exception e) {
+            return "redirect:/clientes/" + clienteId + "?error=NoSePudoCargarElHistorial";
+        }
+    }
+
+    // metodo auxiliar para dar peso a los estados
+    private int getPrioridadEstado(EstadoFactura estado) {
+        switch (estado) {
+            case VENCIDA: return 1;
+            case VIGENTE: return 2;
+            case PARCIAL: return 3;
+            case PAGADA:  return 4;
+            case ANULADA: return 5;
+            default:      return 6;
         }
     }
 

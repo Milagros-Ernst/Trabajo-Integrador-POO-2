@@ -1,5 +1,6 @@
 package integrador.programa.repositorios;
 
+import integrador.programa.modelo.Cliente;
 import integrador.programa.modelo.Factura;
 import integrador.programa.modelo.enumeradores.EstadoFactura;
 import integrador.programa.modelo.enumeradores.TipoComprobante;
@@ -18,6 +19,9 @@ public interface FacturaRepositorio extends JpaRepository<Factura, Long> {
     List<Factura> findByEstado(EstadoFactura estado);
     List<Factura> findByTipo(TipoComprobante tipo);
     Optional<Factura> findByNroSerie(Long nroSerie);
+
+    // agrego un listar x cliente para el historial de facturacion
+    List<Factura> findByCliente(Cliente cliente);
 
     @Query(value = "SELECT f.nroSerie FROM Factura f WHERE f.tipo = :tipo ORDER BY f.nroSerie DESC LIMIT 1")
     String findMaxNroSerieByTipo(@Param("tipo") TipoComprobante tipo);
