@@ -1,6 +1,5 @@
 package integrador.programa.modelo;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +79,10 @@ public class Factura {
     @NotNull(message = "La factura debe estar asociada a un cliente")
     private Cliente cliente;
 
+    // Relación con Pago, una factura puede tener múltiples pagos
+    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Pago> pagos = new ArrayList<>();
+
 
     public void agregarDetalle(DetalleFactura detalle) {
         if (detalle != null) {
@@ -105,6 +108,38 @@ public class Factura {
         this.precioTotal = totalAcumulado;
     }
 
-   
+    // Pagos
+    // se agrega un pago a la factura
+    public void agregarPago(Pago pago) {
+        if (pago != null) {
+            if (!this.pagos.contains(pago)) {
+                this.pagos.add(pago);
+                pago.setFactura(this);
+            }
+        }
+    }
+
+    // Calcula el total pagado hasta la fecha
+    public double calcularTotalPagado() {
+        if (this.pagos == null || this.pagos.isEmpty()) {
+            return 0.0;
+        }
+        return this.pagos.stream()
+                .mapToDouble(Pago::getImporte)
+                .sum();
+    }
+
+    // Calcula el saldo pendiente de la factura
+    public double calcularSaldoPendiente() {
+        return this.precioTotal - calcularTotalPagado();
+    }
+
+    public boolean estaPagada() {
+        return Math.abs(calcularSaldoPendiente()) < 0.01;
+    }
+
+    public boolean tienePagosParciales() {
+        return calcularTotalPagado() > 0 && !estaPagada();
+    }
 
 }
