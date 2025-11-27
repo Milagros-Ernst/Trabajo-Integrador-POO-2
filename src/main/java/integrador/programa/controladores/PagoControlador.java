@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/pagos")
+@RequestMapping("/administrar-pagos")
 public class PagoControlador {
 
     private PagoServicio pagoServicio;
@@ -38,8 +38,8 @@ public class PagoControlador {
         this.facturaServicio = facturaServicio;
     }
 
-    @GetMapping("/administrar")
-    public String irAAdministrarPagos(@RequestParam(required = false) Long clienteId, Model model) { // Ojo: Cambié Cliente objeto por Long ID para evitar errores de binding si es null
+    @GetMapping
+    public String irAAdministrarPagos(@RequestParam(required = false) Long clienteId, Model model) {
 
         model.addAttribute("clientes", clienteService.listarClientesActivos());
 

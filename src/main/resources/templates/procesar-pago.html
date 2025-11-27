@@ -16,12 +16,12 @@
 
 <main class="content-container">
 
-  <div class="form-container" style="width: 100%; max-width: 800px;">
+  <div class="form-container"> <!-- style="width: 100%; max-width: 800px;" -->
     <div class="form-section-titles">
       <h3>3. Resumen y Confirmación</h3>
     </div>
 
-    <form th:action="@{/pagos/finalizar}" method="post">
+    <form th:action="@{/administrar-pagos/preparar}" method="post">
       <input type="hidden" name="clienteId" th:value="${cliente.idCuenta}">
 
       <!-- Enviamos los IDs de nuevo para procesarlos -->
@@ -82,8 +82,8 @@
       </div>
 
       <div class="abm-actions" style="display: flex; justify-content: space-between; margin-top: 30px;">
-        <!-- Botón Cancelar vuelve a la selección -->
-        <a th:href="@{/pagos/administrar(clienteId=${cliente.idCuenta})}" class="btn btn-secondary">
+
+        <a th:href="@{/administrar-pagos(clienteId=${cliente.idCuenta})}" class="btn btn-secondary">
           Cancelar / Volver
         </a>
 

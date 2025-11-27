@@ -29,7 +29,7 @@
         <div class="form-section-titles">
             <h3>Selección de Cliente</h3>
         </div>
-        <form th:action="@{/pagos/administrar}" method="get" id="form-seleccion-cliente">
+        <form th:action="@{/administrar-pagos}" method="get" id="form-seleccion-cliente">
             <div class="form-group">
                 <label for="select-cliente-pago">Seleccione un cliente para ver su deuda:</label>
                 <select id="select-cliente-pago" name="clienteId" onchange="this.form.submit()" required>
@@ -88,7 +88,7 @@
 
         <!-- proceso de pago -->
 
-        <form th:action="@{/pagos/preparar}" method="post" id="form-procesar-pago">
+        <form th:action="@{/administrar-pagos/preparar}" method="post" id="form-procesar-pago">
             <input type="hidden" name="clienteId" th:value="${clienteSeleccionado.idCuenta}">
             <input type="hidden" name="empleadoResponsable" value="Administrador">
 
