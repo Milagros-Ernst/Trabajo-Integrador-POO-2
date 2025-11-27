@@ -44,9 +44,9 @@ public class Pago {
     private MetodoPago metodoPago;
 
     @NotNull(message = "La fecha de pago es obligatoria")
-    @CreationTimestamp
+    @Builder.Default
     @Column(name = "fecha_pago", nullable = false, updatable = false)
-    private LocalDate fechaPago;
+    private LocalDate fechaPago = LocalDate.now();
 
     @Size(max = 150, message = "Las observaciones no pueden exceder los 150 caracteres")
     @Column(name = "observaciones", length = 150)

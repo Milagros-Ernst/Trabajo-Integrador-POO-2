@@ -73,7 +73,7 @@ public class PagoControlador {
         if (facturasIds == null || facturasIds.isEmpty()) {
             redirectAttributes.addAttribute("clienteId", clienteId);
             redirectAttributes.addFlashAttribute("error", "Debe seleccionar al menos una factura.");
-            return "redirect:/pagos/administrar";
+            return "redirect:/administrar-pagos";
         }
 
         try {
@@ -105,9 +105,12 @@ public class PagoControlador {
                                 @RequestParam List<Long> facturasIds,
                                 @RequestParam Double montoPagar,
                                 @RequestParam MetodoPago metodoPago,
-                                @RequestParam String empleadoResponsable,
                                 @RequestParam(required = false) String observaciones,
                                 RedirectAttributes redirectAttributes) {
+
+        //hardcodeamos el administrador:
+        String empleadoResponsable = "Administrador";
+
         try {
             pagoServicio.registrarPagoMasivo(
                     facturasIds,
@@ -124,7 +127,7 @@ public class PagoControlador {
             redirectAttributes.addFlashAttribute("error", "Error al procesar el pago: " + e.getMessage());
         }
 
-        return "redirect:/pagos/administrar";
+        return "redirect:/administrar-pagos";
     }
 
     // dejo estos métodos por las dudas, pero habría que revisar si son necesarios..

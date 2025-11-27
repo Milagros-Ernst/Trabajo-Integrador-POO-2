@@ -16,12 +16,12 @@
 
 <main class="content-container">
 
-  <div class="form-container"style="width: 100%; max-width: 800px; margin-top: 30px">
+  <div class="form-container" style="width: 100%; max-width: 800px; margin-top: 30px">
     <div class="form-section-titles">
       <h3 class="titulo-resumen">3. Resumen y Confirmación</h3>
     </div>
 
-    <form th:action="@{/administrar-pagos/preparar}" method="post">
+    <form th:action="@{/administrar-pagos/finalizar}" method="post">
       <input type="hidden" name="clienteId" th:value="${cliente.idCuenta}">
 
       <!-- Enviamos los IDs de nuevo para procesarlos -->
@@ -70,9 +70,16 @@
           </select>
         </div>
 
+        <!--RESPONSABLE HARDCODEADO: ADMINISTRADOR  -->
         <div class="form-group">
           <label for="empleado">Empleado Responsable:</label>
-          <input type="text" id="empleado" name="empleadoResponsable" required placeholder="Nombre del cajero">
+          <input
+                  type="text"
+                  id="empleado"
+                  name="empleadoResponsable"
+                  required
+                  value="Administrador"
+                  readonly>
         </div>
 
         <div class="form-group">
