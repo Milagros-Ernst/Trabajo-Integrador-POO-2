@@ -119,10 +119,12 @@
           <td>
     <div>
         <!-- Botón PAGAR -->
-        <button th:if="${factura.estado.name() == 'VIGENTE' or factura.estado.name() == 'VENCIDA' or factura.estado.name() == 'PARCIAL'}"
-                type="button" class="action-link-success action-link-button"
-                th:onclick="'window.location.href=\'/administrar-pagos?clienteId=' + ${cliente.idCuenta} + '\''">            Pagar
-        </button>
+        <a th:if="${factura.estado.name() == 'VIGENTE' or factura.estado.name() == 'VENCIDA' or factura.estado.name() == 'PARCIAL'}"
+           th:href="@{/administrar-pagos(clienteId=${cliente.idCuenta})}"
+           class="action-link-success action-link-button"
+           style="text-decoration: none; cursor: pointer;">
+            Pagar
+        </a>
 
         <!-- Botón ANULAR -->
         <form th:if="${factura.estado.name() == 'VIGENTE'}" 
@@ -141,11 +143,11 @@
             </button>
         </form>
 
-        <!-- AGREGO ESTE BOTON PARA VER LAS FACTURAS. es piloto no hay nada implementado-->
-        <button type="button" class="action-link action-link-button"
-                th:onclick="'vistaFactura(' + ${factura.idFactura} + ')'">
+        <a th:href="@{/clientes/facturacion/ver/{id}(id=${factura.idFactura})}"
+           class="action-link action-link-button"
+           style="text-decoration: none; color: inherit;">
             Ver
-        </button>
+        </a>
 
        </div>
 </td>

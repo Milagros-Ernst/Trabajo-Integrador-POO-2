@@ -288,6 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+
     // administrar-pagos.html
 
     const checkTodosPagos = document.getElementById('check-todos-pagos');

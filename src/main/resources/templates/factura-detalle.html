@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="'Factura #' + ${factura.idFactura} + ' - FlorecillaService'">Detalle Factura</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="actions-bar">
+  <a th:href="@{/clientes/{id}/facturacion(id=${cliente.idCuenta})}" class="btn btn-secondary">
+    &larr; Volver al Historial
+  </a>
+  <button onclick="window.print()" class="btn btn-primary">
+    <i class="fas fa-print"></i> Imprimir Factura
+  </button>
+</div>
+
+<div class="invoice-box">
+
+  <div class="invoice-header">
+    <div class="header-left">
+      <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        <img th:src="@{/imagen/florLogo.png}" alt="Logo" style="height: 50px; margin-right: 10px;">
+        <h2 style="margin: 0; color: #333;">FlorecillaService</h2>
+      </div>
+      <p>
+        Dirección de la Empresa 123<br>
+        Misiones, Argentina<br>
+        Tel: (011) 1234-5678<br>
+        Somos: <strong>Responsable Inscripto</strong>
+      </p>
+    </div>
+
+    <div class="invoice-letter-box">
+      <span th:text="${factura.tipo}">B</span>
+    </div>
+
+    <div class="header-right">
+      <h3 style="margin: 0 0 10px 0;">FACTURA</h3>
+      <p>
+        <strong>Nro. Comp:</strong> <span th:text="'0001-' + ${#numbers.formatInteger(factura.idFactura, 8)}">00000001</span><br>
+        <strong>Fecha Emisión:</strong> <span th:text="${#temporals.format(factura.fecha, 'dd/MM/yyyy')}">01/01/2023</span><br>
+        <strong>Vencimiento:</strong> <span th:text="${#temporals.format(factura.vencimiento, 'dd/MM/yyyy')}">10/01/2023</span><br>
+        <strong>CUIT:</strong> 30-12345678-9
+      </p>
+    </div>
+  </div>
+
+  <div class="info-group">
+    <span class="info-title">Datos del Cliente</span>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div>
+        <strong>Razón Social:</strong> <span th:text="${cliente.nombre} + ' ' + ${cliente.apellido}">Juan Perez</span><br>
+        <strong>Domicilio:</strong> <span th:text="${cliente.direccion}">Calle Falsa 123</span><br>
+        <strong>Condición IVA:</strong> <span th:text="${cliente.condIVA}">Consumidor Final</span>
+      </div>
+      <div class="text-right">
+        <strong>CUIT/DNI:</strong> <span th:text="${cliente.numeroDocumento}">12345678</span><br>
+        <strong>Email:</strong> <span th:text="${cliente.mail}">email@example.com</span>
+      </div>
+    </div>
+  </div>
+
+  <table class="invoice-table">
+    <thead>
+    <tr>
+      <th>Descripción</th>
+      <th class="text-right">Precio Unit.</th>
+
+      <th class="text-center" th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">Alic. IVA</th>
+
+      <th class="text-right">Subtotal</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="detalle : ${factura.detalles}">
+      <td th:text="${detalle.descripcion}">Servicio de prueba</td>
+
+      <td class="text-right" th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+          th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio, 1, 2)}">
+      </td>
+
+      <td class="text-right" th:unless="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+          th:text="'$ ' + ${#numbers.formatDecimal(detalle.getPrecioConIvaCalculado(), 1, 2)}">
+      </td>
+
+      <td class="text-center" th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+          th:text="${detalle.getAlicuotaIva()}">
+        21%
+      </td>
+
+      <td class="text-right" th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+          th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio, 1, 2)}">
+      </td>
+      <td class="text-right" th:unless="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+          th:text="'$ ' + ${#numbers.formatDecimal(detalle.getPrecioConIvaCalculado(), 1, 2)}">
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="invoice-totals">
+    <div class="totals-box">
+
+      <div th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
+        <div class="totals-row">
+          <span>Subtotal Neto:</span>
+          <span th:text="'$ ' + ${#numbers.formatDecimal(subtotalNeto, 1, 2)}">$ 100.00</span>
+        </div>
+        <div class="totals-row">
+          <span>IVA (21% / 10.5%):</span>
+          <span th:text="'$ ' + ${#numbers.formatDecimal(totalIva, 1, 2)}">$ 21.00</span>
+        </div>
+      </div>
+
+      <div class="totals-row final">
+        <span>TOTAL:</span>
+        <span th:text="'$ ' + ${#numbers.formatDecimal(factura.precioTotal, 1, 2)}">$ 121.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px; font-size: 12px; color: #999; text-align: center; border-top: 1px dashed #ddd; padding-top: 10px;">
+    Comprobante generado electrónicamente por FlorecillaService System.<br>
+    Cae Vencimiento: <span th:text="${#temporals.format(factura.vencimiento, 'dd/MM/yyyy')}"></span>
+  </div>
+
+</div>
+
+</body>
+</html>
