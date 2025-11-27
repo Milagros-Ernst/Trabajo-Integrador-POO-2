@@ -265,18 +265,6 @@ main {
     border-color: #ef5350;
 }
 
-/* Estilo para botón Azul (Ver) */
-.btn-azul {
-    background-color: #007bff; /
-    color: white;
-    border: 1px solid #007bff;
-}
-
-.btn-azul:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
 
 /* --- Contenedores de Tablas --- */
 .table-container {
@@ -676,3 +664,8 @@ tr.fila-seleccionada td {
     border-color: #ccc;
 }
 
+/*ESTILO para el titulo del pago pq esta feisimo*/
+
+.titulo-resumen {
+    white-space: nowrap;
+}
