@@ -25,10 +25,27 @@
     </a>
 
     <div class="form-container">
+        <div th:if="${success}" class="alert alert-success"
+             style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger"
+             style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <span th:text="${error}"></span>
+        </div>
+
         <form id="facturacion-form-group" th:action="@{/facturacion/masiva}" th:method="post">
             <fieldset id="form-fieldset">
-                <div class="form-section-titles">
-                    <h3>Información para facturación.</h3>
+                <div class="form-section-titles" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px;">
+
+                    <h3 style="margin: 0;">Información para facturación.</h3>
+
+                    <a th:href="@{/facturacion/masiva/log}" class="btn btn-primary"
+                       style="width: 150px; padding: 5px 10px; font-size: 12px; text-decoration: none; text-align: center; white-space: nowrap;">
+                        Ver Historial de Logs
+                    </a>
+
                 </div>
 
                 <div class="form-grid-servicios">
