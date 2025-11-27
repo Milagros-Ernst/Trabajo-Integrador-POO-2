@@ -82,6 +82,11 @@
                     <input type="text" th:value="${clienteSeleccionado.mail}" readonly>
                 </div>
             </div>
+            <div class="btn-wrapper-right" style="margin-top: 15px;">
+                <a th:href="@{/clientes/{id}/facturacion(id=${clienteSeleccionado.idCuenta})}" class="btn-verfacturas">
+                    Ver historial de facturación
+                </a>
+            </div>
         </div>
 
         <br>
@@ -98,28 +103,22 @@
                     <table>
                         <thead>
                         <tr>
-                            <th style="width: 50px; text-align: center;">
-                                <input type="checkbox" id="check-todos-pagos">
-                            </th>
                             <th>Nro. Factura</th>
                             <th>Vencimiento</th>
                             <th>Total Original</th>
                             <th>Pagado</th>
                             <th>Saldo Pendiente</th>
                             <th>Estado</th>
+                            <th style="width: 50px; text-align: center;">
+                                <input type="checkbox" id="check-todos-pagos">
+                            </th>
+
                         </tr>
                         </thead>
                         <tbody>
 
                         <tr th:each="factura : ${facturasPendientes}">
-                            <td style="text-align: center;">
 
-                                <input type="checkbox"
-                                       name="facturasIds"
-                                       th:value="${factura.idFactura}"
-                                       class="check-factura"
-                                       th:data-saldo="${factura.calcularSaldoPendiente()}">
-                            </td>
                             <td th:text="'#' + ${factura.idFactura}"></td>
                             <td th:text="${factura.vencimiento}"></td>
                             <td th:text="'$ ' + ${#numbers.formatDecimal(factura.precioTotal, 1, 2)}"></td>
@@ -134,6 +133,15 @@
                                 <span th:if="${factura.estado.name() == 'VENCIDA'}" style="color: #c62828; background: #ffebee; padding: 4px 8px; border-radius: 4px; font-size: 12px;">VENCIDA</span>
                                 <span th:if="${factura.estado.name() == 'PARCIAL'}" style="color: #1565c0; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-size: 12px;">PARCIAL</span>
                             </td>
+                            <td style="text-align: center;">
+
+                                <input type="checkbox"
+                                       name="facturasIds"
+                                       th:value="${factura.idFactura}"
+                                       class="check-factura"
+                                       th:data-saldo="${factura.calcularSaldoPendiente()}">
+                            </td>
+
                         </tr>
 
                         <tr th:if="${facturasPendientes.isEmpty()}" class="empty-row">
@@ -147,16 +155,6 @@
             <!-- totales y acciones -->
             <div class="payment-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);">
 
-                <div style="display: flex; gap: 15px; align-items: center;">
-                    <label for="metodoPago" style="font-weight: 600;">Método de Pago:</label>
-                    <select id="metodoPago" name="metodoPago" required style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-                        <option value="EFECTIVO">Efectivo</option>
-                        <option value="TARJETA_CREDITO">Tarjeta Crédito</option>
-                        <option value="TARJETA_DEBITO">Tarjeta Débito</option>
-                        <option value="TRANSFERENCIA">Transferencia</option>
-                        <option value="MERCADO_PAGO">Mercado Pago</option>
-                    </select>
-                </div>
 
                 <div style="display: flex; gap: 20px; align-items: center;">
                     <div style="text-align: right;">

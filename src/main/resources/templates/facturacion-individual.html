@@ -25,33 +25,28 @@
 
     <div class="form-container">
         <form th:action="@{/facturacion/individual}" method="GET" class="form-grid-servicios">
-            <fieldset id="form-fieldset">
-                <div class="form-section-titles">
-                    <h3>Buscar cliente por ID:</h3>
-                </div>
-                
-                <div class="form-group">
-                    <div style="display: flex; flex-direction: row; gap: 8px; width: 100%; align-items: center;">
-                        
-                        <input type="number" id="clienteId" name="clienteId" placeholder="Ingrese ID de Cliente" th:value="${param.clienteId}" required class="form-control" style="flex-grow: 1;">
-                        
-                        <button type="submit" class="btn btn-primary" title="Buscar Cliente" 
-                                style="flex-shrink: 0; 
-                                       width: 40px; 
-                                       height: 40px; 
-                                       display: flex; 
-                                       align-items: center; 
-                                       justify-content: center; 
-                                       padding: 0;">
-                            
-                            <img th:src="@{/imagen/lupa-blanca.png}" alt="Buscar" style="width: 24px; height: 24px;">
-                        
-                        </button>
-                        </div>
-                </div>
-
-            </fieldset>
+        <div class="form-group">
+            <label for="select-cliente-pago">Seleccione el cliente a facturar</label>
+            <select id="select-cliente-pago" name="clienteId" onchange="this.form.submit()" required>
+                <option value="" disabled selected>-- Buscar Cliente --</option>
+                <option th:each="cli : ${clientes}"
+                        th:value="${cli.idCuenta}"
+                        th:text="${cli.nombre} + ' ' + ${cli.apellido} + ' (DNI: ' + ${cli.numeroDocumento} + ')'"
+                        th:selected="${clienteSeleccionado != null and clienteSeleccionado.idCuenta == cli.idCuenta}">
+                </option>
+            </select>
+        </div>
         </form>
+
+        <div th:if="${success}" class="alert alert-success"
+             style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger"
+             style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <span th:text="${error}"></span>
+        </div>
 
         <div th:if="${errorCliente}" class="alert alert-error" th:text="${errorCliente}"></div>
     

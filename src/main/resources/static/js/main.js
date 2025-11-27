@@ -251,21 +251,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // lógica facturación que le agregué para mas felicidad
 
     const selectAllCheckbox = document.getElementById('seleccionar-todo');
+    const facturacionForm = document.getElementById('facturacion-form-group');
 
     if (selectAllCheckbox) {
         const serviceCheckboxes = document.querySelectorAll('.checkbox-servicio');
-        const facturacionForm = document.getElementById('facturacion-form-group');
 
-        selectAllCheckbox.addEventListener('click', function() {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
             serviceCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
+                checkbox.checked = isChecked;
             });
         });
 
         serviceCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('click', function() {
+            checkbox.addEventListener('change', function() {
+
+                if (!this.checked) {
+                    selectAllCheckbox.checked = false;
+                }
+
                 const allChecked = Array.from(serviceCheckboxes).every(cb => cb.checked);
-                selectAllCheckbox.checked = allChecked;
+                if (allChecked) {
+                    selectAllCheckbox.checked = true;
+                }
             });
         });
 
@@ -346,7 +354,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-
 
 
 });
