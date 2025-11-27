@@ -18,18 +18,15 @@
 
 <main>
 
-  <!-- Botón volver, apunta a la pantalla anterior (Facturación masiva o menú) -->
   <a th:href="@{/facturacion/masiva}" class="btn-atras">
     <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
     Volver a Facturación Masiva
   </a>
 
-  <!-- Contenedor principal estilo "tarjeta" -->
   <div class="form-container">
 
     <div class="form-section-titles" style="display: flex; justify-content: space-between; align-items: center;">
       <h3>Registro de ejecuciones masivas</h3>
-      <!-- Un pequeño resumen visual -->
       <span style="font-size: 12px; color: #666;">
                 Total registros: <strong th:text="${logs != null ? logs.size() : 0}">0</strong>
             </span>
@@ -50,21 +47,18 @@
             <th>Fecha Ejecución</th>
             <th>Periodo Facturado</th>
             <th>Cant. Facturas</th>
-            <th>Servicios Incluidos (IDs)</th>
+            <th>Servicios Incluidos</th>
             <th>Responsable</th>
-            <th>Estado</th> <!-- Agregado visual para dar feedback -->
+            <th>Estado</th>
           </tr>
           </thead>
           <tbody>
 
-          <!-- Iteración sobre la lista de logs -->
           <tr th:each="log : ${logs}">
             <td th:text="${log.id}" style="font-weight: bold; color: #8D11B8;"></td>
 
-            <!-- Formateo de fecha (asumiendo que fechaEjecucion es LocalDate) -->
             <td th:text="${#temporals.format(log.fechaEjecucion, 'dd/MM/yyyy')}"></td>
 
-            <!-- Lógica visual para mostrar el nombre del mes en lugar del número -->
             <td th:switch="${log.periodo}" style="font-weight: 500;">
               <span th:case="1">Enero</span>
               <span th:case="2">Febrero</span>
@@ -83,12 +77,12 @@
 
             <td th:text="${log.cantidadFacturas}"></td>
 
-            <!-- Mostramos los IDs de servicios con un estilo monospaced suave -->
-            <td style="font-family: monospace; color: #666;" th:text="${log.serviciosIncluidos}"></td>
+            <td style="color: #444; font-weight: 500;"
+                th:text="${mapaNombresServicios[log.id]}">
+            </td>
 
             <td th:text="${log.empleadoResponsable}"></td>
 
-            <!-- Columna visual de estado "Completado" -->
             <td>
                                 <span style="background-color: #d4edda; color: #155724; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">
                                     COMPLETADO
@@ -106,12 +100,12 @@
           </tbody>
         </table>
       </div>
-      <!-- Borde inferior redondeado para la tabla -->
+
       <div class="table-wrapper-bottom"></div>
     </div>
 
     <div class="abm-actions" id="abm-bottom-actions">
-      <!-- Botón opcional para exportar o imprimir en el futuro -->
+
       <button type="button" class="btn btn-secondary" onclick="window.print()">
         Imprimir Reporte
       </button>
