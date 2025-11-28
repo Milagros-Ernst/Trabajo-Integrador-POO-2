@@ -16,8 +16,7 @@ import lombok.Builder;
 
 @Entity
 @Table(name = "Pago")
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -62,6 +61,11 @@ public class Pago {
     @JoinColumn(name = "id_factura", nullable = false)
     @NotNull(message = "El pago debe estar asociado a una factura")
     private Factura factura;
+
+    // pago asociado a un recibo (para poder vincularlo al comprobante)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_recibo")
+    private Recibo recibo;
 
     // Valida si el importe del pago no excede el total de la factura
     public boolean validarImporte() {
