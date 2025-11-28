@@ -1,9 +1,14 @@
 package integrador.programa.controladores;
 
 import integrador.programa.modelo.Cliente;
+import integrador.programa.modelo.Factura;
+import integrador.programa.modelo.Pago;
 import integrador.programa.modelo.enumeradores.EstadoCuenta;
+import integrador.programa.modelo.enumeradores.EstadoFactura;
 import integrador.programa.servicios.ClienteService;
 import integrador.programa.servicios.ClienteServicioServicio;
+import integrador.programa.servicios.FacturaServicio;
+import integrador.programa.servicios.PagoServicio;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +24,10 @@ public class ClienteControlador {
     private final ClienteService clienteService;
     private final ClienteServicioServicio clienteServicioServicio;
 
+
+
     public ClienteControlador(ClienteService clienteService,
-                              ClienteServicioServicio clienteServicioServicio) {
+                              ClienteServicioServicio clienteServicioServicio, FacturaServicio facturaServicio, PagoServicio pagoServicio) {
         this.clienteService = clienteService;
         this.clienteServicioServicio = clienteServicioServicio;
     }
@@ -101,4 +108,7 @@ public class ClienteControlador {
             return "redirect:/clientes";
         }
     }
+
+
 }
+

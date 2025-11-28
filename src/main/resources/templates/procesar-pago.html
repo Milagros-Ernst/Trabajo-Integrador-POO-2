@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmar Pago - FlorecillaService</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<header>
+  <img th:src="@{/imagen/florLogo.png}" alt="Logo">
+  <h1><span class="logo-text">FlorecillaService</span> / Procesar Pago</h1>
+</header>
+
+<main class="content-container">
+
+  <div class="form-container" style="width: 100%; max-width: 800px; margin-top: 30px">
+    <div class="form-section-titles">
+      <h3 class="titulo-resumen">3. Resumen y Confirmación</h3>
+    </div>
+
+    <form th:action="@{/administrar-pagos/finalizar}" method="post">
+      <input type="hidden" name="clienteId" th:value="${cliente.idCuenta}">
+
+      <!-- Enviamos los IDs de nuevo para procesarlos -->
+      <th:block th:each="id : ${facturasIds}">
+        <input type="hidden" name="facturasIds" th:value="${id}">
+      </th:block>
+
+      <div class="alert" style="background-color: #e3f2fd; color: #0d47a1; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        Está a punto de registrar un pago para el cliente:
+        <strong th:text="${cliente.nombre} + ' ' + ${cliente.apellido}"></strong>
+      </div>
+
+      <div class="form-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+        <div class="form-group">
+          <label>Cantidad de Facturas:</label>
+          <input type="text" th:value="${cantidadFacturas}" readonly>
+        </div>
+        <div class="form-group">
+          <label>Deuda Total Seleccionada:</label>
+          <input type="text" th:value="'$ ' + ${totalCalculado}"
+                 style="font-weight: bold; color: #d32f2f;" readonly>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+      <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+
+        <!-- MONTO A PAGAR (EDITABLE) -->
+        <div class="form-group">
+          <label for="montoPagar" style="color: #2e7d32;">Monto a Pagar ($):</label>
+          <input type="number" step="0.01" id="montoPagar" name="montoPagar"
+                 th:value="${totalCalculado}" required
+                 style="font-size: 18px; font-weight: bold; border: 2px solid #2e7d32;">
+          <small style="color: #666;">Puede modificar este valor para pagos parciales.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="metodoPago">Método de Pago:</label>
+          <select id="metodoPago" name="metodoPago" required>
+            <option value="EFECTIVO">Efectivo</option>
+            <option value="CREDITO">Tarjeta Crédito</option>
+            <option value="DEBITO">Tarjeta Débito</option>
+            <option value="TRANSFERENCIA">Transferencia</option>
+          </select>
+        </div>
+
+        <!--RESPONSABLE HARDCODEADO: ADMINISTRADOR  -->
+        <div class="form-group">
+          <label for="empleado">Empleado Responsable:</label>
+          <input
+                  type="text"
+                  id="empleado"
+                  name="empleadoResponsable"
+                  required
+                  value="Administrador"
+                  readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="obs">Observaciones (Opcional):</label>
+          <input type="text" id="obs" name="observaciones" placeholder="Ej: Pago a cuenta...">
+        </div>
+      </div>
+
+      <div class="abm-actions" style="display: flex; justify-content: space-between; margin-top: 30px;">
+
+        <a th:href="@{/administrar-pagos(clienteId=${cliente.idCuenta})}" class="btn btn-secondary">
+          Cancelar / Volver
+        </a>
+
+        <button type="submit" class="btn btn-primary"
+                onclick="return confirm('¿Confirma el registro de este pago?');">
+          CONFIRMAR PAGO
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+</body>
+</html>

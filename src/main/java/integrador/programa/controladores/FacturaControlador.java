@@ -204,10 +204,13 @@ public class FacturaControlador {
             @RequestParam(value = "clienteId", required = false) Long clienteId,
             Model model) {
         try {
+            model.addAttribute("clientes", clienteService.listarClientesActivos());
             if (clienteId != null) {
                 try {
                     Cliente clienteEncontrado = clienteService.buscarPorId(clienteId);
                     model.addAttribute("cliente", clienteEncontrado);
+
+                    model.addAttribute("clienteSeleccionado", clienteEncontrado);
 
                     List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = clienteServicioServicio.listarServiciosActivosDeCliente(clienteId);
                     model.addAttribute("serviciosAsignados", serviciosAsignados);

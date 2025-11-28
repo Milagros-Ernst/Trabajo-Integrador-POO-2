@@ -90,10 +90,10 @@
           <td th:text="'$ ' + ${factura.precioTotal}"></td>
 
           <td>
-                            <span th:if="${factura.estado.name() == 'VIGENTE'}"
-                                  style="color: #ef6c00; font-weight: bold; background: #fff3e0; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
+              <span th:if="${factura.estado.name() == 'VIGENTE'}"
+                    style="color: #ef6c00; font-weight: bold; background: #fff3e0; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
                                 VIGENTE
-                            </span>
+              </span>
 
             <span th:if="${factura.estado.name() == 'VENCIDA'}"
                   style="color: #c62828; font-weight: bold; background: #ffebee; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
@@ -118,13 +118,15 @@
 
           <td>
     <div>
-
-        <button th:if="${factura.estado.name() == 'VIGENTE' or factura.estado.name() == 'VENCIDA'}"
-                type="button" class="action-link-success action-link-button"
-                th:onclick="'pagarFactura(' + ${factura.idFactura} + ')'">
+        <!-- Botón PAGAR -->
+        <a th:if="${factura.estado.name() == 'VIGENTE' or factura.estado.name() == 'VENCIDA' or factura.estado.name() == 'PARCIAL'}"
+           th:href="@{/administrar-pagos(clienteId=${cliente.idCuenta})}"
+           class="action-link-success action-link-button"
+           style="text-decoration: none; cursor: pointer;">
             Pagar
-        </button>
+        </a>
 
+        <!-- Botón ANULAR -->
         <form th:if="${factura.estado.name() == 'VIGENTE'}" 
               th:action="@{/api/facturacion/anular/{id}(id=${factura.idFactura})}" 
               method="post" style="display: inline;">
@@ -141,15 +143,13 @@
             </button>
         </form>
 
-        <!-- AGREGO ESTE BOTON PARA VER LAS FACTURASS. es piloto no hay nada implementado-->
-        <button type="button" class="action-link action-link-button"
-                th:onclick="'vistaFactura(' + ${factura.idFactura} + ')'">
+        <a th:href="@{/clientes/facturacion/ver/{id}(id=${factura.idFactura})}"
+           class="action-link action-link-button"
+           style="text-decoration: none; color: inherit;">
             Ver
-        </button>
+        </a>
 
-        <!--  <span th:if="${factura.estado.name() == 'ANULADA'}" style="color: #999; font-size: 12px;">(Anulada)</span>
-          <span th:if="${factura.estado.name() == 'PAGADA'}" style="color: #999; font-size: 12px;">(Finalizada)</span> -->
-    </div>
+       </div>
 </td>
         </tr>
 
@@ -160,6 +160,61 @@
       </table>
     </div>
   </div>
+
+
+    <br>
+
+    <!-- TABLA 2: PAGOS REALIZADOS (COMPROBANTES) -->
+    <div class="table-container">
+        <h2 class="table-title" style="background-color: rgba(46, 125, 50, 0.1); color: #2e7d32;">
+            <i class="fas fa-receipt"></i> Pagos Realizados y Comprobantes
+        </h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nro. Pago</th>
+                    <th>Fecha de Pago</th>
+                    <th>Método</th>
+                    <th>Factura(s) Asociada(s)</th>
+                    <th>Monto Pagado</th>
+                    <th style="text-align: center;">Comprobante</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pago : ${pagos}">
+                    <td th:text="'#' + ${pago.idPago}"></td>
+                    <td th:text="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${pago.metodoPago}"></td>
+
+                    <!-- Lógica para mostrar ID de facturas si la relación existe -->
+                    <td>
+                        <span th:if="${pago.factura != null}" th:text="'Factura #' + ${pago.factura.idFactura}"></span>
+                        <span th:if="${pago.factura == null}">Pago General</span>
+                    </td>
+
+                    <td th:text="'$ ' + ${#numbers.formatDecimal(pago.importe, 1, 2)}" style="font-weight: bold; color: #2e7d32;"></td>
+
+                    <td style="text-align: center;">
+                        <button type="button" class="btn btn-primary" style="padding: 4px 12px; font-size: 12px;"
+                                th:data-id="${pago.idPago}"
+                                th:data-fecha="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy HH:mm')}"
+                                th:data-monto="${pago.importe}"
+                                th:data-metodo="${pago.metodoPago}"
+                                th:data-responsable="${pago.empleadoResponsable}"
+                                th:data-factura="${pago.factura != null ? pago.factura.idFactura : 'N/A'}"
+                                onclick="abrirModalRecibo(this)">
+                            <i class="fas fa-eye"></i> Ver Recibo
+                        </button>
+                    </td>
+                </tr>
+                <tr th:if="${pagos == null or pagos.isEmpty()}" class="empty-row">
+                    <td colspan="6">No se han registrado pagos para este cliente.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </main>
 

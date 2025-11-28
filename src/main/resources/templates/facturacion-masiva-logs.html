@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlorecillaService - Historial Facturación Masiva</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+
+<!-- Header reutilizado del diseño principal -->
+<header>
+  <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
+  <h1><span class="logo-text">FlorecillaService</span> / Facturación / Masiva / Logs</h1>
+</header>
+
+<main>
+
+  <a th:href="@{/facturacion/masiva}" class="btn-atras">
+    <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
+    Volver a Facturación Masiva
+  </a>
+
+  <div class="form-container">
+
+    <div class="form-section-titles" style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>Registro de ejecuciones masivas</h3>
+      <span style="font-size: 12px; color: #666;">
+                Total registros: <strong th:text="${logs != null ? logs.size() : 0}">0</strong>
+            </span>
+    </div>
+
+    <p style="font-size: 14px; color: #555; margin-bottom: 20px;">
+      A continuación se detalla el historial de procesos de facturación masiva ejecutados en el sistema.
+    </p>
+
+    <!-- Tabla de logs -->
+    <div class="table-container">
+      <h2 class="table-title">Historial de Operaciones</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th style="width: 50px;"># ID</th>
+            <th>Fecha Ejecución</th>
+            <th>Periodo Facturado</th>
+            <th>Cant. Facturas</th>
+            <th>Servicios Incluidos</th>
+            <th>Responsable</th>
+            <th>Estado</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr th:each="log : ${logs}">
+            <td th:text="${log.id}" style="font-weight: bold; color: #8D11B8;"></td>
+
+            <td th:text="${#temporals.format(log.fechaEjecucion, 'dd/MM/yyyy')}"></td>
+
+            <td th:switch="${log.periodo}" style="font-weight: 500;">
+              <span th:case="1">Enero</span>
+              <span th:case="2">Febrero</span>
+              <span th:case="3">Marzo</span>
+              <span th:case="4">Abril</span>
+              <span th:case="5">Mayo</span>
+              <span th:case="6">Junio</span>
+              <span th:case="7">Julio</span>
+              <span th:case="8">Agosto</span>
+              <span th:case="9">Septiembre</span>
+              <span th:case="10">Octubre</span>
+              <span th:case="11">Noviembre</span>
+              <span th:case="12">Diciembre</span>
+              <span th:case="*">Desconocido</span>
+            </td>
+
+            <td th:text="${log.cantidadFacturas}"></td>
+
+            <td style="color: #444; font-weight: 500;"
+                th:text="${mapaNombresServicios[log.id]}">
+            </td>
+
+            <td th:text="${log.empleadoResponsable}"></td>
+
+            <td>
+                                <span style="background-color: #d4edda; color: #155724; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">
+                                    COMPLETADO
+                                </span>
+            </td>
+          </tr>
+
+          <!-- Estado vacío -->
+          <tr th:if="${logs == null or logs.isEmpty()}" class="empty-row">
+            <td colspan="7">
+              No se han registrado ejecuciones de facturación masiva aún.
+            </td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrapper-bottom"></div>
+    </div>
+
+    <div class="abm-actions" id="abm-bottom-actions">
+
+      <button type="button" class="btn btn-secondary" onclick="window.print()">
+        Imprimir Reporte
+      </button>
+    </div>
+
+  </div>
+
+</main>
+
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

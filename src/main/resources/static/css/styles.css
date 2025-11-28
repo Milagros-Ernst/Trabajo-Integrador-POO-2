@@ -265,18 +265,6 @@ main {
     border-color: #ef5350;
 }
 
-/* Estilo para botón Azul (Ver) */
-.btn-azul {
-    background-color: #007bff; /
-    color: white;
-    border: 1px solid #007bff;
-}
-
-.btn-azul:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
 
 /* --- Contenedores de Tablas --- */
 .table-container {
@@ -411,7 +399,7 @@ tr.empty-row td {
     padding: 0;
     cursor: pointer;
     font-family: inherit;
-    font-size: inherit; /* Hereda el tamaño de fuente */
+    font-size: inherit;
 }
 
     /* Estilos para serviciosABM */
@@ -675,4 +663,182 @@ tr.fila-seleccionada td {
     color: #999;
     border-color: #ccc;
 }
+
+/*ESTILO para el titulo del pago pq esta feisimo*/
+
+.titulo-resumen {
+    white-space: nowrap;
+}
+
+/*ESTILOS PARA LA EXPORTACIÓN DE FACTURAS*/
+
+/* Contenedor principal de la hoja A4 */
+.invoice-box {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 40px;
+    border: 1px solid #eee;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    font-size: 14px;
+    line-height: 24px;
+    color: #555;
+    position: relative;
+
+}
+
+/* Cabecera de Factura */
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #8D11B8;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.header-left, .header-right {
+    width: 45%;
+}
+.header-right {
+    text-align: right;
+}
+
+.invoice-letter-box {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    background-color: #8D11B8;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+
+.info-group {
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 6px;
+    background-color: #fcfcfc;
+}
+
+.info-title {
+    font-weight: 600;
+    color: #8D11B8;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 8px;
+    display: block;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+}
+
+.invoice-table th {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: bold;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid #ddd;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.invoice-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Sección de Totales */
+.invoice-totals {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.totals-box {
+    width: 300px;
+    border: 1px solid #eee;
+    padding: 20px;
+    background-color: #fcfcfc;
+    border-radius: 6px;
+}
+
+.totals-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+}
+
+.totals-row.final {
+    border-top: 2px solid #8D11B8;
+    margin-top: 10px;
+    padding-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #8D11B8;
+}
+
+.actions-bar {
+    max-width: 800px;
+    margin: 30px auto 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+}
+/* =========================================
+   REGLAS DE IMPRESIÓN
+   ========================================= */
+@media print {
+
+    body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+
+    header,
+    .btn-atras,
+    .actions-bar,
+    .page-actions-bottom,
+    footer {
+        display: none !important;
+    }
+
+
+    .invoice-box {
+        box-shadow: none;
+        border: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+
+    .invoice-letter-box {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+
+
 
