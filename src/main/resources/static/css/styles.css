@@ -399,7 +399,7 @@ tr.empty-row td {
     padding: 0;
     cursor: pointer;
     font-family: inherit;
-    font-size: inherit; /* Hereda el tamaño de fuente */
+    font-size: inherit;
 }
 
     /* Estilos para serviciosABM */
@@ -796,12 +796,13 @@ tr.fila-seleccionada td {
 
 .actions-bar {
     max-width: 800px;
-    margin: 0 auto 20px;
+    margin: 30px auto 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    padding: 0;
 }
-
 /* =========================================
    REGLAS DE IMPRESIÓN
    ========================================= */

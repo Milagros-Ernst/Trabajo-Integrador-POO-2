@@ -26,10 +26,10 @@
         <h2 style="margin: 0; color: #333;">FlorecillaService</h2>
       </div>
       <p>
-        Dirección de la Empresa 123<br>
-        Misiones, Argentina<br>
+        Pellegrini 269<br>
+        Apóstoles Misiones, Argentina<br>
         Tel: (011) 1234-5678<br>
-        Somos: <strong>Responsable Inscripto</strong>
+        Condición frente al IVA <strong>Responsable Inscripto</strong>
       </p>
     </div>
 
@@ -52,13 +52,13 @@
     <span class="info-title">Datos del Cliente</span>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
       <div>
-        <strong>Razón Social:</strong> <span th:text="${cliente.nombre} + ' ' + ${cliente.apellido}">Juan Perez</span><br>
-        <strong>Domicilio:</strong> <span th:text="${cliente.direccion}">Calle Falsa 123</span><br>
-        <strong>Condición IVA:</strong> <span th:text="${cliente.condIVA}">Consumidor Final</span>
+        <strong>Razón Social:</strong> <span th:text="${cliente.nombre} + ' ' + ${cliente.apellido}"></span><br>
+        <strong>Domicilio:</strong> <span th:text="${cliente.direccion}"></span><br>
+        <strong>Condición IVA:</strong> <span th:text="${cliente.condIVA}"></span>
       </div>
       <div class="text-right">
-        <strong>CUIT/DNI:</strong> <span th:text="${cliente.numeroDocumento}">12345678</span><br>
-        <strong>Email:</strong> <span th:text="${cliente.mail}">email@example.com</span>
+        <strong>CUIT/DNI:</strong> <span th:text="${cliente.numeroDocumento}"></span><br>
+        <strong>Email:</strong> <span th:text="${cliente.mail}"></span>
       </div>
     </div>
   </div>
@@ -66,6 +66,7 @@
   <table class="invoice-table">
     <thead>
     <tr>
+      <!-- hay un problema cuando no son RI, la factura en pantalla se ve medio fea pero no se como solucionar -->
       <th>Descripción</th>
       <th class="text-right">Precio Unit.</th>
 
@@ -76,7 +77,7 @@
     </thead>
     <tbody>
     <tr th:each="detalle : ${factura.detalles}">
-      <td th:text="${detalle.descripcion}">Servicio de prueba</td>
+      <td th:text="${detalle.descripcion}"></td>
 
       <td class="text-right" th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
           th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio, 1, 2)}">
@@ -105,25 +106,29 @@
     <div class="totals-box">
 
       <div th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
+
         <div class="totals-row">
           <span>Subtotal Neto:</span>
-          <span th:text="'$ ' + ${#numbers.formatDecimal(subtotalNeto, 1, 2)}">$ 100.00</span>
+          <span th:text="'$ ' + ${#numbers.formatDecimal(subtotalNeto, 1, 2)}"></span>
         </div>
-        <div class="totals-row">
-          <span>IVA (21% / 10.5%):</span>
-          <span th:text="'$ ' + ${#numbers.formatDecimal(totalIva, 1, 2)}">$ 21.00</span>
+
+        <div class="totals-row" th:each="entry : ${ivaDesglosado}">
+          <span th:text="'IVA ' + ${entry.key} + ':'">IVA 21%:</span>
+          <span th:text="'$ ' + ${#numbers.formatDecimal(entry.value, 1, 2)}"></span>
         </div>
+
       </div>
 
       <div class="totals-row final">
         <span>TOTAL:</span>
-        <span th:text="'$ ' + ${#numbers.formatDecimal(factura.precioTotal, 1, 2)}">$ 121.00</span>
+        <span th:text="'$ ' + ${#numbers.formatDecimal(factura.precioTotal, 1, 2)}"></span>
       </div>
+
     </div>
   </div>
 
   <div style="margin-top: 40px; font-size: 12px; color: #999; text-align: center; border-top: 1px dashed #ddd; padding-top: 10px;">
-    Comprobante generado electrónicamente por FlorecillaService System.<br>
+    Comprobante generado electrónicamente por Sistema FlorecillaService.<br>
     Cae Vencimiento: <span th:text="${#temporals.format(factura.vencimiento, 'dd/MM/yyyy')}"></span>
   </div>
 

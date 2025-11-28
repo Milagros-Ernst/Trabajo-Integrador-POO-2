@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Variables de estado
         let servicioSeleccionadoId = null;
 
-        // 1. Lógica de Selección de Tabla
+        // Lógica de Selección de Tabla
         const filas = document.querySelectorAll('.fila-tabla');
         console.log("Filas encontradas:", filas.length);
 
@@ -101,19 +101,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const idEditar = urlParams.get('idEditar');
 
         if (idEditar) {
-            // Buscamos la fila que tiene ese ID
             const filaAEditar = document.querySelector(`.fila-tabla[data-id="${idEditar}"]`);
 
             if (filaAEditar) {
-                // 1. Simulamos clic en la fila para cargar los datos en los inputs
                 filaAEditar.click();
 
-                // 2. Simulamos clic en el botón Modificar para habilitar el formulario
                 if (btnModificar) {
                     btnModificar.click();
                 }
 
-                // 3. Scroll suave hacia el formulario
                 formServicios.scrollIntoView({ behavior: 'smooth' });
             }
         }

@@ -1,6 +1,7 @@
 package integrador.programa.controladores;
 
 import integrador.programa.modelo.Cliente;
+import integrador.programa.modelo.DetalleFactura;
 import integrador.programa.modelo.Factura;
 import integrador.programa.modelo.Pago;
 import integrador.programa.modelo.enumeradores.EstadoFactura;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/clientes")
@@ -100,13 +103,25 @@ public class FacturacionClienteControlador {
             double subtotalNeto = factura.getDetalles().stream()
                     .mapToDouble(d -> d.getPrecio())
                     .sum();
+            model.addAttribute("subtotalNeto", subtotalNeto);
 
+            // para separar el iva dependiendo de cada tipo, mapeamos
+            Map<String, Double> ivaDesglosado = new HashMap<>();
+
+            // para cada alicuota de cada detalle, vamos sumando (todas las de 21%, etc)
+            for (DetalleFactura detalle : factura.getDetalles()) {
+                String alicuota = detalle.getAlicuotaIva();
+                double montoIva = detalle.getMontoIvaCalculado();
+
+                ivaDesglosado.put(alicuota, ivaDesglosado.getOrDefault(alicuota, 0.0) + montoIva);
+            }
+
+            // se pasa el mapa a la vista
+            model.addAttribute("ivaDesglosado", ivaDesglosado);
             double totalIva = factura.getDetalles().stream()
                     .mapToDouble(d -> d.getMontoIvaCalculado())
                     .sum();
 
-            model.addAttribute("subtotalNeto", subtotalNeto);
-            model.addAttribute("totalIva", totalIva);
 
             return "factura-detalle";
         }).orElse("redirect:/cliente-facturas");
