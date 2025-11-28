@@ -18,7 +18,7 @@
 
 <main>
 
-    <a th:href="@{/}" class="btn-atras">
+    <a th:href="@{/clientes}" class="btn-atras">
         <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
         Atrás
     </a>
@@ -114,7 +114,7 @@
                     <td th:text="${cli.nombre}"></td>
                     <td th:text="${cli.condIVA}"></td>
                     <td>
-                        <a th:href="@{/clientes/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>
+                        <a th:href="@{/clientes/gestion/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>
                     </td>
                 </tr>
 

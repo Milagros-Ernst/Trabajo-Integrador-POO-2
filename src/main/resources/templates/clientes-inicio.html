@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Facturación - FlorecillaService</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+
+<header>
+    <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
+    <h1><span class="logo-text">FlorecillaService</span> / Clientes / Inicio</h1>
+</header>
+
+<main>
+    <a th:href="@{/}" class="btn-atras">
+        <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
+        Atrás
+    </a>
+
+    <h2>Panel de Gestión de Clientes</h2>
+
+    <nav>
+        <ul>
+
+            <li>
+                <a href="/clientes/gestion">
+                    Gestión de Clientes
+                </a>
+            </li>
+
+            <li>
+                <a th:href="@{/clientes/facturacion-historial}">
+                    Historial de Facturación
+                </a>
+            </li>
+        </ul>
+    </nav>
+</main>
+
+</body>
+</html>
