@@ -19,10 +19,11 @@ public class ReciboServicio {
     }
 
     // Obtiene un recibo por su ID.
-    public Recibo buscarPorId(String idRecibo) {
-        return reciboRepositorio.findById(idRecibo)
-                .orElseThrow(() -> new IllegalArgumentException("Recibo no encontrado"));
-    }
+    public Recibo buscarPorId(Long idRecibo) {
+    return reciboRepositorio.findById(idRecibo)
+            .orElseThrow(() -> new IllegalArgumentException("Recibo no encontrado"));
+}
+
 
     // Obtiene un recibo por su número correlativo.
     public Recibo buscarPorNumero(Long nroRecibo) {

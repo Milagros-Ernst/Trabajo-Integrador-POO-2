@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import integrador.programa.modelo.Cliente;
 import integrador.programa.modelo.Recibo;
 
-public interface ReciboRepositorio extends JpaRepository<Recibo, String> {
+public interface ReciboRepositorio extends JpaRepository<Recibo, Long> {
 
     // Todos los recibos de un cliente (para el estado de cuenta)
     List<Recibo> findByCliente(Cliente cliente);
