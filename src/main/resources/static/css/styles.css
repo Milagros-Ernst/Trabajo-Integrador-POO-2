@@ -814,16 +814,18 @@ tr.fila-seleccionada td {
         padding: 0;
     }
 
+    /* Ocultamos elementos estructurales y de navegación */
     header,
+    footer,
     .btn-atras,
     .actions-bar,
     .page-actions-bottom,
-    footer {
+    .abm-actions, 
+    .no-print {   /* CLASE MAESTRA PARA OCULTAR COSAS ESPECIFICAS */
         display: none !important;
     }
 
-
-    .invoice-box {
+    .invoice-box, .form-container, .table-container {
         box-shadow: none;
         border: none;
         margin: 0;
@@ -832,11 +834,13 @@ tr.fila-seleccionada td {
         max-width: 100%;
     }
 
-
-    .invoice-letter-box {
+    .invoice-letter-box, .table-title, thead th {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
+    
+    .form-container {
+        border: none;
+    }
 }
-
 
