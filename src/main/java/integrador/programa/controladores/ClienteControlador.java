@@ -51,7 +51,7 @@ public class ClienteControlador {
         try {
             nuevoCliente.setEstadoCuenta(EstadoCuenta.ACTIVA);
             clienteService.crearCliente(nuevoCliente);
-            return "redirect:/clientes";
+            return "redirect:/clientes/gestion";
 
         } catch (Exception e) {
             model.addAttribute("error", "Error al crear cliente: " + e.getMessage());
@@ -107,7 +107,7 @@ public class ClienteControlador {
     public String reactivar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             Cliente clienteReactivado = clienteService.reactivarCliente(id);
-            return "redirect:/clientes/" + id;
+            return "redirect:/clientes/gestion" + id;
         } catch (IllegalArgumentException e) {
             redirectAttributes.addAttribute("error", "No se pudo reactivar: " + e.getMessage());
             return "redirect:/clientes/gestion";
