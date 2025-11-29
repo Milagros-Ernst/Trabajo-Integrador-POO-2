@@ -91,7 +91,7 @@
     </div>
 
     <div class="table-container">
-        <h2 class="table-title">Clientes registrados</h2>
+        <h2 class="table-title">Clientes activos</h2>
         <div class="table-wrapper">
             <table>
                 <thead>
@@ -120,6 +120,46 @@
 
                 <tr th:if="${clientes.isEmpty()}" class="empty-row">
                     <td colspan="6">No hay clientes registrados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="table-container" style="margin-top: 40px;">
+        <h2 class="table-title">Clientes inactivos</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo Documento</th>
+                    <th>Nro. Documento</th>
+                    <th>Apellido</th>
+                    <th>Nombre</th>
+                    <th>Condición de IVA</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cli : ${clientesInactivos}">
+                    <td th:text="${cli.idCuenta}"></td>
+                    <td th:text="${cli.tipoDocumento}"></td>
+                    <td th:text="${cli.numeroDocumento}"></td>
+                    <td th:text="${cli.apellido}"></td>
+                    <td th:text="${cli.nombre}"></td>
+                    <td th:text="${cli.condIVA}"></td>
+                    <td>
+                        <form th:action="@{/clientes/gestion/{id}/reactivar(id=${cli.idCuenta})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-primary" style="padding: 6px 12px; font-size: 14px;">
+                                Reactivar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:if="${clientesInactivos.isEmpty()}" class="empty-row">
+                    <td colspan="7">No hay clientes inactivos.</td>
                 </tr>
                 </tbody>
             </table>
