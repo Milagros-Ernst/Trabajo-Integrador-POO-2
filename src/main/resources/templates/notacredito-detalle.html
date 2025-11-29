@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Nota de Crédito #' + ${nota.nroNota} + ' - FlorecillaService'">Detalle Nota de Crédito</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <!-- Estilo específico para resaltar que es una anulación -->
+    <style>
+        .watermark-anulada {
+            color: #d32f2f;
+            border: 2px solid #d32f2f;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .reference-box {
+            background-color: #fce4ec; /* Fondo rosado suave */
+            border: 1px solid #f8bbd0;
+            color: #c2185b;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="actions-bar">
+    <!-- Botón volver al historial del cliente usando la relación -->
+    <a th:href="@{/clientes/{id}/facturacion(id=${cliente.idCuenta})}" class="btn btn-secondary">
+        &larr; Volver al Historial
+    </a>
+    <button onclick="window.print()" class="btn btn-primary">
+        <i class="fas fa-print"></i> Imprimir Nota
+    </button>
+</div>
+
+<div class="invoice-box">
+
+    <div class="invoice-header">
+        <div class="header-left">
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <img th:src="@{/imagen/florLogo.png}" alt="Logo" style="height: 50px; margin-right: 10px;">
+                <h2 style="margin: 0; color: #333;">FlorecillaService</h2>
+            </div>
+            <p>
+                Pellegrini 269<br>
+                Apóstoles Misiones, Argentina<br>
+                Tel: (011) 1234-5678<br>
+                Condición frente al IVA <strong>Responsable Inscripto</strong>
+            </p>
+        </div>
+
+        <div class="invoice-letter-box" style="background-color: #d32f2f;">
+            <span th:text="${nota.tipo}"></span>
+        </div>
+
+        <div class="header-right">
+            <h3 style="margin: 0 0 10px 0; color: #d32f2f;">NOTA DE CRÉDITO</h3>
+            <p>
+                <strong>Nro. Nota:</strong> <span th:text="'0001-' + ${#numbers.formatInteger(nota.nroNota, 8)}"></span><br>
+                <strong>Fecha Emisión:</strong> <span th:text="${#temporals.format(nota.fecha, 'dd/MM/yyyy')}"></span><br>
+                <strong>CUIT:</strong> 30-12345678-9<br>
+                <span class="watermark-anulada">ANULACIÓN</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Caja de Referencia a la Factura Anulada y Motivo -->
+    <div class="reference-box">
+        <div style="display: flex; justify-content: space-between;">
+            <div>
+                <strong>Comprobante Asociado:</strong>
+                Factura #<span th:text="${nota.facturaAnulada.idFactura}"></span>
+                (<span th:text="${#temporals.format(nota.facturaAnulada.fecha, 'dd/MM/yyyy')}"></span>)
+            </div>
+            <div>
+                <strong>Responsable:</strong> <span th:text="${nota.empleadoResponsable}"></span>
+            </div>
+        </div>
+        <div style="margin-top: 8px; border-top: 1px solid #f8bbd0; padding-top: 8px;">
+            <strong>Motivo de Anulación:</strong>
+            <span th:text="${nota.motivoAnulacion}" style="font-style: italic;"></span>
+        </div>
+    </div>
+
+    <div class="info-group">
+        <span class="info-title">Datos del Cliente</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+                <strong>Razón Social:</strong> <span th:text="${cliente.nombre} + ' ' + ${cliente.apellido}"></span><br>
+                <strong>Domicilio:</strong> <span th:text="${cliente.direccion}"></span><br>
+                <strong>Condición IVA:</strong> <span th:text="${cliente.condIVA}"></span>
+            </div>
+            <div class="text-right">
+                <strong>CUIT/DNI:</strong> <span th:text="${cliente.numeroDocumento}"></span><br>
+                <strong>Email:</strong> <span th:text="${cliente.mail}"></span>
+            </div>
+        </div>
+    </div>
+
+    <table class="invoice-table">
+        <thead>
+        <tr>
+            <th>Descripción</th>
+            <th class="text-right">Precio Unit.</th>
+
+            <!-- Columna Alicuota solo si es RI -->
+            <th class="text-center" th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">Alic. IVA</th>
+
+            <th class="text-right">Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="detalle : ${nota.detallesNota}">
+            <td th:text="${detalle.descripcion}"></td>
+
+            <!-- Caso: Responsable Inscripto (Muestra Precio Neto) -->
+            <td class="text-right" th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+                th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio, 1, 2)}">
+            </td>
+
+            <!-- Caso: Consumidor Final / Monotributo (Muestra Precio con IVA) -->
+            <!-- Nota: Como DetalleNota guarda el precio base, debemos calcular el con IVA usando la alícuota de la factura original -->
+            <td class="text-right" th:unless="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+                th:with="montoIva=${detalle.precio * (T(java.lang.Double).parseDouble(detalle.detalleFactura.alicuotaIva.replace('%', '')) / 100)}"
+                th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio + montoIva, 1, 2)}">
+            </td>
+
+            <!-- Columna Alícuota -->
+            <td class="text-center" th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+                th:text="${detalle.detalleFactura.alicuotaIva}">
+                21%
+            </td>
+
+            <!-- Subtotal (Misma lógica visual que precio unitario para este caso simple) -->
+            <td class="text-right" th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+                th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio, 1, 2)}">
+            </td>
+
+            <td class="text-right" th:unless="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}"
+                th:with="montoIva=${detalle.precio * (T(java.lang.Double).parseDouble(detalle.detalleFactura.alicuotaIva.replace('%', '')) / 100)}"
+                th:text="'$ ' + ${#numbers.formatDecimal(detalle.precio + montoIva, 1, 2)}">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="invoice-totals">
+        <div class="totals-box">
+
+            <div th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
+
+                <div class="totals-row">
+                    <span>Subtotal Neto:</span>
+                    <span th:text="'$ ' + ${#numbers.formatDecimal(subtotalNeto, 1, 2)}"></span>
+                </div>
+
+                <div class="totals-row" th:each="entry : ${ivaDesglosado}">
+                    <span th:text="'IVA ' + ${entry.key} + ':'">IVA 21%:</span>
+                    <span th:text="'$ ' + ${#numbers.formatDecimal(entry.value, 1, 2)}"></span>
+                </div>
+
+            </div>
+
+            <div class="totals-row final" style="color: #d32f2f; border-top-color: #d32f2f;">
+                <span>TOTAL ANULADO:</span>
+                <span th:text="'$ ' + ${#numbers.formatDecimal(nota.precioTotal, 1, 2)}"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <div style="margin-top: 40px; font-size: 12px; color: #999; text-align: center; border-top: 1px dashed #ddd; padding-top: 10px;">
+        Documento no válido como factura. <br>
+        Comprobante de anulación generado electrónicamente por Sistema FlorecillaService.
+    </div>
+
+</div>
+
+</body>
+</html>
