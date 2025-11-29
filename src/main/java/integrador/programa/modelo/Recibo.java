@@ -5,8 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "recibo")
@@ -34,26 +32,12 @@ public class Recibo {
     @Column(name = "importe_total", nullable = false)
     private Double importeTotal;
 
-    // Relación con los detalles del recibo
-    @OneToMany(mappedBy = "recibo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DetalleRecibo> detalles = new ArrayList<>();
+    // UNO A UNO con DetalleRecibo
+    @OneToOne(mappedBy = "recibo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private DetalleRecibo detalle;
 
-    // Pagos aplicados que conforman este recibo
-    @ManyToMany
-    @JoinTable(
-            name = "recibo_pago",
-            joinColumns = @JoinColumn(name = "id_recibo"),
-            inverseJoinColumns = @JoinColumn(name = "id_pago")
-    )
-    private List<Pago> pagos = new ArrayList<>();
+    // UNO A UNO con Pago
+    @OneToOne(mappedBy = "recibo", cascade = CascadeType.ALL)
+    private Pago pago;
 
-
-    public void agregarDetalle(DetalleRecibo det) {
-        detalles.add(det);
-        det.setRecibo(this);
-    }
-
-    public void agregarPago(Pago pago) {
-        pagos.add(pago);
-    }
 }

@@ -15,8 +15,9 @@ public class DetalleRecibo {
     @Column(name = "id_detalle_recibo")
     private Long idDetalleRecibo;  // ← LONG AUTO-INCREMENTAL
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_recibo", nullable = false)
+    // UNO A UNO con Recibo
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_recibo", nullable = false, unique = true)
     private Recibo recibo;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -26,6 +27,4 @@ public class DetalleRecibo {
     @Column(name = "importe_aplicado", nullable = false)
     private Double importeAplicado;
 
-    @Column(name = "saldo_pendiente_factura", nullable = false)
-    private Double saldoPendienteFactura;
 }
