@@ -40,7 +40,9 @@ public class ClienteControlador {
     @GetMapping("/gestion")
     public String irAClientes(Model model) {
         List<Cliente> misClientes = clienteService.listarClientesActivos();
+        List<Cliente> clientesInactivos = clienteService.listarClientesInactivos();
         model.addAttribute("clientes", misClientes);
+        model.addAttribute("clientesInactivos", clientesInactivos);
         model.addAttribute("cliente", new Cliente());
         return "gestion-clientes-inicio";
     }
@@ -92,7 +94,7 @@ public class ClienteControlador {
     }
 
     // si es una baja lógica, seria un post?
-    @PostMapping("/gestion/{id}")
+    @PostMapping("/{id}/dar-de-baja")
     public String darDeBajaCliente(@PathVariable Long id) {
         try {
             clienteService.bajaCliente(id);
@@ -103,13 +105,14 @@ public class ClienteControlador {
     }
 
     // reactivar cliente
-    @PutMapping("/gestion/{id}/reactivar")
+    @PostMapping("/gestion/{id}/reactivar")
     public String reactivar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Cliente clienteReactivado = clienteService.reactivarCliente(id);
-            return "redirect:/clientes/gestion" + id;
+            clienteService.reactivarCliente(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Cliente reactivado exitosamente");
+            return "redirect:/clientes/gestion";
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addAttribute("error", "No se pudo reactivar: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "No se pudo reactivar: " + e.getMessage());
             return "redirect:/clientes/gestion";
         }
     }

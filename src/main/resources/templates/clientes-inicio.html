@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial de Facturación - FlorecillaService</title>
+    <title>Clientes - FlorecillaService</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/main.js}"></script>
 </head>
 
 <body>
 
 <header>
     <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
-    <h1><span class="logo-text">FlorecillaService</span> / Clientes / Inicio</h1>
+    <h1><span class="logo-text">FlorecillaService</span> / Clientes</h1>
 </header>
 
 <main>
@@ -20,25 +22,15 @@
         Atrás
     </a>
 
-    <h2>Panel de Gestión de Clientes</h2>
+    <div class="facturacion-main">
+        <h2>Seleccione que desea gestionar</h2>
 
-    <nav>
-        <ul>
+        <div class="facturacion-options">
+            <a th:href="@{/clientes/gestion}" class="btn btn-warning">Gestión de Clientes</a>
+            <a th:href="@{/clientes/facturacion-historial}" class="btn btn-warning">Historial de Facturación</a>
 
-            <li>
-                <a th:href="@{/clientes/gestion}">
-                    Gestión de Clientes
-                </a>
-            </li>
-
-            <li>
-                <a th:href="@{/clientes/facturacion-historial}">
-                    Historial de Facturación
-                </a>
-            </li>
-        </ul>
-    </nav>
-
+        </div>
+    </div>
 </main>
 
 </body>
