@@ -137,30 +137,27 @@ public class PagoServicio {
         }
 
         // 3) Crear el RECIBO vacío (solo con cliente)
-        //    idRecibo será Long autoincremental (IDENTITY)
         Recibo recibo = new Recibo();
         recibo.setCliente(factura.getCliente());
-        // importeTotal lo seteamos más abajo cuando tengamos el detalle
-        recibo.setImporteTotal(0.0);
+        recibo.setImporteTotal(0.0); // se actualiza luego
 
-        // Persistimos el recibo primero para que tenga id_recibo y nro_recibo
+        // Persistimos el recibo primero para que tenga id_recibo (y nro_recibo según tu lógica)
         Recibo reciboPersistido = reciboRepositorio.save(recibo);
 
-        // 4) Crear el PAGO asociado a la factura Y al recibo
+        // 4) Crear el PAGO asociado a la factura Y al recibo (UNO A UNO)
         Pago pago = Pago.builder()
                 .importe(importe)
                 .metodoPago(metodoPago)
                 .empleadoResponsable(empleadoResponsable)
                 .observaciones(observaciones)
                 .factura(factura)
-                .recibo(reciboPersistido)   // vínculo con el recibo
+                .recibo(reciboPersistido)   // vínculo uno a uno con el recibo
                 .build();
 
-        // Asociar el pago a la factura en memoria 
-        factura.agregarPago(pago);
-
-        // Guardamos el pago
         pagoRepositorio.save(pago);
+
+        // Asociar también en el Recibo (lado inverso)
+        reciboPersistido.setPago(pago);
 
         // 5) Actualizar el estado de la factura según el nuevo saldo
         double saldoPendienteDespues = factura.calcularSaldoPendiente();
@@ -173,28 +170,25 @@ public class PagoServicio {
 
         facturaRepositorio.save(factura);
 
-        // 6) Crear el DETALLE DEL RECIBO basado en esta factura y el pago
+        // 6) Crear el DETALLE DEL RECIBO (UNO A UNO)
         DetalleRecibo detalle = new DetalleRecibo();
         detalle.setRecibo(reciboPersistido);
         detalle.setFactura(factura);
         detalle.setImporteAplicado(importe);
-        detalle.setSaldoPendienteFactura(saldoPendienteDespues);
 
-        // Asociar detalle al recibo (si Recibo tiene lista de detalles)
-        if (reciboPersistido.getDetalles() == null) {
-            reciboPersistido.setDetalles(new ArrayList<>());
-        }
-        reciboPersistido.getDetalles().add(detalle);
+        // Asociar detalle al recibo
+        reciboPersistido.setDetalle(detalle);
 
         // 7) Actualizar el importe total del recibo
         reciboPersistido.setImporteTotal(importe);
 
-        // 8) Guardar nuevamente el recibo con su detalle
+        // 8) Guardar nuevamente el recibo (hace cascade al detalle)
         Recibo reciboFinal = reciboRepositorio.save(reciboPersistido);
 
-        // 9) Devolver el recibo completo para que el controlador lo muestre/descargue
+        // 9) Devolver el recibo completo
         return reciboFinal;
     }
+
 
     // MÉTODOS DE CONSULTA
 
