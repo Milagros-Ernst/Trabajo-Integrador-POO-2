@@ -31,22 +31,29 @@ public class ClienteControlador {
         this.clienteService = clienteService;
         this.clienteServicioServicio = clienteServicioServicio;
     }
-// metodo para ir a la pantalla de gestion
+    //metodo para ir al inicio de clientes
     @GetMapping
+    public String irAInicioClientes() {
+        return "clientes-inicio";
+    }
+// metodo para ir a la pantalla de gestion
+    @GetMapping("/gestion")
     public String irAClientes(Model model) {
         List<Cliente> misClientes = clienteService.listarClientesActivos();
+        List<Cliente> clientesInactivos = clienteService.listarClientesInactivos();
         model.addAttribute("clientes", misClientes);
+        model.addAttribute("clientesInactivos", clientesInactivos);
         model.addAttribute("cliente", new Cliente());
         return "gestion-clientes-inicio";
     }
 
     // metodos para la gestión de clientes
-    @PostMapping
+    @PostMapping("/gestion")
     public String crearCliente(@ModelAttribute Cliente nuevoCliente, Model model) {
         try {
             nuevoCliente.setEstadoCuenta(EstadoCuenta.ACTIVA);
             clienteService.crearCliente(nuevoCliente);
-            return "redirect:/clientes";
+            return "redirect:/clientes/gestion";
 
         } catch (Exception e) {
             model.addAttribute("error", "Error al crear cliente: " + e.getMessage());
@@ -55,7 +62,7 @@ public class ClienteControlador {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/gestion/{id}")
     public String irADetalleCliente(@PathVariable Long id, Model model) {
 
         try {
@@ -72,40 +79,41 @@ public class ClienteControlador {
             return "gestion-clientes-detalle";
 
         } catch (Exception e) {
-            return "redirect:/clientes";
+            return "redirect:/clientes/gestion";
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/gestion/{id}")
     public String modificarCliente(@PathVariable Long id, @ModelAttribute Cliente clienteActualizado) {
         try {
             clienteService.modificarCliente(id, clienteActualizado);
-            return "redirect:/clientes/" + id;
+            return "redirect:/clientes/gestion" + id;
         } catch (Exception e) {
-            return "redirect:/clientes/" + id + "?error=" + e.getMessage();
+            return "redirect:/clientes/gestion" + id + "?error=" + e.getMessage();
         }
     }
 
     // si es una baja lógica, seria un post?
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/dar-de-baja")
     public String darDeBajaCliente(@PathVariable Long id) {
         try {
             clienteService.bajaCliente(id);
-            return "redirect:/clientes";
+            return "redirect:/clientes/gestion";
         } catch (Exception e) {
-            return "redirect:/clientes";
+            return "redirect:/clientes/gestion";
         }
     }
 
     // reactivar cliente
-    @PutMapping("/{id}/reactivar")
+    @PostMapping("/gestion/{id}/reactivar")
     public String reactivar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Cliente clienteReactivado = clienteService.reactivarCliente(id);
-            return "redirect:/clientes/" + id;
+            clienteService.reactivarCliente(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Cliente reactivado exitosamente");
+            return "redirect:/clientes/gestion";
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addAttribute("error", "No se pudo reactivar: " + e.getMessage());
-            return "redirect:/clientes";
+            redirectAttributes.addFlashAttribute("error", "No se pudo reactivar: " + e.getMessage());
+            return "redirect:/clientes/gestion";
         }
     }
 

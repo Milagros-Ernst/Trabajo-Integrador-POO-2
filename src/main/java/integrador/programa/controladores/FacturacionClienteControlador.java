@@ -1,9 +1,6 @@
 package integrador.programa.controladores;
 
-import integrador.programa.modelo.Cliente;
-import integrador.programa.modelo.DetalleFactura;
-import integrador.programa.modelo.Factura;
-import integrador.programa.modelo.Pago;
+import integrador.programa.modelo.*;
 import integrador.programa.modelo.enumeradores.EstadoFactura;
 import integrador.programa.servicios.ClienteService;
 import integrador.programa.servicios.ClienteServicioServicio;
@@ -39,6 +36,21 @@ public class FacturacionClienteControlador {
         this.pagoServicio = pagoServicio;
     }
 
+    @GetMapping("/facturacion-historial")
+    public String vistaBuscadorInicial(Model model) {
+        model.addAttribute("clientes", clienteService.listarClientesActivos());
+
+        return "cliente-facturas";
+    }
+
+    @GetMapping("/facturacion/seleccionar")
+    public String seleccionarClienteParaHistorial(@RequestParam("clienteId") Long clienteId) {
+        return "redirect:/clientes/" + clienteId + "/facturacion";
+    }
+
+
+
+
     @GetMapping("/{clienteId}/facturacion")
     public String irHistorialFacturacion(@PathVariable Long clienteId, Model model) {
         try {
@@ -73,6 +85,18 @@ public class FacturacionClienteControlador {
             pagos.sort((p1, p2) -> p2.getFechaPago().compareTo(p1.getFechaPago()));
 
             model.addAttribute("pagos", pagos);
+            model.addAttribute("clientes", clienteService.listarClientesActivos());
+            double totalDeuda = facturas.stream()
+
+                    .filter(f -> f.getEstado() == EstadoFactura.VIGENTE ||
+                            f.getEstado() == EstadoFactura.VENCIDA ||
+                            f.getEstado() == EstadoFactura.PARCIAL)
+
+                    .mapToDouble(f -> f.calcularSaldoPendiente())
+
+                    .sum();
+
+            model.addAttribute("totalDeuda", totalDeuda);
 
 
             return "cliente-facturas";
@@ -124,7 +148,7 @@ public class FacturacionClienteControlador {
 
 
             return "factura-detalle";
-        }).orElse("redirect:/cliente-facturas");
+        }).orElse("redirect:/clientes/facturacion-historial");
     }
 
 

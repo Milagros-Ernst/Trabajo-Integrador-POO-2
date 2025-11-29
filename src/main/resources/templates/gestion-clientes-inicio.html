@@ -18,13 +18,13 @@
 
 <main>
 
-    <a th:href="@{/}" class="btn-atras">
+    <a th:href="@{/clientes}" class="btn-atras">
         <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
         Atrás
     </a>
 
     <div class="form-container">
-        <form id="form-cliente" th:action="@{/clientes}" th:object="${cliente}" method="post">
+        <form id="form-cliente" th:action="@{/clientes/gestion}" th:object="${cliente}" method="post">
 
             <fieldset id="form-fieldset" disabled>
                 <div class="form-section-titles">
@@ -91,7 +91,7 @@
     </div>
 
     <div class="table-container">
-        <h2 class="table-title">Clientes registrados</h2>
+        <h2 class="table-title">Clientes activos</h2>
         <div class="table-wrapper">
             <table>
                 <thead>
@@ -114,12 +114,52 @@
                     <td th:text="${cli.nombre}"></td>
                     <td th:text="${cli.condIVA}"></td>
                     <td>
-                        <a th:href="@{/clientes/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>
+                        <a th:href="@{/clientes/gestion/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>
                     </td>
                 </tr>
 
                 <tr th:if="${clientes.isEmpty()}" class="empty-row">
                     <td colspan="6">No hay clientes registrados.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="table-container" style="margin-top: 40px;">
+        <h2 class="table-title">Clientes inactivos</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo Documento</th>
+                    <th>Nro. Documento</th>
+                    <th>Apellido</th>
+                    <th>Nombre</th>
+                    <th>Condición de IVA</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cli : ${clientesInactivos}">
+                    <td th:text="${cli.idCuenta}"></td>
+                    <td th:text="${cli.tipoDocumento}"></td>
+                    <td th:text="${cli.numeroDocumento}"></td>
+                    <td th:text="${cli.apellido}"></td>
+                    <td th:text="${cli.nombre}"></td>
+                    <td th:text="${cli.condIVA}"></td>
+                    <td>
+                        <form th:action="@{/clientes/gestion/{id}/reactivar(id=${cli.idCuenta})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-primary" style="padding: 6px 12px; font-size: 14px;">
+                                Reactivar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:if="${clientesInactivos.isEmpty()}" class="empty-row">
+                    <td colspan="7">No hay clientes inactivos.</td>
                 </tr>
                 </tbody>
             </table>
