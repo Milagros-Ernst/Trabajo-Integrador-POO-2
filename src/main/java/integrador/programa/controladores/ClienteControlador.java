@@ -92,7 +92,7 @@ public class ClienteControlador {
     }
 
     // si es una baja lógica, seria un post?
-    @PostMapping("/gestion/{id}")
+    @PostMapping("/{id}/dar-de-baja")
     public String darDeBajaCliente(@PathVariable Long id) {
         try {
             clienteService.bajaCliente(id);
