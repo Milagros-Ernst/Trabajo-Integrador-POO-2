@@ -243,7 +243,7 @@
                 <tbody>
                 <tr th:each="pago : ${pagos}">
                     <td th:text="'#' + ${pago.idPago}"></td>
-                    <td th:text="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy')}"></td>
                     <td th:text="${pago.metodoPago}"></td>
 
                     <!-- Lógica para mostrar ID de facturas si la relación existe -->
@@ -257,7 +257,7 @@
                     <td style="text-align: center;">
                         <button type="button" class="btn btn-primary" style="padding: 4px 12px; font-size: 12px;"
                                 th:data-id="${pago.idPago}"
-                                th:data-fecha="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy HH:mm')}"
+                                th:data-fecha="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy')}"
                                 th:data-monto="${pago.importe}"
                                 th:data-metodo="${pago.metodoPago}"
                                 th:data-responsable="${pago.empleadoResponsable}"
