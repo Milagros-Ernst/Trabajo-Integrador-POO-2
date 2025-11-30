@@ -49,6 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         btnAltaCliente.addEventListener('click', habilitarFormularioAlta);
 
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('accion') === 'alta') {
+            habilitarFormularioAlta();
+        }
+
         btnCancelar.addEventListener('click', (e) => {
             e.preventDefault();
             deshabilitarFormularioAlta();
