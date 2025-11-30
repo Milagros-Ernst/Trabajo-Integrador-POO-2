@@ -23,7 +23,7 @@
     </a>
 
     <div class="form-container">
-        <form id="form-cliente" th:object="${cliente}" th:action="@{/clientes/{id}(id=${cliente.idCuenta})}"
+        <form id="form-cliente" th:object="${cliente}" th:action="@{/clientes/gestion/{id}(id=${cliente.idCuenta})}"
               th:method="put">
             <div class="form-section-titles">
                 <h3>Información personal</h3>
