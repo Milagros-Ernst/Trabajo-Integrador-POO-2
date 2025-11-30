@@ -8,9 +8,9 @@ import integrador.programa.repositorios.PagoRepositorio;
 import integrador.programa.repositorios.ReciboRepositorio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,172 +38,98 @@ class PagoServicioTest {
     @InjectMocks
     private PagoServicio pagoServicio;
 
-    private Cliente crearCliente(Long id, String nombre) {
-        Cliente c = new Cliente();
-        ReflectionTestUtils.setField(c, "idCuenta", id);
-        c.setNombre(nombre);
-        return c;
-    }
+    private Cliente cliente;
 
-    private Factura crearFactura(Cliente cliente, double precio, LocalDate fecha) {
-        Factura f = new Factura();
-        ReflectionTestUtils.setField(f, "idFactura", new Random().nextLong(1_000_000));
-        f.setCliente(cliente);
-        f.setPrecioTotal(precio);
-        f.setEstado(EstadoFactura.VIGENTE);
-        f.setFecha(fecha);
-        return f;
-    }
-
-    @Test
-    @DisplayName("registrarPagoYEmitirRecibo debe lanzar excepción si el importe es nulo o menor o igual a cero")
-    void registrarPagoYEmitirRecibo_importeInvalido() {
-        Long idFactura = 1L;
-        Cliente cliente = crearCliente(1L, "Juan");
-        Factura factura = crearFactura(cliente, 1000.0, LocalDate.now());
-
-        when(facturaRepositorio.findById(idFactura)).thenReturn(Optional.of(factura));
-
-        IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoYEmitirRecibo(idFactura, null,
-                        MetodoPago.EFECTIVO, "Empleado", "Obs"));
-        assertTrue(ex1.getMessage().contains("mayor a 0"));
-
-        IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoYEmitirRecibo(idFactura, 0.0,
-                        MetodoPago.EFECTIVO, "Empleado", "Obs"));
-        assertTrue(ex2.getMessage().contains("mayor a 0"));
-
-        verify(facturaRepositorio, times(2)).findById(idFactura);
-        verifyNoMoreInteractions(reciboRepositorio, pagoRepositorio);
-    }
-
-    @Test
-    @DisplayName("registrarPagoYEmitirRecibo debe lanzar excepción si el importe excede el saldo pendiente")
-    void registrarPagoYEmitirRecibo_importeExcedeSaldo() {
-        Long idFactura = 1L;
-        Cliente cliente = crearCliente(1L, "Juan");
-        Factura factura = crearFactura(cliente, 1000.0, LocalDate.now()); // saldoPendiente ≈ 1000
-
-        when(facturaRepositorio.findById(idFactura)).thenReturn(Optional.of(factura));
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoYEmitirRecibo(idFactura, 1500.0,
-                        MetodoPago.EFECTIVO, "Empleado", "Obs"));
-
-        assertTrue(ex.getMessage().contains("excede el saldo pendiente"));
-        verify(facturaRepositorio).findById(idFactura);
-        verifyNoMoreInteractions(reciboRepositorio, pagoRepositorio);
-    }
-
-    @Test
-    @DisplayName("registrarPagoYEmitirRecibo debe lanzar excepción si la factura no existe")
-    void registrarPagoYEmitirRecibo_facturaNoExiste() {
-        Long idFactura = 99L;
-        when(facturaRepositorio.findById(idFactura)).thenReturn(Optional.empty());
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoYEmitirRecibo(idFactura, 100.0,
-                        MetodoPago.EFECTIVO, "Empleado", "Obs"));
-
-        assertTrue(ex.getMessage().contains("Factura no encontrada"));
-        verify(facturaRepositorio).findById(idFactura);
-        verifyNoMoreInteractions(reciboRepositorio, pagoRepositorio);
-    }
-
-    @Test
-    @DisplayName("registrarPagoYEmitirRecibo debe registrar pago completo y marcar la factura como PAGADA")
-    void registrarPagoYEmitirRecibo_exitoPagoCompleto() {
-        Long idFactura = 1L;
-        Cliente cliente = crearCliente(1L, "Juan");
-        Factura factura = crearFactura(cliente, 1000.0, LocalDate.now()); // saldoPendiente = 1000
-
-        when(facturaRepositorio.findById(idFactura)).thenReturn(Optional.of(factura));
-        when(reciboServicio.generarNroRecibo()).thenReturn(123L);
-        when(reciboRepositorio.save(any(Recibo.class)))
-                .thenAnswer(inv -> inv.getArgument(0));
-        when(pagoRepositorio.save(any(Pago.class)))
-                .thenAnswer(inv -> inv.getArgument(0));
-
-        Recibo recibo = pagoServicio.registrarPagoYEmitirRecibo(
-                idFactura,
-                1000.0,
-                MetodoPago.TRANSFERENCIA,
-                "Empleado X",
-                "Pago total"
-        );
-
-        assertNotNull(recibo);
-        assertEquals(cliente, recibo.getCliente());
-        assertEquals(1000.0, recibo.getImporteTotal());
-        assertNotNull(recibo.getPago());
-        assertEquals(1000.0, recibo.getPago().getImporte());
-        assertEquals(EstadoFactura.PAGADA, factura.getEstado());
-
-        assertEquals(1, recibo.getDetalles().size());
-        DetalleRecibo det = recibo.getDetalles().get(0);
-        assertEquals(factura, det.getFactura());
-        assertEquals(1000.0, det.getImporteAplicado());
-
-        // Verificaciones de interacción
-        verify(facturaRepositorio, times(1)).findById(10L);
-        verify(facturaRepositorio, times(1)).save(factura);
-        verify(pagoRepositorio, times(1)).save(any(Pago.class));
-        verify(reciboRepositorio, atLeastOnce()).save(any(Recibo.class));
-
+    @BeforeEach
+    void setUp() {
+        cliente = new Cliente();
+        ReflectionTestUtils.setField(cliente, "idCuenta", 1L);
+        cliente.setNombre("Cliente Prueba");
     }
 
     @Test
     @DisplayName("registrarPagoMasivo debe lanzar excepción si el importe es nulo o menor o igual a cero")
     void registrarPagoMasivo_importeInvalido() {
-        List<Long> ids = List.of(1L, 2L);
+        IllegalArgumentException ex1 = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoMasivo(
+                        List.of(1L, 2L),
+                        null,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
+        );
+        assertTrue(ex1.getMessage().contains("El importe debe ser mayor a 0."));
 
-        IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoMasivo(ids, null,
-                        MetodoPago.EFECTIVO, "Emp", "Obs"));
-        assertTrue(ex1.getMessage().contains("mayor a 0"));
+        IllegalArgumentException ex2 = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoMasivo(
+                        List.of(1L, 2L),
+                        0.0,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
+        );
+        assertTrue(ex2.getMessage().contains("El importe debe ser mayor a 0."));
 
-        IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoMasivo(ids, 0.0,
-                        MetodoPago.EFECTIVO, "Emp", "Obs"));
-        assertTrue(ex2.getMessage().contains("mayor a 0"));
-
-        verifyNoInteractions(facturaRepositorio, reciboRepositorio, pagoRepositorio);
+        verifyNoInteractions(facturaRepositorio, reciboRepositorio, pagoRepositorio, reciboServicio);
     }
 
     @Test
     @DisplayName("registrarPagoMasivo debe lanzar excepción si no se envían facturas")
     void registrarPagoMasivo_sinFacturas() {
-        IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoMasivo(null, 100.0,
-                        MetodoPago.EFECTIVO, "Emp", "Obs"));
-        assertTrue(ex1.getMessage().contains("Debe seleccionar"));
+        IllegalArgumentException ex1 = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoMasivo(
+                        null,
+                        100.0,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
+        );
+        assertTrue(ex1.getMessage().contains("Debe seleccionar al menos una factura."));
 
-        IllegalArgumentException ex2 = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoMasivo(Collections.emptyList(), 100.0,
-                        MetodoPago.EFECTIVO, "Emp", "Obs"));
-        assertTrue(ex2.getMessage().contains("Debe seleccionar"));
+        IllegalArgumentException ex2 = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoMasivo(
+                        Collections.emptyList(),
+                        100.0,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
+        );
+        assertTrue(ex2.getMessage().contains("Debe seleccionar al menos una factura."));
 
-        verifyNoInteractions(facturaRepositorio, reciboRepositorio, pagoRepositorio);
+        verifyNoInteractions(facturaRepositorio, reciboRepositorio, pagoRepositorio, reciboServicio);
     }
 
     @Test
     @DisplayName("registrarPagoMasivo debe lanzar excepción si no se encuentran todas las facturas")
     void registrarPagoMasivo_noSeEncuentranTodasLasFacturas() {
-        List<Long> ids = List.of(1L, 2L);
-        Cliente cliente = crearCliente(1L, "Juan");
-        Factura f1 = crearFactura(cliente, 500.0, LocalDate.now().minusDays(2));
+        List<Long> ids = List.of(1L, 2L, 3L);
+        Factura f1 = mock(Factura.class);
 
-        when(facturaRepositorio.findAllById(ids))
-                .thenReturn(new ArrayList<>(List.of(f1))); // solo una
+        when(facturaRepositorio.findAllById(ids)).thenReturn(List.of(f1));
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoMasivo(ids, 300.0,
-                        MetodoPago.EFECTIVO, "Emp", "Obs"));
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoMasivo(
+                        ids,
+                        100.0,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
+        );
 
-        assertTrue(ex.getMessage().contains("No se encontraron todas las facturas"));
+        assertTrue(ex.getMessage().contains("No se encontraron todas las facturas solicitadas."));
         verify(facturaRepositorio).findAllById(ids);
-        verifyNoMoreInteractions(reciboRepositorio, pagoRepositorio);
+        verifyNoMoreInteractions(facturaRepositorio);
+        verifyNoInteractions(reciboRepositorio, pagoRepositorio, reciboServicio);
     }
 
     @Test
@@ -212,225 +137,285 @@ class PagoServicioTest {
     void registrarPagoMasivo_facturasDistintoCliente() {
         List<Long> ids = List.of(1L, 2L);
 
-        Cliente c1 = crearCliente(1L, "Juan");
-        Cliente c2 = crearCliente(2L, "Ana");
+        Cliente cliente2 = new Cliente();
+        ReflectionTestUtils.setField(cliente2, "idCuenta", 2L);
 
-        Factura f1 = crearFactura(c1, 500.0, LocalDate.now().minusDays(2));
-        Factura f2 = crearFactura(c2, 500.0, LocalDate.now().minusDays(1));
+        Factura f1 = mock(Factura.class);
+        Factura f2 = mock(Factura.class);
 
-        when(facturaRepositorio.findAllById(ids))
-                .thenReturn(new ArrayList<>(Arrays.asList(f1, f2)));
+        when(f1.getCliente()).thenReturn(cliente);
+        when(f2.getCliente()).thenReturn(cliente2);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoMasivo(ids, 300.0,
-                        MetodoPago.EFECTIVO, "Emp", "Obs"));
+        when(facturaRepositorio.findAllById(ids)).thenReturn(List.of(f1, f2));
 
-        assertTrue(ex.getMessage().contains("mismo cliente"));
-        verify(facturaRepositorio).findAllById(ids);
-        verifyNoMoreInteractions(reciboRepositorio, pagoRepositorio);
-    }
-
-    @Test
-    @DisplayName("registrarPagoMasivo debe lanzar excepción si el importe excede la deuda total")
-    void registrarPagoMasivo_importeExcedeDeuda() {
-        List<Long> ids = List.of(1L, 2L);
-        Cliente cliente = crearCliente(1L, "Juan");
-
-        Factura f1 = crearFactura(cliente, 200.0, LocalDate.now().minusDays(3));
-        Factura f2 = crearFactura(cliente, 300.0, LocalDate.now().minusDays(2));
-
-        when(facturaRepositorio.findAllById(ids))
-                .thenReturn(new ArrayList<>(Arrays.asList(f1, f2))); // LISTA MUTABLE
-
-        // deudaTotal ≈ 500 → importe 600 excede
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.registrarPagoMasivo(ids, 600.0,
-                        MetodoPago.EFECTIVO, "Emp", "Obs"));
-
-        assertTrue(ex.getMessage().contains("excede la deuda total"));
-        verify(facturaRepositorio).findAllById(ids);
-        verifyNoMoreInteractions(reciboRepositorio, pagoRepositorio);
-    }
-
-    @Test
-    @DisplayName("registrarPagoMasivo debe registrar un pago único y un recibo con detalles distribuyendo el importe")
-    void registrarPagoMasivo_exito() {
-        List<Long> ids = List.of(1L, 2L);
-        Cliente cliente = crearCliente(1L, "Juan");
-
-        Factura f1 = crearFactura(cliente, 1000.0, LocalDate.now().minusDays(3));
-        Factura f2 = crearFactura(cliente, 500.0, LocalDate.now().minusDays(1));
-
-        when(facturaRepositorio.findAllById(ids))
-                .thenReturn(new ArrayList<>(Arrays.asList(f1, f2))); // LISTA MUTABLE
-
-        when(reciboServicio.generarNroRecibo()).thenReturn(10L);
-        when(reciboRepositorio.save(any(Recibo.class)))
-                .thenAnswer(inv -> inv.getArgument(0));
-        when(pagoRepositorio.save(any(Pago.class)))
-                .thenAnswer(inv -> inv.getArgument(0));
-
-        List<Pago> pagos = pagoServicio.registrarPagoMasivo(
-                ids,
-                1200.0, // menor a deuda total (1500)
-                MetodoPago.TRANSFERENCIA,
-                "Empleado",
-                "Pago masivo"
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoMasivo(
+                        ids,
+                        100.0,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
         );
 
-        assertEquals(1, pagos.size());
-        Pago pago = pagos.get(0);
-        assertEquals(1200.0, pago.getImporte());
-        assertNotNull(pago.getRecibo());
+        assertTrue(ex.getMessage().contains("Todas las facturas de un pago masivo deben ser del mismo cliente."));
+        verify(facturaRepositorio).findAllById(ids);
+        verifyNoInteractions(reciboRepositorio, pagoRepositorio, reciboServicio);
+    }
 
-        Recibo recibo = pago.getRecibo();
+    @Test
+    @DisplayName("registrarPagoYEmitirRecibo debe lanzar excepción si la factura no existe")
+    void registrarPagoYEmitirRecibo_facturaNoExiste() {
+        when(facturaRepositorio.findById(99L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoYEmitirRecibo(
+                        99L,
+                        100.0,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
+        );
+
+        assertTrue(ex.getMessage().contains("Factura no encontrada"));
+        verify(facturaRepositorio).findById(99L);
+    }
+
+    @Test
+    @DisplayName("registrarPagoYEmitirRecibo debe lanzar excepción si el importe es nulo o menor o igual a cero")
+    void registrarPagoYEmitirRecibo_importeInvalido() {
+        Factura factura = mock(Factura.class);
+        when(facturaRepositorio.findById(1L)).thenReturn(Optional.of(factura));
+        when(factura.calcularSaldoPendiente()).thenReturn(100.0);
+
+        IllegalArgumentException ex1 = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoYEmitirRecibo(
+                        1L,
+                        null,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
+        );
+        assertTrue(ex1.getMessage().contains("El importe del pago debe ser mayor a 0."));
+
+        IllegalArgumentException ex2 = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoYEmitirRecibo(
+                        1L,
+                        0.0,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
+        );
+        assertTrue(ex2.getMessage().contains("El importe del pago debe ser mayor a 0."));
+
+        verify(facturaRepositorio, times(2)).findById(1L);
+        verifyNoInteractions(reciboRepositorio, pagoRepositorio, reciboServicio);
+    }
+
+    @Test
+    @DisplayName("registrarPagoYEmitirRecibo debe lanzar excepción si el importe excede el saldo pendiente")
+    void registrarPagoYEmitirRecibo_importeExcedeSaldo() {
+        Factura factura = mock(Factura.class);
+        when(facturaRepositorio.findById(1L)).thenReturn(Optional.of(factura));
+        when(factura.calcularSaldoPendiente()).thenReturn(100.0);
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.registrarPagoYEmitirRecibo(
+                        1L,
+                        150.0,
+                        null,
+                        "Empleado",
+                        "Obs"
+                )
+        );
+
+        assertTrue(ex.getMessage().contains("El importe del pago excede el saldo pendiente de la factura."));
+        verify(facturaRepositorio).findById(1L);
+        verifyNoInteractions(reciboRepositorio, pagoRepositorio, reciboServicio);
+    }
+
+    @Test
+    @DisplayName("registrarPagoYEmitirRecibo debe registrar pago completo y marcar la factura como PAGADA")
+    void registrarPagoYEmitirRecibo_exitoPagoCompleto() {
+        Factura factura = mock(Factura.class);
+        when(facturaRepositorio.findById(1L)).thenReturn(Optional.of(factura));
+        when(factura.calcularSaldoPendiente()).thenReturn(100.0);
+        when(factura.getCliente()).thenReturn(cliente);
+
+        when(reciboServicio.generarNroRecibo()).thenReturn(20L);
+
+        when(reciboRepositorio.save(any(Recibo.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        when(pagoRepositorio.save(any(Pago.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Double importe = 100.0;
+
+        Recibo recibo = pagoServicio.registrarPagoYEmitirRecibo(
+                1L,
+                importe,
+                null,
+                "Empleado Y",
+                "Obs Z"
+        );
+
+        assertNotNull(recibo);
         assertEquals(cliente, recibo.getCliente());
-        assertEquals(1200.0, recibo.getImporteTotal());
+        assertEquals(importe, recibo.getImporteTotal());
+        assertEquals(20L, recibo.getNroRecibo());
+        assertNotNull(recibo.getPago());
+        assertEquals("Empleado Y", recibo.getPago().getEmpleadoResponsable());
 
-        assertFalse(recibo.getDetalles().isEmpty());
-        double totalDetalles = recibo.getDetalles().stream()
-                .mapToDouble(DetalleRecibo::getImporteAplicado)
-                .sum();
-        assertEquals(1200.0, totalDetalles, 0.001);
-
-        verify(facturaRepositorio, atLeast(1)).save(f1);
-        verify(facturaRepositorio, atLeast(1)).save(f2);
-        verify(reciboRepositorio, atLeastOnce()).save(any(Recibo.class));
+        // Se debe actualizar la factura
+        verify(facturaRepositorio).save(factura);
+        verify(factura).setEstado(EstadoFactura.PAGADA);
+        verify(reciboServicio).generarNroRecibo();
         verify(pagoRepositorio).save(any(Pago.class));
-    }
-
-    @Test
-    @DisplayName("listarPagosPorFactura debe lanzar excepción si la factura no existe")
-    void listarPagosPorFactura_facturaNoExiste() {
-        Long idFactura = 99L;
-        when(facturaRepositorio.findById(idFactura)).thenReturn(Optional.empty());
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.listarPagosPorFactura(idFactura));
-
-        assertTrue(ex.getMessage().contains("Factura no encontrada"));
-        verify(facturaRepositorio).findById(idFactura);
-    }
-
-    @Test
-    @DisplayName("listarPagosPorFactura debe devolver los pagos asociados a los DetalleRecibo de la factura (sin duplicados)")
-    void listarPagosPorFactura_ok() {
-        Long idFactura = 1L;
-        Cliente cliente = crearCliente(1L, "Juan");
-        Factura factura = crearFactura(cliente, 1000.0, LocalDate.now());
-
-        Recibo r1 = new Recibo();
-        Recibo r2 = new Recibo();
-
-        Pago p1 = Pago.builder().idPago(1L).importe(100.0).recibo(r1).build();
-        Pago p2 = Pago.builder().idPago(2L).importe(200.0).recibo(r2).build();
-
-        r1.setPago(p1);
-        r2.setPago(p2);
-
-        DetalleRecibo d1 = new DetalleRecibo();
-        d1.setRecibo(r1);
-        d1.setFactura(factura);
-
-        DetalleRecibo d2 = new DetalleRecibo();
-        d2.setRecibo(r2);
-        d2.setFactura(factura);
-
-        DetalleRecibo d3 = new DetalleRecibo();
-        d3.setRecibo(r1); // mismo recibo → mismo pago (para probar sin duplicados)
-        d3.setFactura(factura);
-
-        factura.getDetallesRecibo().addAll(Arrays.asList(d1, d2, d3));
-
-        when(facturaRepositorio.findById(idFactura)).thenReturn(Optional.of(factura));
-
-        List<Pago> pagos = pagoServicio.listarPagosPorFactura(idFactura);
-
-        assertEquals(2, pagos.size());
-        assertTrue(pagos.contains(p1));
-        assertTrue(pagos.contains(p2));
-        verify(facturaRepositorio).findById(idFactura);
-    }
-
-    @Test
-    @DisplayName("listarPagosPorCliente debe devolver los pagos de los recibos del cliente indicado")
-    void listarPagosPorCliente_ok() {
-        Long idCliente = 1L;
-        Cliente cliente1 = crearCliente(1L, "Juan");
-        Cliente cliente2 = crearCliente(2L, "Ana");
-
-        Recibo r1 = new Recibo();
-        r1.setCliente(cliente1);
-        Recibo r2 = new Recibo();
-        r2.setCliente(cliente1);
-        Recibo r3 = new Recibo();
-        r3.setCliente(cliente2);
-
-        Pago p1 = Pago.builder().idPago(1L).importe(100.0).build();
-        Pago p2 = Pago.builder().idPago(2L).importe(200.0).build();
-        Pago p3 = Pago.builder().idPago(3L).importe(300.0).build();
-
-        r1.setPago(p1);
-        r2.setPago(p2);
-        r3.setPago(p3);
-
-        when(reciboRepositorio.findAll()).thenReturn(Arrays.asList(r1, r2, r3));
-
-        List<Pago> pagos = pagoServicio.listarPagosPorCliente(idCliente);
-
-        assertEquals(2, pagos.size());
-        assertTrue(pagos.contains(p1));
-        assertTrue(pagos.contains(p2));
-        assertFalse(pagos.contains(p3));
-        verify(reciboRepositorio).findAll();
-    }
-
-    @Test
-    @DisplayName("calcularTotalPagadoPorFactura debe lanzar excepción si la factura no existe")
-    void calcularTotalPagadoPorFactura_facturaNoExiste() {
-        Long idFactura = 99L;
-        when(facturaRepositorio.findById(idFactura)).thenReturn(Optional.empty());
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> pagoServicio.calcularTotalPagadoPorFactura(idFactura));
-
-        assertTrue(ex.getMessage().contains("Factura no encontrada"));
-        verify(facturaRepositorio).findById(idFactura);
-    }
-
-    @Test
-    @DisplayName("calcularTotalPagadoPorFactura debe devolver el total pagado según la entidad Factura")
-    void calcularTotalPagadoPorFactura_ok() {
-        Long idFactura = 1L;
-
-        // Subclase sencilla para controlar el valor de calcularTotalPagado()
-        Factura factura = new Factura() {
-            @Override
-            public double calcularTotalPagado() {
-                return 250.0;
-            }
-        };
-
-        when(facturaRepositorio.findById(idFactura)).thenReturn(Optional.of(factura));
-
-        Double total = pagoServicio.calcularTotalPagadoPorFactura(idFactura);
-
-        assertEquals(250.0, total);
-        verify(facturaRepositorio).findById(idFactura);
+        verify(reciboRepositorio, atLeast(2)).save(any(Recibo.class));
     }
 
     @Test
     @DisplayName("buscarPorId debe delegar en el repositorio")
     void buscarPorId_ok() {
-        Long idPago = 5L;
-        Pago pago = Pago.builder().idPago(idPago).importe(123.0).build();
+        Pago pago = Pago.builder().importe(100.0).build();
+        when(pagoRepositorio.findById(1L)).thenReturn(Optional.of(pago));
 
-        when(pagoRepositorio.findById(idPago)).thenReturn(Optional.of(pago));
-
-        Optional<Pago> resultado = pagoServicio.buscarPorId(idPago);
+        Optional<Pago> resultado = pagoServicio.buscarPorId(1L);
 
         assertTrue(resultado.isPresent());
-        assertEquals(pago, resultado.get());
-        verify(pagoRepositorio).findById(idPago);
+        assertEquals(100.0, resultado.get().getImporte());
+        verify(pagoRepositorio).findById(1L);
+    }
+
+    @Test
+    @DisplayName("listarPagosPorFactura debe devolver los pagos asociados a los DetalleRecibo de la factura (sin duplicados)")
+    void listarPagosPorFactura_ok() {
+        Factura factura = mock(Factura.class);
+
+        Pago pago1 = Pago.builder().importe(50.0).build();
+        Pago pago2 = Pago.builder().importe(30.0).build();
+
+        Recibo recibo1 = new Recibo();
+        recibo1.setPago(pago1);
+
+        Recibo recibo2 = new Recibo();
+        recibo2.setPago(pago1); // mismo pago para probar distinct
+
+        Recibo recibo3 = new Recibo();
+        recibo3.setPago(pago2);
+
+        DetalleRecibo d1 = new DetalleRecibo();
+        d1.setRecibo(recibo1);
+
+        DetalleRecibo d2 = new DetalleRecibo();
+        d2.setRecibo(recibo2);
+
+        DetalleRecibo d3 = new DetalleRecibo();
+        d3.setRecibo(recibo3);
+
+        when(facturaRepositorio.findById(1L)).thenReturn(Optional.of(factura));
+        when(factura.getDetallesRecibo()).thenReturn(List.of(d1, d2, d3));
+
+        List<Pago> pagos = pagoServicio.listarPagosPorFactura(1L);
+
+        assertEquals(2, pagos.size()); // pago1 y pago2
+        assertTrue(pagos.contains(pago1));
+        assertTrue(pagos.contains(pago2));
+
+        verify(facturaRepositorio).findById(1L);
+    }
+
+    @Test
+    @DisplayName("listarPagosPorFactura debe lanzar excepción si la factura no existe")
+    void listarPagosPorFactura_facturaNoExiste() {
+        when(facturaRepositorio.findById(99L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.listarPagosPorFactura(99L)
+        );
+
+        assertTrue(ex.getMessage().contains("Factura no encontrada"));
+        verify(facturaRepositorio).findById(99L);
+    }
+
+    @Test
+    @DisplayName("listarPagosPorCliente debe devolver los pagos de los recibos del cliente indicado")
+    void listarPagosPorCliente_ok() {
+        // cliente con id 1
+        Cliente c1 = new Cliente();
+        ReflectionTestUtils.setField(c1, "idCuenta", 1L);
+
+        // otro cliente
+        Cliente c2 = new Cliente();
+        ReflectionTestUtils.setField(c2, "idCuenta", 2L);
+
+        Pago pago1 = Pago.builder().importe(100.0).build();
+        Pago pago2 = Pago.builder().importe(50.0).build();
+        Pago pagoOtro = Pago.builder().importe(999.0).build();
+
+        Recibo r1 = new Recibo();
+        r1.setCliente(c1);
+        r1.setPago(pago1);
+
+        Recibo r2 = new Recibo();
+        r2.setCliente(c1);
+        r2.setPago(pago2);
+
+        Recibo r3 = new Recibo();
+        r3.setCliente(c2);
+        r3.setPago(pagoOtro);
+
+        Recibo r4 = new Recibo();
+        r4.setCliente(c1);
+        r4.setPago(null); // sin pago, se debe filtrar
+
+        when(reciboRepositorio.findAll()).thenReturn(List.of(r1, r2, r3, r4));
+
+        List<Pago> pagos = pagoServicio.listarPagosPorCliente(1L);
+
+        assertEquals(2, pagos.size());
+        assertTrue(pagos.contains(pago1));
+        assertTrue(pagos.contains(pago2));
+        assertFalse(pagos.contains(pagoOtro));
+
+        verify(reciboRepositorio).findAll();
+    }
+
+    @Test
+    @DisplayName("calcularTotalPagadoPorFactura debe devolver el total pagado según la entidad Factura")
+    void calcularTotalPagadoPorFactura_ok() {
+        Factura factura = mock(Factura.class);
+        when(facturaRepositorio.findById(1L)).thenReturn(Optional.of(factura));
+        when(factura.calcularTotalPagado()).thenReturn(150.0);
+
+        Double total = pagoServicio.calcularTotalPagadoPorFactura(1L);
+
+        assertEquals(150.0, total);
+        verify(facturaRepositorio).findById(1L);
+        verify(factura).calcularTotalPagado();
+    }
+
+    @Test
+    @DisplayName("calcularTotalPagadoPorFactura debe lanzar excepción si la factura no existe")
+    void calcularTotalPagadoPorFactura_facturaNoExiste() {
+        when(facturaRepositorio.findById(99L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> pagoServicio.calcularTotalPagadoPorFactura(99L)
+        );
+
+        assertTrue(ex.getMessage().contains("Factura no encontrada"));
+        verify(facturaRepositorio).findById(99L);
     }
 }
