@@ -17,41 +17,41 @@ Además de enumeradores como, EstadoServicio, EstadoCuenta, CondicionIVA, Estado
 # Wireframe y Casos de uso
 Los diseños se utilizan de la siguiente manera:
 ### Pantalla de inicio
-![Pantalla de inicio](../wireframes-y-pantallas/pantallas/Pantalla-Inicio.jpg)
+![Pantalla de inicio](../wireframes-y-pantallas/pantallas-1iteracion/Pantalla-Inicio.jpg)
 
 En esta pantalla de inicio se divide en tres partes. La primera sección, donde se encuentra el nombre del sistema. La sección del medio la cual posee tres botones: **Clientes**, que lleva a la pantalla para gestionar clientes, **Servicios**, que lleva a la pantalla para gestionar servicios, y finalmente el botón **Facturación**, el cual lo redirige a la pantalla para gestionar las facturaciones del sistema. 
 En la última sección, se muestra la información académica y el grupo que presenta este trabajo.
 
 ### Pantalla de Gestión de Clientes
-![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-gestionClientes.jpg)
+![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas-1iteracion/Pantalla-gestionClientes.jpg)
 
 Esta pantalla funciona para gestionar clientes del sistema. Nuevamente se divide en 3 secciones. En la primer sección se encuentra un formulario con campos bloqueados para la información personal de un cliente, esta sección se habilita en el momento que decida dar de alta a un nuevo cliente. Hay dos botones alineados a la derecha; **Confirmar** confirma los datos ingresados y finaliza con éxito el alta del nuevo cliente, **Cancelar** cancela el alta de un nuevo cliente. En la segunda sección, se encuentra una tabla con todos los clientes registrados en el sistema. Observe que en cada fila se encuentra un botón de acción denominado **"ver mas detalles"**, el cual lo redirigirá a la pantalla **Detalle de Cliente**, donde podrá modificar sus datos o asignarle servicios.
 Finalmente, en la última sección, se encuentran los botones de **Alta**, **Baja** y **Modificar**. El botón de **Alta** habilita los campos de la primer sección, para que pueda cargar los datos de un nuevo usuario. El botón **Baja** se habilita en el momento que se seleccione un cliente de la tabla y lo da de baja. De igual manera, el botón **Modificar** se habilita al momento de seleccionar un cliente de la tabla y lo redirige a la pantalla **Detalle de Cliente** para continuar con la modificación.
 
 ### Pantalla de Gestión de Clientes - Detalle de Cliente
-![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-gestionClientes-detalle.jpg)
+![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas-1iteracion/Pantalla-gestionClientes-detalle.jpg)
 
 Esta pantalla sirve para observar los detalles del cliente, modificarlo y asignarle servicios. Es muy similar a la pantalla anterior, solo que ésta muestra con más detalle la información de un cliente en específico. En la esquina izquierda se tiene un botón de navegación **Atrás** que nos lleva a la pantalla anterior. En la parte superior observamos los campos rellenados con la información personal del cliente elegido. Debajo, hay una tabla que muestra todos los servicios contratados por este cliente. Tenemos una columna de acción que permite ver las facturas del servico y otro que permite la baja del servicio a este cliente. Asimismo, debajo de esta tabla vemos un botón **Asignar Servicios**, el cual lo redirige a la pantalla de asignación de servicios a clientes. 
 Luego de esta tabla sigue el flujo normal de la pantalla, vemos la misma tabla de clientes para la gestión de servicios y debajo los botones de **Alta**, **Baja** y **Modificacion**, aunque, el botón de alta permanece bloqueado. Desde esta pantalla podemos dar de baja al cliente o modificarlo. 
 
 ### Pantalla de Gestión de Clientes - Asignar Servicio
-![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-gestionClientes-asignServi.jpg)
+![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas-1iteracion/Pantalla-gestionClientes-asignServi.jpg)
 
 Esta pantalla permite la asignación de servicios a un cliente. En la parte superior izquierda de la pantalla observamos el botón de navegación **Atrás** que nos lleva a la pantalla anterior. Debajo observamos la información personal del cliente al cual vamos a asignar los servicios. Debajo Observamos dos tablas, primero la tabla de **Servicios contratados**, la cual muestra todos los servicios que el cliente tiene contrados. Observe que es la misma tabla que tenia en la pantalla de detalle anterior. Luego le sigue la tabla de **Servicios del sistema**, esta tabla lista todos los servicios que tiene el sistema y que el cliente no ha contratado aún. Esta tabla muestra el nombre, descripción, precio y % de iva del servicio. En la columna de acciones, tiene el botón **Asignar servicio** para asignarlo, y otro **Gestionar Servicio** que lo redirige a la pantalla de **Gestionar Servicios**
 
 ### Pantalla de Gestión de Servicios
-![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-gestionServicios.jpg)
+![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas-1iteracion/Pantalla-gestionServicios.jpg)
 
 La pantalla de **Gestión de Servicios** funciona de manera similar a la pantalla de Gestión de Clientes. Note que el flujo de trabajo es el mismo. En la primer sección se observan campos bloqueados, en la segunda una tabla con todos los servicios del sistema registrados y finalmente los botones de **Alta**, **Baja** y **Modificar**. Funcionan de manera similar, al presionar **Alta** Se habilitan los campos que permitirán ingresar los datos de un nuevo servicio. Para concluir con la operación, debe presionar el botón **Confirmar** que se encuentra a su derecha. Si quiere descartar los cambios, presione el boton **Cancelar**. 
 Al seleccionar un servicio de la tabla, se habilitan los botones **Baja** y **Modificar**. Al presionar **Baja** se dará de baja el servicio seleccionado. Al presionar **Modificar**, se habilitarán los campos de la primer sección con los datos del Servicio a modificar. De igual forma como en el **Alta**, presione **Confirmar** para confirmar los cambios o **Cancelar** para descartarlos.
 
 ### Pantalla de Facturación Masiva
-![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-FacturacionMasiva.jpg)
+![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas-1iteracion/Pantalla-FacturacionMasiva.jpg)
 La pantalla de **Facturación Masiva** permite facturar a todos los clientes que tengan un cierto servicio seleccionado asociado. En la primer sección se observan campos para elegir el periodo que abarcarán y la fecha de vencimiento que tendrán las facturas a emitir. Luego encontramos el botón **Facturar Servicios**. Este botón tomará los datos cargados en pantalla para enviar facturas del o los servicios elegidos a todos aquellos que los hayan contratado, dejando también un registro en un log único de facturación masiva.
 Los campos Periodo y Fecha de Vencimiento son obligatorios y debe seleccionarse al menos un servicio de la lista.
 
 ### Pantalla de Facturación Individual
-![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas/Pantalla-FacturacionIndividual.jpg)
+![Pantalla de Gestión de Clientes](../wireframes-y-pantallas/pantallas-1iteracion/Pantalla-FacturacionIndividual.jpg)
 La pantalla de **Facturación Individual** permite facturar a un cliente uno o más servicios. Es similar a la facturación masiva, y de hecho, la facturación masiva hace uso de la individual para su funcionamiento. 
 En la primer sección se observa un campo para buscar a un cliente a través de su ID. Al presionar la lupa se nos habilitará la visibilidad de las siguientes secciones.
 La segunda sección nos despliega los datos del cliente a facturar.
