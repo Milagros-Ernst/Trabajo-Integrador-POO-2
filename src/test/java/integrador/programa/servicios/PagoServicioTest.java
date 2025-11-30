@@ -146,9 +146,12 @@ class PagoServicioTest {
         assertEquals(factura, det.getFactura());
         assertEquals(1000.0, det.getImporteAplicado());
 
-        verify(facturaRepositorio, times(2)).save(factura); // una por el estado
+        // Verificaciones de interacción
+        verify(facturaRepositorio, times(1)).findById(10L);
+        verify(facturaRepositorio, times(1)).save(factura);
+        verify(pagoRepositorio, times(1)).save(any(Pago.class));
         verify(reciboRepositorio, atLeastOnce()).save(any(Recibo.class));
-        verify(pagoRepositorio).save(any(Pago.class));
+
     }
 
     @Test
