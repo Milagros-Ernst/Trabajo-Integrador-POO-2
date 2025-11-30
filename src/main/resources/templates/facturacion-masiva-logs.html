@@ -32,6 +32,47 @@
             </span>
     </div>
 
+    <!-- filtro maravilla -->
+
+    <div class="no-print" style="background-color: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #e9ecef; margin-bottom: 20px;">
+        <form th:action="@{/facturacion/masiva/log}" method="get" class="form-grid" style="align-items: end; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+            
+            <div class="form-group">
+                <label for="filtroPeriodo">Filtrar por Periodo:</label>
+                <select id="filtroPeriodo" name="periodo">
+                    <option value="">-- Todos --</option>
+                    <option value="1" th:selected="${periodoSeleccionado == 1}">Enero</option>
+                    <option value="2" th:selected="${periodoSeleccionado == 2}">Febrero</option>
+                    <option value="3" th:selected="${periodoSeleccionado == 3}">Marzo</option>
+                    <option value="4" th:selected="${periodoSeleccionado == 4}">Abril</option>
+                    <option value="5" th:selected="${periodoSeleccionado == 5}">Mayo</option>
+                    <option value="6" th:selected="${periodoSeleccionado == 6}">Junio</option>
+                    <option value="7" th:selected="${periodoSeleccionado == 7}">Julio</option>
+                    <option value="8" th:selected="${periodoSeleccionado == 8}">Agosto</option>
+                    <option value="9" th:selected="${periodoSeleccionado == 9}">Septiembre</option>
+                    <option value="10" th:selected="${periodoSeleccionado == 10}">Octubre</option>
+                    <option value="11" th:selected="${periodoSeleccionado == 11}">Noviembre</option>
+                    <option value="12" th:selected="${periodoSeleccionado == 12}">Diciembre</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="filtroFecha">Fecha de Ejecución:</label>
+                <input type="date" id="filtroFecha" name="fecha" th:value="${fechaSeleccionada}">
+            </div>
+
+            <div class="form-group" style="flex-direction: row; gap: 10px;">
+                <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">
+                    <i class="fas fa-search"></i> Filtrar
+                </button>
+                
+                <a th:href="@{/facturacion/masiva/log}" class="btn btn-secondary" style="padding: 10px 20px; text-decoration: none; line-height: 1.2;">
+                    Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
+
     <p style="font-size: 14px; color: #555; margin-bottom: 20px;">
       A continuación se detalla el historial de procesos de facturación masiva ejecutados en el sistema.
     </p>
@@ -104,7 +145,7 @@
       <div class="table-wrapper-bottom"></div>
     </div>
 
-    <div class="abm-actions" id="abm-bottom-actions">
+    <div class="abm-actions no-print" id="abm-bottom-actions">
 
       <button type="button" class="btn btn-secondary" onclick="window.print()">
         Imprimir Reporte
