@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Servicios - FlorecillaService</title>
+    <title>Gestión de Clientes - FlorecillaService</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script th:src="@{/js/main.js}"></script>
 </head>
@@ -13,114 +13,165 @@
 
 <header>
     <img th:src="@{/imagen/florLogo.png}" alt="Logo FlorecillaService">
-    <h1><span class="logo-text">FlorecillaService</span> / Gestión de Servicios</h1>
+    <h1><span class="logo-text">FlorecillaService</span> / Gestión de Clientes</h1>
 </header>
 
 <main>
 
-    <a th:href="@{/}" class="btn-atras">
+    <a th:href="@{/clientes}" class="btn-atras">
         <img th:src="@{/imagen/botonAccion-Atras.png}" alt="Atrás" class="icono-img-atras">
         Atrás
     </a>
 
     <div class="form-container">
-        <!-- Formulario de alta/modificación de servicio -->
-        <form id="form-servicios" th:action="@{/servicios}" method="post">
-
-            <!-- Campo oculto para el ID (útil para modificación/baja si tu JS lo usa) -->
-            <input type="hidden" id="idServicio" name="idServicio">
+        <form id="form-cliente" th:action="@{/clientes/gestion}" th:object="${cliente}" method="post">
 
             <fieldset id="form-fieldset" disabled>
                 <div class="form-section-titles">
-                    <h3>Información básica</h3>
+                    <h3>Información personal</h3>
                 </div>
 
-                <div class="form-grid-servicios">
+                <div class="form-grid">
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
                         <input type="text" id="nombre" name="nombre" required>
                     </div>
+                    <div class="form-group">
+                        <label for="telefono">Nro. Teléfono</label>
+                        <input type="text" id="telefono" name="telefono">
+                    </div>
+                    <div class="form-group">
+                        <label for="condicion-fiscal">Condición fiscal</label>
+                        <select id="condicion-fiscal" name="condIVA" required>
+                            <option value="">Seleccione uno</option>
+                            <option value="MONOTRIBUTO">Monotributo</option>
+                            <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
+                            <option value="CONSUMIDOR_FINAL">Consumidor final</option>
+                            <option value="EXENTO">Exento</option>
+                        </select>
+                    </div>
 
                     <div class="form-group">
-                        <label for="descripcion">Descripción</label>
-                        <input type="text" id="descripcion" name="descripcion" required>
+                        <label for="apellido">Apellido</label>
+                        <input type="text" id="apellido" name="apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="text" id="email" name="mail">
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion-fiscal">Dirección fiscal</label>
+                        <input type="text" id="direccion-fiscal" name="direccionFiscal">
                     </div>
 
-                    <div class="form-group-split">
-                        <div class="form-group">
-                            <label for="precio-base">Precio base</label>
-                            <input type="text" id="precio-base" name="precioUnitario" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="iva">% de IVA</label>
-                            <select id="iva" name="tipoIva" required>
-                                <option value="">Seleccione...</option>
-                                <option value="IVA_21">21%</option>
-                                <option value="IVA_105">10,5%</option>
-                                <option value="IVA_0">0%</option>
-                                <option value="IVA_27">27%</option>
+                    <div class="form-group">
+                        <label for="tipo-doc">Tipo de documento</label>
+                        <div style="display: flex; gap: 8px;">
+                            <select id="tipo-doc" name="tipoDocumento" style="flex: 1;" required>
+                                <option value="">Seleccione uno</option>
+                                <option value="DNI">DNI</option>
+                                <option value="CUIT">CUIT</option>
+                                <option value="CUIL">CUIL</option>
                             </select>
+                            <input type="text" id="nro-doc" name="numeroDocumento" placeholder="Nro. doc" style="flex: 2;" required>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" id="direccion" name="direccion">
+                    </div>
+                    <div></div>
                 </div>
             </fieldset>
-
-            <!-- Acciones superiores (Confirmar/Cancelar edición/alta) -->
             <div class="form-actions-top" id="form-top-actions" style="display: none;">
-                <!-- ID alineado con la pantalla de clientes -->
                 <button type="button" class="btn btn-secondary" id="btn-cancelar-edicion">Cancelar</button>
-                <button type="submit" class="btn btn-primary" id="btn-confirmar">Confirmar</button>
+                <button type="submit" class="btn btn-primary">Confirmar Alta</button>
             </div>
         </form>
     </div>
 
     <div class="table-container">
-        <h2 class="table-title">Servicios del sistema</h2>
+        <h2 class="table-title">Clientes activos</h2>
         <div class="table-wrapper">
             <table>
                 <thead>
                 <tr>
-                    <th>Nombre de Servicio</th>
-                    <th>Descripción</th>
-                    <th>Precio</th>
-                    <th>% de IVA</th>
-                    <th>Estado</th>
+                    <th>ID</th>
+                    <th>Tipo Documento</th>
+                    <th>Nro. Documento</th>
+                    <th>Apellido</th>
+                    <th>Nombre</th>
+                    <th>Condición de IVA</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
-
                 <tbody>
-                <tr th:each="serv : ${servicios}"
-                    class="fila-tabla"
-                    th:data-id="${serv.idServicio}"
-                    th:data-nombre="${serv.nombre}"
-                    th:data-descripcion="${serv.descripcion}"
-                    th:data-precio="${serv.precioUnitario}"
-                    th:data-iva="${serv.tipoIva}">
-                    <td th:text="${serv.nombre}"></td>
-                    <td th:text="${serv.descripcion}"></td>
-                    <td th:text="${serv.precioUnitario}"></td>
-                    <td th:text="${serv.tipoIva}"></td>
-                    <td th:text="${serv.estadoServicio}"></td>
+                <tr th:each="cli : ${clientes}">
+                    <td th:text="${cli.idCuenta}"></td>
+                    <td th:text="${cli.tipoDocumento}"></td>
+                    <td th:text="${cli.numeroDocumento}"></td>
+                    <td th:text="${cli.apellido}"></td>
+                    <td th:text="${cli.nombre}"></td>
+                    <td th:text="${cli.condIVA}"></td>
+                    <td>
+                        <a th:href="@{/clientes/gestion/{id}(id=${cli.idCuenta})}" class="action-link">Ver más detalles</a>
+                    </td>
                 </tr>
 
-                <tr th:if="${servicios.isEmpty()}" class="empty-row">
-                    <td colspan="5">No hay servicios registrados en el sistema.</td>
+                <tr th:if="${clientes.isEmpty()}" class="empty-row">
+                    <td colspan="6">No hay clientes registrados.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Acciones ABM inferiores -->
+    <div class="table-container" style="margin-top: 40px;">
+        <h2 class="table-title">Clientes inactivos</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo Documento</th>
+                    <th>Nro. Documento</th>
+                    <th>Apellido</th>
+                    <th>Nombre</th>
+                    <th>Condición de IVA</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cli : ${clientesInactivos}">
+                    <td th:text="${cli.idCuenta}"></td>
+                    <td th:text="${cli.tipoDocumento}"></td>
+                    <td th:text="${cli.numeroDocumento}"></td>
+                    <td th:text="${cli.apellido}"></td>
+                    <td th:text="${cli.nombre}"></td>
+                    <td th:text="${cli.condIVA}"></td>
+                    <td>
+                        <form th:action="@{/clientes/gestion/{id}/reactivar(id=${cli.idCuenta})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-primary" style="padding: 6px 12px; font-size: 14px;">
+                                Reactivar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:if="${clientesInactivos.isEmpty()}" class="empty-row">
+                    <td colspan="7">No hay clientes inactivos.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="abm-actions" id="abm-bottom-actions">
-        <!-- IDs alineados con los que usa la pantalla de clientes -->
         <button type="button" class="btn btn-alta" id="btn-alta-form">Alta</button>
         <button type="button" class="btn btn-baja" id="btn-baja-form">Baja</button>
         <button type="button" class="btn btn-secondary" id="btn-modificar-form">Modificar</button>
     </div>
 
 </main>
-
 </body>
 </html>
