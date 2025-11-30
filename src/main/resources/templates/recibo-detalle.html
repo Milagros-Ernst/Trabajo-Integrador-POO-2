@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="'Recibo de Pago #' + ${recibo.nroRecibo} + ' - FlorecillaService'">
+    Detalle Recibo de Pago
+  </title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="actions-bar">
+  <!-- Ajustá la URL de retorno al estado de cuenta o a administrar-pagos según tu flujo -->
+  <a th:href="@{/administrar-pagos(clienteId=${cliente.idCuenta})}" class="btn btn-secondary">
+    &larr; Volver a Administración de Pagos
+  </a>
+  <button onclick="window.print()" class="btn btn-primary">
+    <i class="fas fa-print"></i> Imprimir Recibo
+  </button>
+</div>
+
+<div class="invoice-box">
+
+  <!-- ENCABEZADO -->
+  <div class="invoice-header">
+    <div class="header-left">
+      <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        <img th:src="@{/imagen/florLogo.png}" alt="Logo" style="height: 50px; margin-right: 10px;">
+        <h2 style="margin: 0; color: #333;">FlorecillaService</h2>
+      </div>
+      <p>
+        Pellegrini 269<br>
+        Apóstoles Misiones, Argentina<br>
+        Tel: (011) 1234-5678<br>
+        Condición frente al IVA <strong>Responsable Inscripto</strong>
+      </p>
+    </div>
+
+    <!-- Caja de tipo de comprobante -->
+    <div class="invoice-letter-box">
+      <span>R</span>
+    </div>
+
+    <div class="header-right">
+      <h3 style="margin: 0 0 10px 0;">RECIBO DE PAGO</h3>
+      <p>
+        <strong>Nro. Recibo:</strong>
+        <span th:text="'0001-' + ${#numbers.formatInteger(recibo.nroRecibo, 8)}">00000001</span><br>
+        <strong>Fecha Emisión:</strong>
+        <span th:text="${#temporals.format(recibo.fechaEmision, 'dd/MM/yyyy')}">01/01/2023</span><br>
+        <strong>Cliente:</strong>
+        <span th:text="${cliente.nombre} + ' ' + ${cliente.apellido}">Nombre Apellido</span><br>
+        <strong>Documento:</strong>
+        <span th:text="${cliente.numeroDocumento}">00000000</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- DATOS DEL CLIENTE -->
+  <div class="info-group">
+    <span class="info-title">Datos del Cliente</span>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div>
+        <strong>Razón Social:</strong>
+        <span th:text="${cliente.nombre} + ' ' + ${cliente.apellido}"></span><br>
+        <strong>Domicilio:</strong>
+        <span th:text="${cliente.direccion}"></span><br>
+        <strong>Condición IVA:</strong>
+        <span th:text="${cliente.condIVA}"></span>
+      </div>
+      <div class="text-right">
+        <strong>CUIT/DNI:</strong>
+        <span th:text="${cliente.numeroDocumento}"></span><br>
+        <strong>Email:</strong>
+        <span th:text="${cliente.mail}"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETALLE DE FACTURAS INCLUIDAS EN EL RECIBO -->
+  <div class="info-group">
+    <span class="info-title">Factura asociada a este recibo</span>
+
+    <table class="invoice-table">
+      <thead>
+      <tr>
+        <th>Nro. Factura</th>
+        <th class="text-center">Fecha</th>
+        <th class="text-right">Importe Factura</th>
+        <th class="text-right">Importe Pagado</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- AHORA: trabajar con la lista recibo.detalles -->
+      <tr th:if="${recibo.detalles != null and !#lists.isEmpty(recibo.detalles)}"
+          th:each="detalle : ${recibo.detalles}">
+        <td>
+          <span th:text="${'0001-' + #numbers.formatInteger(detalle.factura.idFactura, 8)}">00000001</span>
+        </td>
+        <td class="text-center">
+          <span th:text="${#temporals.format(detalle.factura.fecha, 'dd/MM/yyyy')}">01/01/2023</span>
+        </td>
+        <td class="text-right">
+          <span th:text="'$ ' + ${#numbers.formatDecimal(detalle.factura.precioTotal, 1, 2)}">$ 0,00</span>
+        </td>
+        <td class="text-right">
+          <span th:text="'$ ' + ${#numbers.formatDecimal(detalle.importeAplicado, 1, 2)}">$ 0,00</span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DETALLE DEL PAGO (UN SOLO MÉTODO POR RECIBO) -->
+  <div class="info-group">
+    <span class="info-title">Detalle del pago</span>
+
+    <table class="invoice-table">
+      <thead>
+      <tr>
+        <th>Fecha de pago</th>
+        <th>Método</th>
+        <th class="text-right">Importe</th>
+        <th>Observaciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:if="${recibo.pago != null}">
+        <td>
+          <span th:text="${#temporals.format(recibo.pago.fechaPago, 'dd/MM/yyyy')}">01/01/2023</span>
+        </td>
+        <td>
+          <span th:text="${recibo.pago.descripcionMetodoPago}">Efectivo</span>
+        </td>
+        <td class="text-right">
+          <span th:text="'$ ' + ${#numbers.formatDecimal(recibo.pago.importe, 1, 2)}">$ 0,00</span>
+        </td>
+        <td>
+          <span th:text="${recibo.pago.observaciones}">Sin observaciones</span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TOTALES DEL RECIBO -->
+  <div class="invoice-totals">
+    <div class="totals-box">
+      <div class="totals-row final">
+        <span>TOTAL PAGADO:</span>
+        <span th:text="'$ ' + ${#numbers.formatDecimal(recibo.importeTotal, 1, 2)}">$ 0,00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIE -->
+  <div style="margin-top: 40px; font-size: 12px; color: #999; text-align: center; border-top: 1px dashed #ddd; padding-top: 10px;">
+    Recibo generado electrónicamente por Sistema FlorecillaService.<br>
+    Este documento deja constancia del importe abonado y del comprobante de pago emitido.
+  </div>
+
+</div>
+
+</body>
+</html>
