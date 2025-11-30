@@ -87,9 +87,9 @@ public class ClienteControlador {
     public String modificarCliente(@PathVariable Long id, @ModelAttribute Cliente clienteActualizado) {
         try {
             clienteService.modificarCliente(id, clienteActualizado);
-            return "redirect:/clientes/gestion" + id;
+            return "redirect:/clientes/gestion/" + id;
         } catch (Exception e) {
-            return "redirect:/clientes/gestion" + id + "?error=" + e.getMessage();
+            return "redirect:/clientes/gestion/" + id + "?error=" + e.getMessage();
         }
     }
 
