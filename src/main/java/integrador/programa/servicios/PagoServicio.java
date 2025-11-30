@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -99,6 +100,7 @@ public class PagoServicio {
                 .metodoPago(metodoPago)
                 .empleadoResponsable(empleadoResponsable)
                 .observaciones(observaciones)
+                .fechaPago(LocalDate.now()) 
                 .recibo(reciboPersistido)
                 .build();
 
@@ -184,6 +186,7 @@ public class PagoServicio {
                 .metodoPago(metodoPago)
                 .empleadoResponsable(empleadoResponsable)
                 .observaciones(observaciones)
+                .fechaPago(LocalDate.now()) 
                 .recibo(reciboPersistido)
                 .build();
 
