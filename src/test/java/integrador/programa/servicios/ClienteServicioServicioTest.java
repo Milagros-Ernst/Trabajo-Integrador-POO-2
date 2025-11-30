@@ -1,16 +1,28 @@
 package integrador.programa.servicios;
 
-import integrador.programa.modelo.*;
+// --- 1. IMPORTS DEL MODELO (DATOS) ---
+import integrador.programa.modelo.ClienteServicio; // La entidad de la relación
+import integrador.programa.modelo.Cliente;
+import integrador.programa.modelo.Servicio;
 import integrador.programa.modelo.enumeradores.EstadoServicio;
 import integrador.programa.modelo.enumeradores.TipoIVA;
+
+// --- 2. IMPORTS DE LOS REPOSITORIOS ---
 import integrador.programa.repositorios.ClienteRepositorio;
 import integrador.programa.repositorios.ClienteServicioRepositorio;
 import integrador.programa.repositorios.ServicioRepositorio;
+
+// --- 3. IMPORT DE LA LÓGICA (EL SERVICIO QUE PROBAMOS) ---
+// Según tu imagen, la clase se llama así:
+import integrador.programa.servicios.ClienteServicioServicio;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -19,12 +31,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ClienteServicioServicioTest {
