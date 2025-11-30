@@ -78,7 +78,7 @@
     </div>
   </div>
 
-  <!-- DETALLE DE FACTURA INCLUIDA EN EL RECIBO (UNO A UNO) -->
+  <!-- DETALLE DE FACTURAS INCLUIDAS EN EL RECIBO -->
   <div class="info-group">
     <span class="info-title">Factura asociada a este recibo</span>
 
@@ -92,18 +92,20 @@
       </tr>
       </thead>
       <tbody>
-      <tr th:if="${recibo.detalle != null}">
+      <!-- AHORA: trabajar con la lista recibo.detalles -->
+      <tr th:if="${recibo.detalles != null and !#lists.isEmpty(recibo.detalles)}"
+          th:each="detalle : ${recibo.detalles}">
         <td>
-          <span th:text="${'0001-' + #numbers.formatInteger(recibo.detalle.factura.idFactura, 8)}">00000001</span>
+          <span th:text="${'0001-' + #numbers.formatInteger(detalle.factura.idFactura, 8)}">00000001</span>
         </td>
         <td class="text-center">
-          <span th:text="${#temporals.format(recibo.detalle.factura.fecha, 'dd/MM/yyyy')}">01/01/2023</span>
+          <span th:text="${#temporals.format(detalle.factura.fecha, 'dd/MM/yyyy')}">01/01/2023</span>
         </td>
         <td class="text-right">
-          <span th:text="'$ ' + ${#numbers.formatDecimal(recibo.detalle.factura.precioTotal, 1, 2)}">$ 0,00</span>
+          <span th:text="'$ ' + ${#numbers.formatDecimal(detalle.factura.precioTotal, 1, 2)}">$ 0,00</span>
         </td>
         <td class="text-right">
-          <span th:text="'$ ' + ${#numbers.formatDecimal(recibo.detalle.importeAplicado, 1, 2)}">$ 0,00</span>
+          <span th:text="'$ ' + ${#numbers.formatDecimal(detalle.importeAplicado, 1, 2)}">$ 0,00</span>
         </td>
       </tr>
       </tbody>
