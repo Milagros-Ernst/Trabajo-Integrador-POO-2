@@ -246,25 +246,25 @@
                     <td th:text="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy')}"></td>
                     <td th:text="${pago.metodoPago}"></td>
 
-                    <!-- Lógica para mostrar ID de facturas si la relación existe -->
                     <td>
-                        <span th:if="${pago.factura != null}" th:text="'Factura #' + ${pago.factura.idFactura}"></span>
-                        <span th:if="${pago.factura == null}">Pago General</span>
+                        <div th:if="${pago.recibo != null and pago.recibo.detalles != null}">
+                            <span th:each="detalle, iter : ${pago.recibo.detalles}">
+                                <span th:text="'Factura #' + ${detalle.factura.idFactura}"></span>
+                                <span th:if="${!iter.last}">, </span>
+                            </span>
+                        </div>
+                        <span th:if="${pago.recibo == null}">Sin recibo asociado</span>
                     </td>
 
                     <td th:text="'$ ' + ${#numbers.formatDecimal(pago.importe, 1, 2)}" style="font-weight: bold; color: #2e7d32;"></td>
 
                     <td style="text-align: center;">
-                        <button type="button" class="btn btn-primary" style="padding: 4px 12px; font-size: 12px;"
-                                th:data-id="${pago.idPago}"
-                                th:data-fecha="${#temporals.format(pago.fechaPago, 'dd/MM/yyyy')}"
-                                th:data-monto="${pago.importe}"
-                                th:data-metodo="${pago.metodoPago}"
-                                th:data-responsable="${pago.empleadoResponsable}"
-                                th:data-factura="${pago.factura != null ? pago.factura.idFactura : 'N/A'}"
-                                onclick="abrirModalRecibo(this)">
+                        <a th:if="${pago.recibo != null}"
+                           th:href="@{/recibos/{id}(id=${pago.recibo.idRecibo})}"
+                           class="btn btn-primary"
+                           style="padding: 4px 12px; font-size: 12px; text-decoration: none; display: inline-block;">
                             <i class="fas fa-eye"></i> Ver Recibo
-                        </button>
+                        </a>
                     </td>
                 </tr>
                 <tr th:if="${pagos == null or pagos.isEmpty()}" class="empty-row">
