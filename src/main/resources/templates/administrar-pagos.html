@@ -36,7 +36,7 @@
                     <option value="" disabled selected>-- Buscar Cliente --</option>
                     <option th:each="cli : ${clientes}"
                             th:value="${cli.idCuenta}"
-                            th:text="${cli.nombre} + ' ' + ${cli.apellido} + ' (DNI: ' + ${cli.numeroDocumento} + ')'"
+                            th:text="${cli.nombre} + ' ' + ${cli.apellido} + ' (' + ${cli.tipoDocumento} + ': ' + ${cli.numeroDocumento} + ')'"
                             th:selected="${clienteSeleccionado != null and clienteSeleccionado.idCuenta == cli.idCuenta}">
                     </option>
                 </select>
