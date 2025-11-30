@@ -44,34 +44,10 @@ public class Pago {
     @Column(name = "empleado_responsable", nullable = false, length = 40)
     private String empleadoResponsable;
 
-    // una factura puede tener varios pagos: parciales
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_factura", nullable = false)
-    @NotNull(message = "El pago debe estar asociado a una factura")
-    private Factura factura;
-
-    // un pago genera un recibo
+    // Un pago genera un recibo (1 a 1)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_recibo", unique = true)
     private Recibo recibo;
-
-    public boolean validarImporte() {
-        if (this.factura == null) {
-            return false;
-        }
-        return this.importe != null && this.importe > 0 && this.importe <= this.factura.getPrecioTotal();
-    }
-
-    public boolean esPagoTotal() {
-        if (this.factura == null || this.importe == null) {
-            return false;
-        }
-        return Math.abs(this.importe - this.factura.getPrecioTotal()) < 0.01;
-    }
-
-    public boolean esPagoParcial() {
-        return !esPagoTotal() && validarImporte();
-    }
 
     public String getDescripcionMetodoPago() {
         return this.metodoPago != null ? this.metodoPago.getDescripcion() : "";

@@ -4,11 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.generator.EventType;
-import org.hibernate.annotations.Generated; 
+import org.hibernate.annotations.Generated;
 
 import integrador.programa.modelo.enumeradores.EstadoFactura;
 import integrador.programa.modelo.enumeradores.TipoComprobante;
@@ -23,18 +21,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.AccessLevel;
 
-
 @Entity
 @Getter @Setter @NoArgsConstructor
 @Table(name = "Factura")
 public class Factura {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_factura")
     @Setter(AccessLevel.NONE)
     private Long idFactura;
-    
+
     @Column(name = "nro_serie", columnDefinition = "SERIAL", insertable = false, updatable = false)
     @Generated(event = EventType.INSERT)
     private Long nroSerie;
@@ -64,38 +61,37 @@ public class Factura {
     @Size(min = 3, max = 100)
     @Column(name = "empleado_responsable", nullable = false, length = 100)
     private String empleadoResponsable;
-    // hardcodeariamos un nombre
 
+    // Relación con DetalleFactura
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DetalleFactura> detalles = new ArrayList<>();
 
-    // Relación con NotaCredito. le puse optional por si no hay nota
+    // Relación con NotaCredito
     @OneToOne(mappedBy = "facturaAnulada", fetch = FetchType.LAZY, optional = true)
     private NotaCredito notaCredito;
 
-    // Relación con Cliente 
+    // Relación con Cliente
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_cliente", nullable = false)
     @NotNull(message = "La factura debe estar asociada a un cliente")
     private Cliente cliente;
 
-    // Relación con Pago, una factura puede tener múltiples pagos
-    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Pago> pagos = new ArrayList<>();
-
+    // Una factura puede aparecer en varios DetalleRecibo
+    @OneToMany(mappedBy = "factura", fetch = FetchType.LAZY)
+    private List<DetalleRecibo> detallesRecibo = new ArrayList<>();
 
     public void agregarDetalle(DetalleFactura detalle) {
         if (detalle != null) {
-            // detalle.setFactura(this);
             if (!this.detalles.contains(detalle)) {
                 this.detalles.add(detalle);
+                // detalle.setFactura(this);  // si en DetalleFactura no se hace en otro lado
             }
         }
     }
 
     public void calcularTotal() {
         double totalAcumulado = 0.0;
-        
+
         if (this.detalles == null) {
             this.precioTotal = 0.0;
             return;
@@ -104,32 +100,21 @@ public class Factura {
         for (DetalleFactura detalle : this.detalles) {
             totalAcumulado += detalle.getPrecioConIvaCalculado();
         }
-        
+
         this.precioTotal = totalAcumulado;
     }
 
-    // Pagos
-    // se agrega un pago a la factura
-    public void agregarPago(Pago pago) {
-        if (pago != null) {
-            if (!this.pagos.contains(pago)) {
-                this.pagos.add(pago);
-                pago.setFactura(this);
-            }
-        }
-    }
-
-    // Calcula el total pagado hasta la fecha
+    // Total pagado a esta factura, sumando todos los importes aplicados en DetalleRecibo.
     public double calcularTotalPagado() {
-        if (this.pagos == null || this.pagos.isEmpty()) {
+        if (this.detallesRecibo == null || this.detallesRecibo.isEmpty()) {
             return 0.0;
         }
-        return this.pagos.stream()
-                .mapToDouble(Pago::getImporte)
+        return this.detallesRecibo.stream()
+                .mapToDouble(DetalleRecibo::getImporteAplicado)
                 .sum();
     }
 
-    // Calcula el saldo pendiente de la factura
+    // Saldo pendiente = total factura - total aplicado en recibos.
     public double calcularSaldoPendiente() {
         return this.precioTotal - calcularTotalPagado();
     }
