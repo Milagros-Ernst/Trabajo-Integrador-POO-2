@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -36,9 +35,9 @@ class ClienteServiceTest {
         ReflectionTestUtils.setField(clienteBase, "idCuenta", 1L);
         clienteBase.setNombre("Juan");
         clienteBase.setApellido("Pérez");
-        // suponemos que estos setters existen en Cliente
         clienteBase.setNumeroDocumento("12345678");
-        clienteBase.setTipoDocumento(null); // evitamos depender de un valor específico del enum
+        // Si querés, podés poner un TipoDocumento real en lugar de null
+        clienteBase.setTipoDocumento(null);
     }
 
     @Test
@@ -134,7 +133,6 @@ class ClienteServiceTest {
         clienteActualizado.setTipoDocumento(null);
 
         when(clienteRepositorio.findById(id)).thenReturn(Optional.of(clienteExistente));
-        // no hay otro cliente usando ese documento
         when(clienteRepositorio.findByTipoDocumentoAndNumeroDocumento(null, "22222222"))
                 .thenReturn(Optional.empty());
         when(clienteRepositorio.save(clienteActualizado)).thenReturn(clienteActualizado);
@@ -167,7 +165,7 @@ class ClienteServiceTest {
         clienteActualizado.setTipoDocumento(null);
 
         Cliente otroCliente = new Cliente();
-        ReflectionTestUtils.setField(otroCliente, "idCuenta", 2L); // distinto ID
+        ReflectionTestUtils.setField(otroCliente, "idCuenta", 2L);
 
         when(clienteRepositorio.findById(id)).thenReturn(Optional.of(clienteExistente));
         when(clienteRepositorio.findByTipoDocumentoAndNumeroDocumento(null, "22222222"))
@@ -209,7 +207,6 @@ class ClienteServiceTest {
         assertEquals("Nuevo", resultado.getNombre());
 
         verify(clienteRepositorio).findById(id);
-        // no se debería consultar por documento porque no cambió
         verify(clienteRepositorio, never())
                 .findByTipoDocumentoAndNumeroDocumento(any(), anyString());
         verify(clienteRepositorio).save(clienteActualizado);
@@ -220,18 +217,21 @@ class ClienteServiceTest {
     void bajaCliente_ok() {
         Long id = 1L;
 
-        Cliente clienteSpy = Mockito.spy(new Cliente());
-        ReflectionTestUtils.setField(clienteSpy, "idCuenta", id);
+        Cliente cliente = new Cliente();
+        ReflectionTestUtils.setField(cliente, "idCuenta", id);
+        // suponemos que inicialmente está ACTIVA
+        cliente.setEstadoCuenta(EstadoCuenta.ACTIVA);
 
-        when(clienteRepositorio.findById(id)).thenReturn(Optional.of(clienteSpy));
-        when(clienteRepositorio.save(clienteSpy)).thenReturn(clienteSpy);
+        when(clienteRepositorio.findById(id)).thenReturn(Optional.of(cliente));
+        when(clienteRepositorio.save(cliente)).thenReturn(cliente);
 
         Cliente resultado = clienteService.bajaCliente(id);
 
         assertNotNull(resultado);
+        assertEquals(EstadoCuenta.INACTIVA, resultado.getEstadoCuenta());
+
         verify(clienteRepositorio).findById(id);
-        verify(clienteSpy).desactivar();
-        verify(clienteRepositorio).save(clienteSpy);
+        verify(clienteRepositorio).save(cliente);
     }
 
     @Test
@@ -239,18 +239,20 @@ class ClienteServiceTest {
     void reactivarCliente_ok() {
         Long id = 1L;
 
-        Cliente clienteSpy = Mockito.spy(new Cliente());
-        ReflectionTestUtils.setField(clienteSpy, "idCuenta", id);
+        Cliente cliente = new Cliente();
+        ReflectionTestUtils.setField(cliente, "idCuenta", id);
+        cliente.setEstadoCuenta(EstadoCuenta.INACTIVA);
 
-        when(clienteRepositorio.findById(id)).thenReturn(Optional.of(clienteSpy));
-        when(clienteRepositorio.save(clienteSpy)).thenReturn(clienteSpy);
+        when(clienteRepositorio.findById(id)).thenReturn(Optional.of(cliente));
+        when(clienteRepositorio.save(cliente)).thenReturn(cliente);
 
         Cliente resultado = clienteService.reactivarCliente(id);
 
         assertNotNull(resultado);
+        assertEquals(EstadoCuenta.ACTIVA, resultado.getEstadoCuenta());
+
         verify(clienteRepositorio).findById(id);
-        verify(clienteSpy).activar();
-        verify(clienteRepositorio).save(clienteSpy);
+        verify(clienteRepositorio).save(cliente);
     }
 
     @Test
