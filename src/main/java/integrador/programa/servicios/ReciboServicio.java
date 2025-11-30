@@ -18,28 +18,33 @@ public class ReciboServicio {
         this.reciboRepositorio = reciboRepositorio;
     }
 
-    // Obtiene un recibo por su ID.
-    public Recibo buscarPorId(Long idRecibo) {
-    return reciboRepositorio.findById(idRecibo)
-            .orElseThrow(() -> new IllegalArgumentException("Recibo no encontrado"));
-}
-
-
-    // Obtiene un recibo por su número correlativo.
-    public Recibo buscarPorNumero(Long nroRecibo) {
-        Recibo recibo = reciboRepositorio.findByNroRecibo(nroRecibo);
-        if (recibo == null) {
-            throw new IllegalArgumentException("No existe un recibo con ese número");
-        }
-        return recibo;
+    // Genera número correlativo de recibo
+    public Long generarNroRecibo() {
+        Long ultimo = reciboRepositorio.obtenerUltimoNumero();
+        return ultimo + 1;
     }
 
-    // Lista todos los recibos de un cliente (estado de cuenta).
+    // Busca por ID
+    public Recibo buscarPorId(Long idRecibo) {
+        return reciboRepositorio.findById(idRecibo)
+                .orElseThrow(() -> new IllegalArgumentException("Recibo no encontrado"));
+    }
+
+    // Buscar por número de recibo
+    public Recibo buscarPorNumero(Long nroRecibo) {
+        Recibo r = reciboRepositorio.findByNroRecibo(nroRecibo);
+        if (r == null) {
+            throw new IllegalArgumentException("No existe un recibo con ese número");
+        }
+        return r;
+    }
+
+    // Recibos por cliente
     public List<Recibo> listarPorCliente(Cliente cliente) {
         return reciboRepositorio.findByCliente(cliente);
     }
 
-    // Lista todos los recibos existentes (solo para administración si lo necesitás).
+    // Listar todos
     public List<Recibo> listarTodos() {
         return reciboRepositorio.findAll();
     }
