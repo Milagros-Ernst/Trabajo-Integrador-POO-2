@@ -11,9 +11,8 @@ Para el desarrollo del diagrama de clases trabajamos en la página Draw.io. El l
 ### Diagrama de Clases
 ![Diagrama de clases](../diagramas/DiagramaDeClases-Integrador-POO-II.png)
 
-# TENDRÍAMOS QUE VER SI SE CAMBIARON MÁS COSAS
-El mismo cuenta con las clases Cuenta, Cliente, Administrador, Factura, Detalle_Factura, Servicio, NotaCredito, DetalleNota y Pago.
-Además de enumeradores como, EstadoServicio, EstadoCuenta, CondicionIVA, EstadoFactura, MetodoPago, TipoDocumento, TipoComprobante
+El mismo cuenta con las clases Cuenta, Cliente, Administrador, Factura, LogFacturacionMasiva, DetalleFactura, Servicio, ClienteServicio, NotaCredito, DetalleNota, Recibo, DetalleRecibo y Pago.
+Además de los enumeradores EstadoServicio, EstadoCuenta, CondicionIVA, EstadoFactura, MetodoPago, TipoDocumento, TipoComprobante.
 
 # Wireframe y Casos de uso
 Los diseños de esta iteración se utilizan de la siguiente manera:
@@ -111,6 +110,15 @@ En este recibo de pago parcial, se oberva que el valor de la factura a pagar es 
 ###### **Ernst Milagros Shaiel**
 
 ###### **Menacho Natalia Agustina**
+En esta iteración tenía la tarea de desarrollar la **HU 14 - Informe de historial de facturación masiva** y terminar la **HU 11 - Anulación de factura**.
+
+Para el desarrollo de la **HU 14** tomé como base el log de facturación desarrollado en la primera iteración, donde se hicieron pequeñas modificaciones en el funcionamiento y se permitió al usuario poder ver estos registros de forma visual. También implementé filtros por periodo y fecha para que el usuario pueda encontrar los registros que busca de forma rápida y sencilla.
+
+La **HU 11** ya se encontraba avanzada gracias al trabajo realizado en la primera iteración. Se realizaron algunos cambios en los controladores y en el manejo de la creación de las notas de crédito. También se enlazaron los controladores con la interfaz y se verificó que el usuario pueda anular una factura y que se cree una nota de crédito de forma automática tomando los mismos valores que la factura original.
+
+Además me dediqué a hacer pruebas de las clases relacionadas a `Factura` y `NotaCredito` (en cuanto a modelo, servicio y controlador). Y también realicé pruebas para los controladores de las otras clases más importantes. Utilicé `Mockito` y funciones de `JUnit 5` para construirlas.
+
+Finalmente también realicé pequeños aportes para ayudar a mis compañeros. Y corregí un par de errores en la implementación de la facturación que fueron detectados durante esta iteración. También hice un par de pequeñas mejoras y eliminé algunas líneas que no se usaban.
 
 ###### **Roko María Guillermina**
 
