@@ -10,4 +10,6 @@ En cuanto a la organización, el grupo mantuvo la misma dinámica positiva que e
 
 En esta iteración también aprendimos bastante, sobre todo en lo relacionado a pruebas unitarias, mejores prácticas y el manejo de herramientas como Spring y Maven. Sentimos que avanzamos con más seguridad gracias a la base que ya habíamos construido en la primera iteración.
 
-Como esta fue la última etapa del proyecto, no quedaron mejoras pendientes para una iteración futura. En general, la experiencia fue positiva: pudimos cumplir todo lo planificado, aprendimos mucho y el trabajo en equipo se mantuvo sólido hasta el final.
+Aunque esta ya fue la última iteración del proyecto dentro de la materia, si se siguiera trabajando a futuro una posible mejora sería implementar diferentes perfiles de usuario, como administradores y operadores. Esto permitiría controlar mejor qué acciones puede realizar cada rol (por ejemplo, quién puede emitir recibos, modificar servicios o gestionar bajas lógicas), y ayudaría a que el sistema sea más completo y seguro.
+
+En general, la experiencia fue positiva: pudimos cumplir todo lo planificado, aprendimos mucho y el trabajo en equipo se mantuvo sólido hasta el final.
