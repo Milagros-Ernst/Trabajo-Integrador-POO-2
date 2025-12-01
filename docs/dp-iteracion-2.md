@@ -40,9 +40,9 @@ Finalmente, al final se tienen tres botones; **Alta**, que habilita el formulari
 ![Pantalla de detalle de cliente](../wireframes-y-pantallas/pantallas-2iteracion/detalle-cliente.png)
 
 En esta pantalla se observan todos los datos del cliente seleccionado. En primera instancia se ve el formulario con sus datos cargados, junto a un botón *'Ver historial de facturación'* que lo redirige al historial de facturación de dicho cliente. Debajo se ve una tabla con los servicios contratados por el mismo, junto con un botón para asignarle servicios.
-Debajo de la tabla de servicios contratados observa que continúa la tabla de clientes activos. 
+Debajo de la tabla de servicios contratados se visualiza la tabla de clientes activos. 
 
-Finalmente, observa los botones **Alta**, **Baja** y **Modificar**. El botón *Alta* lo redirige a la pantalla de gestión de clientes y habilita los campos para dar de alta a un nuevo cliente. El botón de *Baja* da de baja al cliente seleccionado y finalmente el botón de *Modificar* habilita los campos con los datos del cliente, para poder modificarlos. 
+Finalmente, al pié de la pantalla se ven los botones **Alta**, **Baja** y **Modificar**. El botón *Alta* lo redirige a la pantalla de gestión de clientes y habilita los campos para dar de alta a un nuevo cliente. El botón de *Baja* da de baja al cliente seleccionado y finalmente el botón de *Modificar* habilita los campos con los datos del cliente, para poder modificarlos. 
 
 ### Pantalla de historial de facturación
 ![Pantalla de historial de facturación](../wireframes-y-pantallas/pantallas-2iteracion/facturacion-clientes.png)
@@ -56,7 +56,7 @@ Debajo se observa el **Historial de facturas**, donde podrá ver el número de f
     * *Ver:* ver el detalle de la factura e imprimirla.
 * Si la factura tiene estado `ANULADA`, tendrá la opción *Ver nota*, para visualizar la nota de crédito.
 * Si la factura tiene estado `PAGADA`, tendrá la opción *Ver*, para ver el detalle de la factura e imprimirla.
-* Si la factura tiene estado `PARCIAL`, tendrpa las opciones *Pagar* y *Ver*.
+* Si la factura tiene estado `PARCIAL`, tendrá las opciones *Pagar* y *Ver*.
 
 Posterior a esta tabla, y si corresponde, el sistema mostrará la deuda total pendiente junto a un botón para ir a pagar. 
 
@@ -66,16 +66,15 @@ Debajo de esta se encuentra una nueva tabla que muestra los pagos realizados con
 ### Facturas A
 ![Factura A](../wireframes-y-pantallas/pantallas-2iteracion/factura-1.png)
 
-Esta es la factura N° 1 emitida para un cliente. En el encabezado, a la izquierda se observan los datos del emisor. En el centro el tipo de factura (en este caso 'A') y a la derecha los datos de la factura, como su número, fecha de emisión, vencimiento y el cuit del emisor.
-Debajo se obervan los datos del cliente facturado.
+Visualización de una **factura A** emitida. El encabezado se divide en tres bloques: datos del emisor a la izquierda, identificación del tipo de comprobante (en este caso 'A') en el centro y datos datos fiscales a la derecha (número, fecha de emisión/vencimiento y CUIT). Inmediatamente debajo, se detallan los datos del cliente receptor.
 
-En el cuerpo de la factura se observa el detalle de cada servicio facturado, con su descripción, precio unitario, alicuota de iva y el subtotal. En el pie se ve el subtotal neto junto al iva discriminado por separado y finalmente el total con su IVA discriminado. 
+El cuerpo del comprobante presenta una grilla con los servicios facturados, especificando descripción, precio unitario, alícuota de IVA y subtotal por ítem. Finalmente, el pie de página expone el cálculo financiero: el subtotal neto gravado, la discriminación del IVA y el importe total de la operación.
 
-Si se tratase de una factura B o C, el IVA no se discrimina en la factura, se vería de esta manera: 
+Si se tratase de una factura B o C, el IVA no se discrimina en la factura y se vería de esta manera: 
 ### Factura B
 ![Factura B](../wireframes-y-pantallas/pantallas-2iteracion/factura-2.png)
 
-Como se observa, tiene el mismo formato, salvo que no se discrimina el IVA. Se observa la columna de descripción, precio unitario, subtotal y finalmente en el pie, el total.
+Este comprobante mantiene la estructura visual del anterior, con la diferencia de que no discrimina el IVA en los ítems. El pie de página agrupa los totales y añade una sección normativa específica para la Ley 27.743, visualizando el desglose del IVA contenido únicamente a título informativo.
 
 ### Nota de crédito
 ![Nota de crédito para Factura A](../wireframes-y-pantallas/pantallas-2iteracion/nota-1.png)
