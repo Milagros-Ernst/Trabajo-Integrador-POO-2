@@ -51,13 +51,13 @@ Finalmente, observa los botones **Alta**, **Baja** y **Modificar**. El botón *A
 Luego de seleccionar un cliente desde el combobox, usted podrá observar el historial de facturación del mismo. Primero, se muestra la información del cliente, como *nombre completo*, *documento*, *condición fiscal* y *email*. Además de un acceso rápido a la gestión de pagos.
 
 Debajo se observa el **Historial de facturas**, donde podrá ver el número de factura, período facturado, día de emisión, fecha de vencimiento, monto total y estado. Además cuenta con una columna **Acciones**, en donde tendrá distintas acciones dependiendo del estado de la factura.
-    * Si la factura tiene estado `VIGENTE`, podrá realizar las siguientes acciones:
-        * *Pagar:* redirige a la gestión de pagos para pagar la factura,
-        * *Anular:* anulará la factura (pidiendo obligatoriamente un motivo),
-        * *Ver:* ver el detalle de la factura e imprimirla.
-    * Si la factura tiene estado `ANULADA`, tendrá la opción *Ver nota*, para visualizar la nota de crédito.
-    * Si la factura tiene estado `PAGADA`, tendrá la opción *Ver*, para ver el detalle de la factura e imprimirla.
-    * Si la factura tiene estado `PARCIAL`, tendrpa las opciones *Pagar* y *Ver*.
+* Si la factura tiene estado `VIGENTE`, podrá realizar las siguientes acciones:
+    * *Pagar:* redirige a la gestión de pagos para pagar la factura,
+    * *Anular:* anulará la factura (pidiendo obligatoriamente un motivo),
+    * *Ver:* ver el detalle de la factura e imprimirla.
+* Si la factura tiene estado `ANULADA`, tendrá la opción *Ver nota*, para visualizar la nota de crédito.
+* Si la factura tiene estado `PAGADA`, tendrá la opción *Ver*, para ver el detalle de la factura e imprimirla.
+* Si la factura tiene estado `PARCIAL`, tendrpa las opciones *Pagar* y *Ver*.
 
 Posterior a esta tabla, y si corresponde, el sistema mostrará la deuda total pendiente junto a un botón para ir a pagar. 
 
@@ -65,12 +65,35 @@ Debajo de esta se encuentra una nueva tabla que muestra los pagos realizados con
 
 ## Comprobantes
 ### Facturas
-![Factura](../wireframes-y-pantallas/pantallas-2iteracion/factura-1.png)
+![Factura A](../wireframes-y-pantallas/pantallas-2iteracion/factura-1.png)
 
 Esta es la factura N° 1 emitida para un cliente. En el encabezado, a la izquierda se observan los datos del emisor. En el centro el tipo de factura (en este caso 'A') y a la derecha los datos de la factura, como su número, fecha de emisión, vencimiento y el cuit del emisor.
 Debajo se obervan los datos del cliente facturado.
 
-En el cuerpo de la factura se observa el detalle de cada servicio facturado (...)
+En el cuerpo de la factura se observa el detalle de cada servicio facturado, con su descripción, precio unitario, alicuota de iva y el subtotal. En el pie se ve el subtotal neto junto al iva discriminado por separado y finalmente el total con su IVA discriminado. 
+
+Si se tratase de una factura B o C, el IVA no se discrimina en la factura, se vería de esta manera: 
+![Factura B](../wireframes-y-pantallas/pantallas-2iteracion/factura-2.png)
+
+Como se observa, tiene el mismo formato, salvo que no se discrimina el IVA. Se observa la columna de descripción, precio unitario, subtotal y finalmente en el pie, el total.
+
+![Nota de crédito para Factura A](../wireframes-y-pantallas/pantallas-2iteracion/nota-1.png)
+
+En esta imágen se observa la nota de crédito asociada a la factura A descrita anteriormente. El formato de la nota de crédito no es muy distinta a las facturas, salvo por puntos clave como, en el encabezado, antes de los datos del cliente, se indica el comprobante asociado a esta nota, junto con su fecha de emisión, el motivo de la anulación (que verá que a la hora de anular una factura, este es obligatorio) y el responsable de la anulación.
+
+En el pie de la nota de crédito, se muestra el subtotal neto con el IVA discriminado, y finalmente el total anulado en la nota.
+
+![Recibo de pago - Total](../wireframes-y-pantallas/pantallas-2iteracion/recibo-1.png)
+
+Luego de que un cliente haya realizado un pago total, se generará un recibo de pago, el cual indica la factura asociada al recibo, su número, fecha, importe y el importe pagado. 
+Luego se observa el detalle del pago, en donde muestra la fecha, el método de pago y el importe nuevamente, además de una columna de observaciones opcional, que en este caso está vacía.
+
+En el caso de pagar parcialmente una factura, el recibo se vería de esta manera:
+
+![Recibo de pago - Parcial](../wireframes-y-pantallas/pantallas-2iteracion/recibo-2.png)
+En este recibo de pago parcial, se oberva que el valor de la factura a pagar es mucho mayor que el importe pagado. En el detalle del pago muestra la fecha de pago, el método, el importe y sus observaciones. Aunque se haya generado un recibo de pago, la factura no está totalmente pagada, por lo que el estado de la factura cambia a `PARCIAL`, y tendrá asociados tantos recibos como requiera hasta que su saldo quede pagado en su totalidad.
+
+
 
 # Backlog de iteraciones
 
