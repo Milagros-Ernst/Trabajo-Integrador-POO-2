@@ -38,23 +38,16 @@
         <form th:action="@{/facturacion/masiva/log}" method="get" class="form-grid" style="align-items: end; grid-template-columns: repeat(4, 1fr); gap: 15px;">
             
             <div class="form-group">
-                <label for="filtroPeriodo">Filtrar por Periodo:</label>
-                <select id="filtroPeriodo" name="periodo">
-                    <option value="">-- Todos --</option>
-                    <option value="1" th:selected="${periodoSeleccionado == 1}">Enero</option>
-                    <option value="2" th:selected="${periodoSeleccionado == 2}">Febrero</option>
-                    <option value="3" th:selected="${periodoSeleccionado == 3}">Marzo</option>
-                    <option value="4" th:selected="${periodoSeleccionado == 4}">Abril</option>
-                    <option value="5" th:selected="${periodoSeleccionado == 5}">Mayo</option>
-                    <option value="6" th:selected="${periodoSeleccionado == 6}">Junio</option>
-                    <option value="7" th:selected="${periodoSeleccionado == 7}">Julio</option>
-                    <option value="8" th:selected="${periodoSeleccionado == 8}">Agosto</option>
-                    <option value="9" th:selected="${periodoSeleccionado == 9}">Septiembre</option>
-                    <option value="10" th:selected="${periodoSeleccionado == 10}">Octubre</option>
-                    <option value="11" th:selected="${periodoSeleccionado == 11}">Noviembre</option>
-                    <option value="12" th:selected="${periodoSeleccionado == 12}">Diciembre</option>
-                </select>
-            </div>
+              <label for="filtroPeriodo">Filtrar por Periodo:</label>
+              <select id="filtroPeriodo" name="periodo">
+                  <option value="">-- Todos --</option>
+                  <option th:each="p : ${periodosFiltro}"
+                          th:value="${p.value}"
+                          th:text="${p.text}"
+                          th:selected="${periodoSeleccionado == p.value}">
+                  </option>
+              </select>
+          </div>
 
             <div class="form-group">
                 <label for="filtroFecha">Fecha de Ejecución:</label>
@@ -100,20 +93,8 @@
 
             <td th:text="${#temporals.format(log.fechaEjecucion, 'dd/MM/yyyy')}"></td>
 
-            <td th:switch="${log.periodo}" style="font-weight: 500;">
-              <span th:case="1">Enero</span>
-              <span th:case="2">Febrero</span>
-              <span th:case="3">Marzo</span>
-              <span th:case="4">Abril</span>
-              <span th:case="5">Mayo</span>
-              <span th:case="6">Junio</span>
-              <span th:case="7">Julio</span>
-              <span th:case="8">Agosto</span>
-              <span th:case="9">Septiembre</span>
-              <span th:case="10">Octubre</span>
-              <span th:case="11">Noviembre</span>
-              <span th:case="12">Diciembre</span>
-              <span th:case="*">Desconocido</span>
+            <td style="font-weight: 500;">
+                <span th:text="${log.periodo / 100} + '/' + ${log.periodo % 100}"></span>
             </td>
 
             <td th:text="${log.cantidadFacturas}"></td>

@@ -75,10 +75,36 @@ public class LogControlador {
 
         model.addAttribute("logs", logs);
         model.addAttribute("mapaNombresServicios", nombresPorLog);
-        
         model.addAttribute("periodoSeleccionado", periodo);
         model.addAttribute("fechaSeleccionada", fecha);
+        model.addAttribute("periodosFiltro", generarListaPeriodos()); 
 
         return "facturacion-masiva-logs";
+    }
+
+    private List<Map<String, Object>> generarListaPeriodos() {
+        List<Map<String, Object>> periodos = new ArrayList<>();
+        LocalDate fecha = LocalDate.now();
+        
+        String[] nombresMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+                                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+
+        for (int i = 0; i < 12; i++) {
+            LocalDate fechaIteracion = fecha.plusMonths(i);
+            
+            int mes = fechaIteracion.getMonthValue();
+            int anio = fechaIteracion.getYear();      
+            int anioCorto = anio % 100;               
+
+            int valorPeriodo = (mes * 100) + anioCorto;
+
+            String etiqueta = nombresMeses[mes - 1] + " " + anio;
+
+            Map<String, Object> item = new HashMap<>();
+            item.put("value", valorPeriodo);
+            item.put("text", etiqueta);
+            periodos.add(item);
+        }
+        return periodos;
     }
 }
