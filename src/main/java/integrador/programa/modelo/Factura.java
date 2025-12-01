@@ -127,4 +127,9 @@ public class Factura {
         return calcularTotalPagado() > 0 && !estaPagada();
     }
 
+    public Double getIvaContenidoEstimado() {
+        return this.precioTotal - (this.precioTotal / 1.21);
+    }
+
+
 }
