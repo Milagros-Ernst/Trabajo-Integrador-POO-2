@@ -9,7 +9,7 @@ Para la planificación y ejecución de esta segunda iteración, el equipo distri
 Para el desarrollo del diagrama de clases trabajamos en la página Draw.io. El link del mismo está dentro de /diagramas/links.
 
 ### Diagrama de Clases
-![Diagrama de clases]([../diagramas/DiagramaDeClases-Integrador-POO-II.png](https://github.com/Milagros-Ernst/Trabajo-Integrador-POO-2/blob/main/diagramas/DiagramaDeClases-Integrador-POO-II.jpg))
+![Diagrama de clases](https://github.com/Milagros-Ernst/Trabajo-Integrador-POO-2/blob/main/diagramas/DiagramaDeClases-Integrador-POO-II.jpg)
 
 El mismo cuenta con las clases Cuenta, Cliente, Administrador, Factura, LogFacturacionMasiva, DetalleFactura, Servicio, ClienteServicio, NotaCredito, DetalleNota, Recibo, DetalleRecibo y Pago.
 Además de los enumeradores EstadoServicio, EstadoCuenta, CondicionIVA, EstadoFactura, MetodoPago, TipoDocumento, TipoComprobante.
