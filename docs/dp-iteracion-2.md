@@ -87,6 +87,16 @@ En el cuerpo de la factura se observa el detalle de cada servicio facturado (...
 
 ###### **Ernst Milagros Shaiel**
 
+En esta segunda iteración trabajé en tres historias de usuario: **HU 05 – Modificación de servicio**, **HU 06 – Baja lógica de servicio** y **HU 10 – Emisión de recibos de pago**.
+
+Para las HU 05 y HU 06 no fue necesario crear archivos nuevos ya que el alta de servicio estaba implementado desde la primera iteración, pero sí desarrollé toda la parte interna necesaria para que estas dos funcionalidades funcionen bien. En la **modificación de servicio** trabajé sobre el servicio y el controlador para permitir actualizar precio, descripción y tipo de IVA, reutilizando el formulario del alta pero con los datos cargados. También implementé las validaciones y la lógica para que los cambios se reflejen correctamente al guardar.
+
+En la **baja lógica de servicio** agregué el campo `activo` y desarrollé toda la lógica para desactivar un servicio sin borrarlo. Ajusté los métodos del repositorio para que filtren únicamente los servicios activos, evitando que los inactivos aparezcan tanto en la lista de servicios como en la facturación. También implementé el controlador que se encarga de ejecutar la baja lógica.
+
+La **HU 10 – Emisión de recibos** fue la más compleja porque tuve que armar todo el módulo desde cero. Creé los modelos `Recibo` y `DetalleRecibo`, donde este último actúa como tabla intermedia entre `Recibo` y `Factura`. Implementé la lógica para generar el número de recibo, calcular totales, manejar pagos totales y parciales y vincular correctamente cada recibo con una o varias facturas mediante los detalles. También armé el repositorio, el servicio y el controlador completos, y realicé el diseño de la vista del recibo.
+
+Además, en esta iteración me encargué de desarrollar varias pruebas tanto de modelos como de servicios. Entre los **modelos** hice pruebas de: `Servicio`, `Recibo`, `Pago`, `Cuenta`, `Cliente` y `ClienteServicio`. En cuanto a **servicios**, realicé pruebas para: `ClienteService`, `ClienteServicioServicio`, `PagoServicio`, `ReciboServicio` y `ServicioServicio`. Para estas pruebas utilicé Mockito para simular repositorios y así poder enfocarme en la lógica interna. En varios casos tuve que ajustar pequeñas partes de la funcionalidad de recibos para asegurar que los tests funcionaran correctamente.
+
 ###### **Menacho Natalia Agustina**
 
 ###### **Roko María Guillermina**
