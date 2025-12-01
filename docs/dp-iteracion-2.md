@@ -64,7 +64,7 @@ Posterior a esta tabla, y si corresponde, el sistema mostrará la deuda total pe
 Debajo de esta se encuentra una nueva tabla que muestra los pagos realizados con sus respectivos comprobantes. Donde muestra los datos del mismo junto a una columna donde podrá visualizar el comprobante e imprimirlo.
 
 ## Comprobantes
-### Facturas
+### Facturas A
 ![Factura A](../wireframes-y-pantallas/pantallas-2iteracion/factura-1.png)
 
 Esta es la factura N° 1 emitida para un cliente. En el encabezado, a la izquierda se observan los datos del emisor. En el centro el tipo de factura (en este caso 'A') y a la derecha los datos de la factura, como su número, fecha de emisión, vencimiento y el cuit del emisor.
@@ -73,16 +73,19 @@ Debajo se obervan los datos del cliente facturado.
 En el cuerpo de la factura se observa el detalle de cada servicio facturado, con su descripción, precio unitario, alicuota de iva y el subtotal. En el pie se ve el subtotal neto junto al iva discriminado por separado y finalmente el total con su IVA discriminado. 
 
 Si se tratase de una factura B o C, el IVA no se discrimina en la factura, se vería de esta manera: 
+### Factura B
 ![Factura B](../wireframes-y-pantallas/pantallas-2iteracion/factura-2.png)
 
 Como se observa, tiene el mismo formato, salvo que no se discrimina el IVA. Se observa la columna de descripción, precio unitario, subtotal y finalmente en el pie, el total.
 
+### Nota de crédito
 ![Nota de crédito para Factura A](../wireframes-y-pantallas/pantallas-2iteracion/nota-1.png)
 
 En esta imágen se observa la nota de crédito asociada a la factura A descrita anteriormente. El formato de la nota de crédito no es muy distinta a las facturas, salvo por puntos clave como, en el encabezado, antes de los datos del cliente, se indica el comprobante asociado a esta nota, junto con su fecha de emisión, el motivo de la anulación (que verá que a la hora de anular una factura, este es obligatorio) y el responsable de la anulación.
 
 En el pie de la nota de crédito, se muestra el subtotal neto con el IVA discriminado, y finalmente el total anulado en la nota.
 
+### Recibo de pago total
 ![Recibo de pago - Total](../wireframes-y-pantallas/pantallas-2iteracion/recibo-1.png)
 
 Luego de que un cliente haya realizado un pago total, se generará un recibo de pago, el cual indica la factura asociada al recibo, su número, fecha, importe y el importe pagado. 
@@ -90,10 +93,36 @@ Luego se observa el detalle del pago, en donde muestra la fecha, el método de p
 
 En el caso de pagar parcialmente una factura, el recibo se vería de esta manera:
 
+### Recibo de pago parcial
 ![Recibo de pago - Parcial](../wireframes-y-pantallas/pantallas-2iteracion/recibo-2.png)
+
 En este recibo de pago parcial, se oberva que el valor de la factura a pagar es mucho mayor que el importe pagado. En el detalle del pago muestra la fecha de pago, el método, el importe y sus observaciones. Aunque se haya generado un recibo de pago, la factura no está totalmente pagada, por lo que el estado de la factura cambia a `PARCIAL`, y tendrá asociados tantos recibos como requiera hasta que su saldo quede pagado en su totalidad.
 
+### Facturación
+![Facturación - inicio](../wireframes-y-pantallas/pantallas-2iteracion/facturacion-inicio.png)
 
+Al presionar el botón **Facturación** en el inicio, se encontrará con este pequeño menú, en donde podrá seleccionar si quiere realizar una *facturación masiva* o una *facturación individual*.
+
+### Facturación masiva
+![Facturación - inicio](../wireframes-y-pantallas/pantallas-2iteracion/facturacion-masiva.png)
+
+Al ingresar a la facturación masiva, se encontrará con esta pantalla. En una primera instancia verá un formulario donde seleccionará el período a facturar, junto con un `DatePicker` para seleccionar la fecha de vencimiento. 
+Debajo tiene una tabla con todos los servicios dados de alta en el sistema. Para seleccionar servicios a facturar, a la derecha de la tabla se encuentra un `checkbox` por renglón, junto a uno general para seleccionar todos. Debajo de la tabla se encuentra el botón para facturar servicios.
+
+Una nueva incorporación de esta iteración en la pantalla de facturación masiva, es la posibilidad de visualizar el `historial de logs` de la facturación masiva. El botón para acceder a ella se encuentra en la esquina superior derecha, con el nombre **"Ver historial de Logs"**. 
+
+### Historial de Logs
+![Facturación - inicio](../wireframes-y-pantallas/pantallas-2iteracion/facturacion-log.png)
+
+En esta pantalla se encontrará con los registros de ejecuciones masivas en el sistema. De primeras se tienen criterios de filtrado opcionales, donde permite filtrar por período y fecha de ejecución. Observe que si no selecciona ninguno, se muestran todos los logs registrados en el sistema. 
+Debajo, se encuentra la tabla con el *historial de operaciones*, en donde se ve el ID de la operación, fecha de ejecución, período facturado, cantidad de facturas generadas, servicios incluídos en la facturación, el responsable de la ejecución y el estado de la misma. También tiene la posibilidad de imprimir el reporte presionando el botón **Imprimir Reporte**. 
+
+### Facturación individual
+![Facturación - inicio](../wireframes-y-pantallas/pantallas-2iteracion/facturacion-individual.png)
+
+Al ingresar a la facturación individual, en primera instancia tendrá que seleccionar un cliente dentro de un `ComboBox`. Al seleccionar un cliente, el sistema le mostrará esta pantalla, donde primero se despliegan los datos del cliente, junto a un acceso directo al historial de facturación: *"Ver historial de facturación"*.
+
+Debajo podrá seleccionar el período a facturar y la fecha de vencimiento.
 
 # Backlog de iteraciones
 
