@@ -108,7 +108,7 @@
       <div th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
 
         <div class="totals-row">
-          <label>Subtotal Neto:</label>
+          <label>Subtotal:</label>
           <span th:text="'$ ' + ${#numbers.formatDecimal(subtotalNeto, 1, 2)}"></span>
         </div>
 
