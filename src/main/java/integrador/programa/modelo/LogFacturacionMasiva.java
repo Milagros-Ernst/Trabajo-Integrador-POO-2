@@ -1,8 +1,6 @@
 package integrador.programa.modelo;
 
 import java.time.LocalDate;
-import java.time.Month;
-import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

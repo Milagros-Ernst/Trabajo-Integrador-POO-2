@@ -2,7 +2,6 @@ package integrador.programa.servicios;
 
 import integrador.programa.modelo.*;
 import integrador.programa.modelo.enumeradores.EstadoFactura;
-import integrador.programa.modelo.enumeradores.MetodoPago;
 import integrador.programa.repositorios.FacturaRepositorio;
 import integrador.programa.repositorios.PagoRepositorio;
 import integrador.programa.repositorios.ReciboRepositorio;
@@ -14,7 +13,6 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;

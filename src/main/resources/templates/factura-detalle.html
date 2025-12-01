@@ -108,24 +108,52 @@
       <div th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
 
         <div class="totals-row">
-          <span>Subtotal Neto:</span>
+          <label>Subtotal:</label>
           <span th:text="'$ ' + ${#numbers.formatDecimal(subtotalNeto, 1, 2)}"></span>
         </div>
 
         <div class="totals-row" th:each="entry : ${ivaDesglosado}">
-          <span th:text="'IVA ' + ${entry.key} + ':'">IVA 21%:</span>
+          <label th:text="'IVA ' + ${entry.key} + ':'">IVA:</label>
           <span th:text="'$ ' + ${#numbers.formatDecimal(entry.value, 1, 2)}"></span>
         </div>
+      </div>
 
+      <div th:unless="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
+        <div class="totals-row">
+          <label>Subtotal:</label>
+          <span th:text="'$ ' + ${#numbers.formatDecimal(factura.precioTotal, 1, 2)}"></span>
+        </div>
+
+        <div class="totals-row">
+          <label>Dto./Recargo:</label>
+          <span>$ 0,00</span>
+        </div>
       </div>
 
       <div class="totals-row final">
-        <span>TOTAL:</span>
+        <label>Total:</label>
         <span th:text="'$ ' + ${#numbers.formatDecimal(factura.precioTotal, 1, 2)}"></span>
       </div>
 
     </div>
   </div>
+
+  <!--incorporación de régimen de transparencia fiscal -->
+<div class="transparencia-fiscal-box" th:unless="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
+  <div class="tf-titulo">Régimen de Transparencia Fiscal al Consumidor (Ley 27.743)</div>
+
+  <div class="tf-row">
+    <span>IVA Contenido:</span>
+    <span th:text="'$ ' + ${#numbers.formatDecimal(factura.ivaContenidoEstimado, 1, 2)}">
+            $ 0.00
+        </span>
+  </div>
+
+  <div class="tf-row">
+    <span>Otros Impuestos Nacionales Indirectos:</span>
+    <span>$ 0,00</span>
+  </div>
+</div>
 
   <div style="margin-top: 40px; font-size: 12px; color: #999; text-align: center; border-top: 1px dashed #ddd; padding-top: 10px;">
     Comprobante generado electrónicamente por Sistema FlorecillaService.<br>

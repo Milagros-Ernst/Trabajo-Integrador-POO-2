@@ -765,33 +765,40 @@ tr.fila-seleccionada td {
 
 /* Sección de Totales */
 .invoice-totals {
-    margin-top: 30px;
+    margin-top: 40px;
     display: flex;
     justify-content: flex-end;
 }
 
 .totals-box {
-    width: 300px;
-    border: 1px solid #eee;
-    padding: 20px;
-    background-color: #fcfcfc;
-    border-radius: 6px;
+    width: auto;
+    min-width: 250px;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    border-radius: 0;
 }
 
 .totals-row {
     display: flex;
     justify-content: space-between;
-    padding: 6px 0;
+    padding: 4px 0;
     font-size: 14px;
+    color: #333;
+}
+
+.totals-row label {
+    font-weight: 600;
+    margin-right: 20px;
 }
 
 .totals-row.final {
-    border-top: 2px solid #8D11B8;
-    margin-top: 10px;
-    padding-top: 10px;
-    font-size: 20px;
+    border-top: none;
+    margin-top: 5px;
+    padding-top: 5px;
+    font-size: 16px;
     font-weight: bold;
-    color: #8D11B8;
+    color: #333;
 }
 
 .actions-bar {
@@ -803,6 +810,37 @@ tr.fila-seleccionada td {
     width: 100%;
     padding: 0;
 }
+
+/*AGREGO transparencia fiscal*/
+
+.transparencia-fiscal-box{
+    margin-top: 20px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #333;
+    background-color: #fff;
+}
+.tf-titulo {
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-transform: none; /* Mantiene mayúsculas/minúsculas */
+    border-bottom: 1px solid #eee;
+    padding-bottom: 4px;
+}
+
+.tf-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+
+.tf-row span:last-child {
+    font-weight: 600;
+}
+
+
 /* =========================================
    REGLAS DE IMPRESIÓN
    ========================================= */
@@ -841,6 +879,12 @@ tr.fila-seleccionada td {
     
     .form-container {
         border: none;
+    }
+    @media print {
+        .fiscal-transparency-box {
+            border: 1px solid #000;
+            page-break-inside: avoid;
+        }
     }
 }
 
