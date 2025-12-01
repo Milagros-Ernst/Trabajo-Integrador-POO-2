@@ -127,21 +127,12 @@
 
                 <div class="form-grid-servicios">
                     <div class="form-group">
-                        <label for="mes">Periodo a procesar:</label>
-                        <select id="mes" name="mes" required>
-                            <option value="" disabled selected>Seleccionar mes</option>
-                            <option value="1">Enero</option>
-                            <option value="2">Febrero</option>
-                            <option value="3">Marzo</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Mayo</option>
-                            <option value="6">Junio</option>
-                            <option value="7">Julio</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Septiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
+                        <label for="periodo">Periodo a procesar:</label>
+                        <select id="periodo" name="periodo" required> <option value="" disabled selected>Seleccionar periodo</option>
+                            <option th:each="p : ${periodosDisponibles}" 
+                                    th:value="${p.value}" 
+                                    th:text="${p.text}">
+                            </option>
                         </select>
                     </div>
                 </div>

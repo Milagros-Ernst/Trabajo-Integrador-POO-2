@@ -16,6 +16,7 @@ import integrador.programa.modelo.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -154,9 +155,11 @@ public class FacturaControlador {
 
     @GetMapping("/masiva")
     public String irAFacturacionMasiva(Model model) {
-        // Añade la lista de servicios al modelo para que la plantilla los muestre
         List<Servicio> misServicios = servicioServicio.listarTodos();
         model.addAttribute("servicios", misServicios);
+        
+        model.addAttribute("periodosDisponibles", generarListaPeriodos());
+        
         return "facturacion-masiva";
     }
 
@@ -168,33 +171,26 @@ public class FacturaControlador {
             Model model) {
 
         try {
-
             if (idServiciosFacturar == null || idServiciosFacturar.isEmpty()) {
-
                 throw new IllegalArgumentException("Debe seleccionar al menos un servicio para facturar.");
-
             }
             LogFacturacionMasiva registro = facturaServicio.emitirFacturaMasiva(
                     idServiciosFacturar,
-                    periodo,
+                    periodo, // Ya viene como 1225 o 126 desde el form
                     fechaVencimiento
             );
-
-            model.addAttribute("success",
-                    "Facturación masiva completada. Se generaron " +
+            model.addAttribute("success", "Facturación masiva completada. Se generaron " +
                             registro.getCantidadFacturas() + " facturas.");
 
         } catch (Exception e) {
-            // Si algo falla, envía un mensaje de error
-            model.addAttribute("error",
-                    "Error al procesar la facturación: " + e.getMessage());
+            model.addAttribute("error", "Error al procesar la facturación: " + e.getMessage());
         }
 
-        // Vuelve a cargar los servicios para la tabla
         List<Servicio> servicios = servicioServicio.listarTodos();
         model.addAttribute("servicios", servicios);
+        
+        model.addAttribute("periodosDisponibles", generarListaPeriodos());
 
-        // Vuelve a mostrar la misma página
         return "facturacion-masiva";
     }
 
@@ -205,6 +201,7 @@ public class FacturaControlador {
             Model model) {
         try {
             model.addAttribute("clientes", clienteService.listarClientesActivos());
+            model.addAttribute("periodosDisponibles", generarListaPeriodos());
             if (clienteId != null) {
                 try {
                     Cliente clienteEncontrado = clienteService.buscarPorId(clienteId);
@@ -233,11 +230,14 @@ public class FacturaControlador {
     public String procesarFacturacionIndividualFormulario(
             @RequestParam(value = "serviciosIds", required = false) List<String> serviciosIds,
             @RequestParam("clienteIdForm") Long clienteId,
-            @RequestParam("mes") String mes,
+            @RequestParam("periodo") int periodo,
             @RequestParam("fechaVencimiento") LocalDate fechaVencimiento,
 
             Model model
     ) {
+        model.addAttribute("periodosDisponibles", generarListaPeriodos());
+        model.addAttribute("clientes", clienteService.listarClientesActivos()); 
+
         Cliente clienteEncontrado = null;
         List<integrador.programa.modelo.ClienteServicio> serviciosAsignados = null;
         try {
@@ -256,17 +256,16 @@ public class FacturaControlador {
         }
 
         try {
-            int mesInt = Integer.parseInt(mes);
             Factura facturaGenerada = facturaServicio.emitirFacturaIndividual(
                     clienteEncontrado,
                     serviciosIds,
-                    mesInt,
+                    periodo,
                     fechaVencimiento
             );
 
-            model.addAttribute("success", "Factura N°" + facturaGenerada.getIdFactura() + " generada exitosamente para " + clienteEncontrado.getNombre());
+            model.addAttribute("success", "Factura N°" + facturaGenerada.getIdFactura() + " generada exitosamente.");
             model.addAttribute("serviciosAsignados", clienteServicioServicio.listarServiciosActivosDeCliente(clienteId));
-
+            
             return "facturacion-individual";
 
         } catch (Exception e) {
@@ -274,6 +273,33 @@ public class FacturaControlador {
             e.printStackTrace();
             return "facturacion-individual";
         }
+    }
+
+    private List<Map<String, Object>> generarListaPeriodos() {
+        List<Map<String, Object>> periodos = new ArrayList<>();
+        LocalDate fecha = LocalDate.now();
+        
+        String[] nombresMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+                                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+
+        for (int i = 0; i < 12; i++) {
+            LocalDate fechaIteracion = fecha.plusMonths(i);
+            
+            int mes = fechaIteracion.getMonthValue(); // 1 a 12
+            int anio = fechaIteracion.getYear();      // ej. 2025
+            int anioCorto = anio % 100;               // ej. 25
+
+            //  cálculo del valor int: 1225 (Dic 25) o 126 (Ene 26)
+            int valorPeriodo = (mes * 100) + anioCorto;
+
+            String etiqueta = nombresMeses[mes - 1] + " " + anio;
+
+            Map<String, Object> item = new HashMap<>();
+            item.put("value", valorPeriodo);
+            item.put("text", etiqueta);
+            periodos.add(item);
+        }
+        return periodos;
     }
 
 }
