@@ -108,19 +108,30 @@
       <div th:if="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
 
         <div class="totals-row">
-          <span>Subtotal Neto:</span>
+          <label>Subtotal Neto:</label>
           <span th:text="'$ ' + ${#numbers.formatDecimal(subtotalNeto, 1, 2)}"></span>
         </div>
 
         <div class="totals-row" th:each="entry : ${ivaDesglosado}">
-          <span th:text="'IVA ' + ${entry.key} + ':'">IVA 21%:</span>
+          <label th:text="'IVA ' + ${entry.key} + ':'">IVA:</label>
           <span th:text="'$ ' + ${#numbers.formatDecimal(entry.value, 1, 2)}"></span>
         </div>
+      </div>
 
+      <div th:unless="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
+        <div class="totals-row">
+          <label>Subtotal:</label>
+          <span th:text="'$ ' + ${#numbers.formatDecimal(factura.precioTotal, 1, 2)}"></span>
+        </div>
+
+        <div class="totals-row">
+          <label>Dto./Recargo:</label>
+          <span>$ 0,00</span>
+        </div>
       </div>
 
       <div class="totals-row final">
-        <span>TOTAL:</span>
+        <label>Total:</label>
         <span th:text="'$ ' + ${#numbers.formatDecimal(factura.precioTotal, 1, 2)}"></span>
       </div>
 
