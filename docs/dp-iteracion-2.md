@@ -196,5 +196,10 @@ Además implementé la posibilidad de exportar a PDF las mismas, lo que fué un 
 Finalmente, al implementar la pantalla de pagos, incorporé un método en `PagoControlador` para la finalización de un pago, aplicando un orden de pago basado en el vencimiento.
 
 ###### **Verón Juan Manuel**
+En esta segunda iteración me encargué del desarrollo de las historias de usuario **HU 12 - Registrar pago total** y **HU 13 - Registrar pago parcial**. Para ello implementé de forma completa el módulo de pagos: diseñé la entidad `Pago` y el enumerador `MetodoPago` con las opciones EFECTIVO, DEBITO, CREDITO y TRANSFERENCIA.
 
+Desarrollé el `PagoRepositorio` para la persistencia, el `PagoServicio` que contiene la lógica de negocio como la validación de montos, cálculo de totales, registro de pagos parciales o totales y actualización del estado de las facturas a PAGADA o PARCIAL, y el `PagoControlador` para procesar, confirmar y cancelar pagos desde la capa web.
 
+Realicé una mejora en la interfaz de usuario correspondiente a la gestión de clientes: añadí una tabla de clientes inactivos con una acción `Reactivar` para volver a activar un cliente dado de baja, permitiendo de esta manera recuperar clientes sin perder su historial.
+
+Además, realicé tests de integración para la capa de repositorio utilizando `@DataJpaTest` con `JUnit 5` asegurando las operaciones de persistencia y consultas contra una base de datos H2 en memoria, y pruebas unitarias para la lógica del servicio utilizando `Mockito` para simular repositorios. También realicé revisiones de código y pequeños aportes a las implementaciones de mis compañeros.
