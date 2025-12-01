@@ -180,6 +180,20 @@ Además me dediqué a hacer pruebas de las clases relacionadas a `Factura` y `No
 Finalmente también realicé pequeños aportes para ayudar a mis compañeros. Y corregí un par de errores en la implementación de la facturación que fueron detectados durante esta iteración. También hice un par de pequeñas mejoras y eliminé algunas líneas que no se usaban.
 
 ###### **Roko María Guillermina**
+En esta iteración tuve la tarea de desarrollar la **HU 09 - Ver estado de cuenta del cliente**, junto con el desarrollo del frontend. 
+
+Para el desarrollo de las pantallas de esta segunda iteración, me basé en las pantallas previamente hechas. Se siguió utilizando `HTML` y `CSS`, como también `JavaScript` para gestionar la interactividad de las pantallas. Ademas de las pantallas nuevas, se agregaron nuevas funcionalidades a pantallas anteriores, como la capacidad de seleccionar un elemento de la tabla para la **Gestión de servicios** o reutilizando elementos de pantallas nuevas, como un `ComboBox` de clientes en la pantalla de facturación individual, en la cual previamente había que ingresar la ID del cliente.
+
+También trabajé en mejorar el flujo entre pantallas, agregando una pantalla de inicio de clientes, lo que hizo que las `URLs` de los controladores cambien. Llevó mucho trabajo modificar las URL de cada botón, pero resultó en un flujo mucho mas intuitivo para el usuario.
+
+Asimismo, reordené los controladores, que en la primer iteración estaban todos en `HomeControlador`, para aplicar el **"Principio de responsabilidad única"**, colocando la lógica en cada controlador correspondiente. 
+
+Para la **historia de usuario 09**, desarrollé una pantalla `Historial de facturación`, en la cual se muestra el estado de cuenta del cliente. Para el desarrollo de la misma consideré oportuno crear un controlador `FacturacionClienteControlador.java` para mantener las responsabilidades separadas de los controladores de `Cliente` y `Factura`. 
+
+En esta pantalla también incorporé las vistas de facturas y notas de crédito. Para el desarrollo de las mismas me basé principalmente en las facturas electrónicas de *Arca*. 
+Además implementé la posibilidad de exportar a PDF las mismas, lo que fué un desafío ya que nunca habia hecho algo similar. 
+
+Finalmente, al implementar la pantalla de pagos, incorporé un método en `PagoControlador` para la finalización de un pago, aplicando un orden de pago basado en el vencimiento.
 
 ###### **Verón Juan Manuel**
 
