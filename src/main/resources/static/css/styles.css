@@ -803,6 +803,37 @@ tr.fila-seleccionada td {
     width: 100%;
     padding: 0;
 }
+
+/*AGREGO transparencia fiscal*/
+
+.transparencia-fiscal-box{
+    margin-top: 20px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #333;
+    background-color: #fff;
+}
+.tf-titulo {
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-transform: none; /* Mantiene mayúsculas/minúsculas */
+    border-bottom: 1px solid #eee;
+    padding-bottom: 4px;
+}
+
+.tf-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+
+.tf-row span:last-child {
+    font-weight: 600;
+}
+
+
 /* =========================================
    REGLAS DE IMPRESIÓN
    ========================================= */
@@ -841,6 +872,12 @@ tr.fila-seleccionada td {
     
     .form-container {
         border: none;
+    }
+    @media print {
+        .fiscal-transparency-box {
+            border: 1px solid #000;
+            page-break-inside: avoid;
+        }
     }
 }
 

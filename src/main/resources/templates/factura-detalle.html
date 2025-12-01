@@ -127,6 +127,23 @@
     </div>
   </div>
 
+  <!--incorporación de régimen de transparencia fiscal -->
+<div class="transparencia-fiscal-box" th:unless="${cliente.condIVA.name() == 'RESPONSABLE_INSCRIPTO'}">
+  <div class="tf-titulo">Régimen de Transparencia Fiscal al Consumidor (Ley 27.743)</div>
+
+  <div class="tf-row">
+    <span>IVA Contenido:</span>
+    <span th:text="'$ ' + ${#numbers.formatDecimal(factura.ivaContenidoEstimado, 1, 2)}">
+            $ 0.00
+        </span>
+  </div>
+
+  <div class="tf-row">
+    <span>Otros Impuestos Nacionales Indirectos:</span>
+    <span>$ 0,00</span>
+  </div>
+</div>
+
   <div style="margin-top: 40px; font-size: 12px; color: #999; text-align: center; border-top: 1px dashed #ddd; padding-top: 10px;">
     Comprobante generado electrónicamente por Sistema FlorecillaService.<br>
     Cae Vencimiento: <span th:text="${#temporals.format(factura.vencimiento, 'dd/MM/yyyy')}"></span>
