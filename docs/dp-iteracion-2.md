@@ -121,7 +121,28 @@ Debajo, se encuentra la tabla con el *historial de operaciones*, en donde se ve 
 
 Al ingresar a la facturación individual, en primera instancia tendrá que seleccionar un cliente dentro de un `ComboBox`. Al seleccionar un cliente, el sistema le mostrará esta pantalla, donde primero se despliegan los datos del cliente, junto a un acceso directo al historial de facturación: *"Ver historial de facturación"*.
 
-Debajo podrá seleccionar el período a facturar y la fecha de vencimiento.
+Debajo podrá seleccionar el período a facturar y la fecha de vencimiento. Y a continuación la tabla con sus servicios adquiridos para seleccionarlos por medio de un checkbox, igual que en la pantalla de facturación masiva.
+
+### Administrar pagos 
+![Administrar - pagos](../wireframes-y-pantallas/pantallas-2iteracion/administrar-pagos.png)
+
+Luego de presionar el botón **"Pagos"** desde el inicio, ingresará a esta pantalla. En primera instancia tendrá que seleccionar un cliente dentro de un `ComboBox`. Al seleccionar un cliente, se desplegarán algunos de sus datos, como el *nombre completo*, *documento*, *condición fiscal* y *email*. Junto a un acceso directo al historial de facturación: *"Ver historial de facturación"*.
+
+Debajo, en una tabla, se muestran las facturas pendientes de pago, con su fecha de vencimiento, el total de la factura, lo pagado, el saldo pendiente y el estado de la factura. Cada fila tiene un `checkbox` a la derecha que permite la selección individual o múltiple. Al activar estas casillas, el indicador **'Total a Pagar'** (ubicado al pie) se actualiza dinámicamente, reflejando la suma de los saldos pendientes seleccionados. A la derecha del indicador tiene un botón para proceder al pago, que lo redirige a la pantalla para *Procesar pagos*.
+
+### Procesar pago 
+![Procesar - pago](../wireframes-y-pantallas/pantallas-2iteracion/procesar-pago.png)
+
+Aquí podrá procesar el pago. Primero, se le muestra un resumen previo a la confirmación, donde se muestran datos tales como a quién se le está procesando el pago, la cantidad de facturas a pagar y el total de la deuda seleccionada.
+
+Luego, ustéd podrá ingresar el monto a pagar, que puede estar entre 0 y el total de la deuda seleccionada. (Observe que no se permiten saldos a favor por el momento, aunque si pagos parciales). Posteriormente debe seleccionar el método de pago y alguna observación (opcional). 
+Debajo tiene dos botones, el botón **Cancelar/Volver**, que lo redirige a la pantalla de **Administrar pagos**, y el botón **Confirmar pago**, que registra el pago exitosamente, actualizando el estado de la factura según corresponda y generando un recibo de pago. 
+
+Luego de pagar, el resumen del cliente se ve de la siguiente manera:
+![Administrar - pagos - pagado](../wireframes-y-pantallas/pantallas-2iteracion/administrar-pagos-pagado.png)
+
+En donde se ve que el estado de la factura se modificó a pagado y la deuda total pendiente es `$ 0,00`. Asímismo, se observa en la tabla de *Pagos realizados y Comprobantes* el resumen del pago y la posibilidad de ver el recibo. [Ir a Recibo de Pago](#recibo-de-pago-total)
+
 
 # Backlog de iteraciones
 
