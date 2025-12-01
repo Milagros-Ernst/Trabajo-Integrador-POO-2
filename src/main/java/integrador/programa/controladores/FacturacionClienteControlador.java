@@ -6,7 +6,6 @@ import integrador.programa.servicios.ClienteService;
 import integrador.programa.servicios.ClienteServicioServicio;
 import integrador.programa.servicios.FacturaServicio;
 import integrador.programa.servicios.PagoServicio;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,6 @@ public class FacturacionClienteControlador {
     private final PagoServicio pagoServicio;
 
 
-    @Autowired
     public FacturacionClienteControlador(ClienteService clienteService,
                                          ClienteServicioServicio clienteServicioServicio,
                                          FacturaServicio facturaServicio,

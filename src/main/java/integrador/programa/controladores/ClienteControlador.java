@@ -1,10 +1,7 @@
 package integrador.programa.controladores;
 
 import integrador.programa.modelo.Cliente;
-import integrador.programa.modelo.Factura;
-import integrador.programa.modelo.Pago;
 import integrador.programa.modelo.enumeradores.EstadoCuenta;
-import integrador.programa.modelo.enumeradores.EstadoFactura;
 import integrador.programa.servicios.ClienteService;
 import integrador.programa.servicios.ClienteServicioServicio;
 import integrador.programa.servicios.FacturaServicio;
