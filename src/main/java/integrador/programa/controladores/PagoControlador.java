@@ -5,8 +5,6 @@ import integrador.programa.modelo.Factura;
 import integrador.programa.modelo.enumeradores.EstadoFactura;
 import integrador.programa.servicios.ClienteService;
 import integrador.programa.servicios.FacturaServicio;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +27,6 @@ public class PagoControlador {
     private final ClienteService clienteService;
     private final FacturaServicio facturaServicio;
 
-    @Autowired
     public PagoControlador(PagoServicio pagoServicio,
                            ClienteService clienteService,
                            FacturaServicio facturaServicio) {

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.generator.EventType;
 
 import integrador.programa.modelo.enumeradores.TipoComprobante;
@@ -37,9 +36,6 @@ public class NotaCredito {
     @Column(name = "idNota")
     @Setter(AccessLevel.NONE)
     private Long nroNota;
-
-    // me gustaría despues cambiar en el diagrama nroNota por idNota
-    // para que sea cohesivo con factura
 
     @Column(name = "nro_serie", columnDefinition = "SERIAL", insertable = false, updatable = false)
     @Generated(event = EventType.INSERT)
