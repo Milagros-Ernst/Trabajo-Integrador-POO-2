@@ -12,10 +12,6 @@ import integrador.programa.repositorios.ClienteRepositorio;
 import integrador.programa.repositorios.ClienteServicioRepositorio;
 import integrador.programa.repositorios.ServicioRepositorio;
 
-// --- 3. IMPORT DE LA LÓGICA (EL SERVICIO QUE PROBAMOS) ---
-// Según tu imagen, la clase se llama así:
-import integrador.programa.servicios.ClienteServicioServicio;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

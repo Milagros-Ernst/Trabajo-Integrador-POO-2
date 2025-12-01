@@ -3,7 +3,6 @@ package integrador.programa.servicios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import integrador.programa.repositorios.DetalleNotaRepositorio;
 import integrador.programa.repositorios.NotaRepositorio;
 import integrador.programa.modelo.NotaCredito;
 import integrador.programa.modelo.DetalleFactura;

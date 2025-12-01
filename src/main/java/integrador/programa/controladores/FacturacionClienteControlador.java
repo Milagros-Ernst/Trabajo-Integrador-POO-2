@@ -25,7 +25,6 @@ public class FacturacionClienteControlador {
     private final PagoServicio pagoServicio;
 
 
-    @Autowired
     public FacturacionClienteControlador(ClienteService clienteService,
                                          ClienteServicioServicio clienteServicioServicio,
                                          FacturaServicio facturaServicio,
